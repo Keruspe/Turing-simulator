@@ -1,0 +1,8 @@
+$ This is a comment
+$ This is a sample data file for the sample machine
+$ Data section starts
+0 0 0 1 1 0
+$ You can use spaces or newlines to separate your data, and add comments
+1 1 0 1 1 1 0 1 0 #
+$ The sharp is the end of the datas, the folowing won't be taken
+1 0 0 1 1

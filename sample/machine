@@ -1,0 +1,32 @@
+$ This is a comment
+$ This is a sample machine file
+$ It takes a word composed of {0,1} and _ is the default
+$ First, the alphabet of our machine
+0 1
+a b _ #
+$ The sharp ends the alphabet section
+$ Then the different states
+q1 q2 q3 q4 q5 q6 #
+$ Then the transitions, 1 per line
+q1 1 a q2 R
+q1 0 a q3 R
+q2 0 0 q2 R
+q2 1 1 q2 R
+q2 _ b q4 R
+q4 _ 1 q4 L
+q4 b _ q4 L
+q4 1 1 q4 L
+q4 0 0 q4 L
+q4 a 1 q6 R
+q3 0 0 q3 R
+q3 1 1 q3 R
+q3 _ b q5 R
+q5 _ 0 q5 L
+q5 b _ q5 L
+q5 1 1 q5 L
+q5 0 0 q5 L
+q5 a 0 q6 R #
+$ The starting state
+q1
+$ The final state
+q6
