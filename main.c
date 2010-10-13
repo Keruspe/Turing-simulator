@@ -33,7 +33,7 @@ main()
 			}
 			printf("Now using data from: %s\n", dataFilename);
 			getchar(); /* Clear buffer */
-			free(data);
+			freeData(data);
 			data = NULL;
 			printf("Do you want to continue with this machine ? [Y/n]\n");
 		} while (getchar() != 'n');
