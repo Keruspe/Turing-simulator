@@ -39,7 +39,7 @@ main()
 		} while (getchar() != 'n');
 
 		getchar(); /* Clear buffer */
-		free(machine);
+		freeMachine(machine);
 		machine = NULL;
 		printf("Do you want to continue with another machine ? [Y/n]\n");
 	} while (getchar() != 'n'); /* Only exit on user demand */
