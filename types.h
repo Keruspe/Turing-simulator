@@ -12,8 +12,8 @@
 #define DATA_BASE_LENGTH 50
 
 typedef char Move;
-typedef char State[MAX_STATE_NAME_SIZE];
-typedef char Letter[MAX_LETTER_SIZE];
+typedef char State[MAX_STATE_NAME_SIZE+1];
+typedef char Letter[MAX_LETTER_SIZE+1];
 
 typedef struct _Transition Transition;
 typedef struct _Machine Machine;

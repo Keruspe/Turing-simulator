@@ -17,7 +17,6 @@ main()
 			reloadData(machine);
 			if(machine->data == NULL)
 				return EXIT_FAILURE;
-
 			/* TODO */
 
 			printf("Do you want to continue with this machine ? [Y/n]\n");
