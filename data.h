@@ -9,7 +9,7 @@ struct _Data {
 	int data_length;
 };
 
-Data * newData(char *);
+Data * newData();
 void freeData(Data *);
 
 #endif /* __DATA_H__ */

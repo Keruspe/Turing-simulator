@@ -12,13 +12,20 @@ _newData()
 }
 
 Data *
-newData(char * filename)
+newData()
 {
-	FILE * dataFile = fopen(filename, "r");
-	if (dataFile == NULL)
+	FILE * dataFile = NULL;
+	char dataFilename[MAX_FILENAME_LENGTH];
+
+	printf("Where is the file containing the data for your machine ?\n");
+	if (!scanf("%s", dataFilename) || (dataFile = fopen(dataFilename, "r")) == NULL)
+	{
+		printf("Failed to read file: %s, exiting...\n", dataFilename);
 		return NULL;
+	}
 
 	Data * data = _newData();
+
 	/* TODO */
 
 	fclose(dataFile);

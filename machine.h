@@ -2,6 +2,7 @@
 #define __MACHINE_H__
 
 #include "types.h"
+#include "data.h"
 
 struct _Transition {
 	State start_state;
@@ -21,9 +22,12 @@ struct _Machine {
 	int alphabet_length;
 	int states_length;
 	int transitions_length;
+	// Data management
+	Data * data;
 };
 
-Machine * newMachine(char *);
+Machine * newMachine();
 void freeMachine(Machine *);
+void reloadData(Machine *);
 
 #endif /* __MACHINE_H__ */

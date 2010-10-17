@@ -12,17 +12,25 @@ _newMachine()
 	machine->states_length = 0;
 	machine->transitions = (Transition *) malloc(TRANSITIONS_BASE_LENGTH * sizeof(Transition));
 	machine->transitions_length = 0;
+	machine->data = NULL;
 	return machine;
 }
 
 Machine *
-newMachine(char * filename)
+newMachine()
 {
-	FILE * machineFile = fopen(filename, "r");
-	if (machineFile == NULL)
+	FILE * machineFile = NULL;
+	char machineFilename[MAX_FILENAME_LENGTH];
+
+	printf("Where is the file describing your turing machine ?\n");
+	if (!scanf("%s", machineFilename) || (machineFile = fopen(machineFilename, "r")) == NULL)
+	{
+		printf("Failed to read file: %s, exiting...\n", machineFilename);
 		return NULL;
+	}
 
 	Machine * machine = _newMachine();
+
 	/* TODO */
 
 	fclose(machineFile);
@@ -35,5 +43,18 @@ freeMachine(Machine * machine)
 	free(machine->alphabet);
 	free(machine->states);
 	free(machine->transitions);
+	if (machine->data)
+		freeData(machine->data);
 	free(machine);
 }
+
+void
+reloadData(Machine * machine)
+{
+	if (machine->data)
+		freeData(machine->data);
+
+	machine->data = newData();
+	while (getchar() != '\n'); /* Clear buffer */
+}
+

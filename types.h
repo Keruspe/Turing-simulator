@@ -1,6 +1,8 @@
 #ifndef __TYPES_H__
 #define __TYPES_H__
 
+#define MAX_FILENAME_LENGTH 100
+
 #define MAX_STATE_NAME_SIZE 10
 #define MAX_LETTER_SIZE 10
 
