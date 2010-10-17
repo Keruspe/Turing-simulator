@@ -19,6 +19,11 @@ main()
 				return EXIT_FAILURE;
 			/* TODO */
 
+int tester;
+for (tester = 0 ; tester < machine->data->data_length ; ++tester)
+	printf("%s ", machine->data->data[tester]);
+printf("\n");
+
 			printf("Do you want to continue with this machine ? [Y/n]\n");
 		} while (getchar() != 'n');
 

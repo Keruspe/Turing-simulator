@@ -14,6 +14,15 @@ _newData()
 }
 
 void
+nextData(Data * data, int * current_size)
+{
+	data->data[data->data_length][*current_size] = '\0';
+	*current_size = 0;
+	if ((++(data->data_length) % DATA_BASE_LENGTH) == 0)
+		data->data = realloc(data->data, (data->data_length + DATA_BASE_LENGTH) * sizeof(Letter));
+}
+
+void
 extractData(Data * data, FILE * dataFile)
 {
 	char c;
@@ -23,12 +32,7 @@ extractData(Data * data, FILE * dataFile)
 		if (c == '$' || c == '\n' || c == '\t' || c == ' ')
 		{
 			if (current_size != 0)
-			{
-				data->data[data->data_length][current_size] = '\0';
-				current_size = 0;
-				if ((++(data->data_length) % DATA_BASE_LENGTH) == 0)
-					data->data = realloc(data->data, (data->data_length + DATA_BASE_LENGTH) * sizeof(Letter));
-			}
+				nextData(data, &current_size);
 			if (c == '$')
 				while ((c = fgetc(dataFile)) != '\n');
 			continue;
@@ -36,12 +40,19 @@ extractData(Data * data, FILE * dataFile)
 		if (c == '#')
 			break;
 		data->data[data->data_length][current_size] = c;
-		if (current_size++ == MAX_LETTER_SIZE)
+		if (++current_size == MAX_LETTER_SIZE)
 		{
-			data->data[data->data_length][current_size] = '\0';
-			current_size = 0;
-			if ((++(data->data_length) % DATA_BASE_LENGTH) == 0)
-				data->data = realloc(data->data, (data->data_length + DATA_BASE_LENGTH) * sizeof(Letter));
+			nextData(data, &current_size);
+			c = fgetc(dataFile);
+			if (c == '$')
+			{
+				while ((c = fgetc(dataFile)) != '\n');
+				continue;
+			}
+			if (c == '\n' || c == '\t' || c == ' ')
+				continue;
+			printf("Your alphabet has a too long \"Letter\", max size allowed is: %d\n", MAX_LETTER_SIZE);
+			exit(EXIT_FAILURE);
 		}
 	}
 }
