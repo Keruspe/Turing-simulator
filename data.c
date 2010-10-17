@@ -34,7 +34,7 @@ extractData(Data * data, FILE * dataFile)
 			if (current_size != 0)
 				nextData(data, &current_size);
 			if (c == '$')
-				while ((c = fgetc(dataFile)) != '\n');
+				while (fgetc(dataFile) != '\n');
 			continue;
 		}
 		if (c == '#')
@@ -46,7 +46,7 @@ extractData(Data * data, FILE * dataFile)
 			c = fgetc(dataFile);
 			if (c == '$')
 			{
-				while ((c = fgetc(dataFile)) != '\n');
+				while (fgetc(dataFile) != '\n');
 				continue;
 			}
 			if (c == '\n' || c == '\t' || c == ' ')
@@ -64,11 +64,8 @@ newData()
 	char dataFilename[MAX_FILENAME_LENGTH];
 
 	printf("Where is the file containing the data for your machine ?\n");
-	if (!scanf("%s", dataFilename) || (dataFile = fopen(dataFilename, "r")) == NULL)
-	{
-		printf("Failed to read file: %s, exiting...\n", dataFilename);
-		exit(EXIT_FAILURE);
-	}
+	while (!scanf("%s", dataFilename) || (dataFile = fopen(dataFilename, "r")) == NULL)
+		printf("Failed to read file: %s, please enter a new one.\n", dataFilename);
 
 	Data * data = _newData();
 	extractData(data, dataFile);
