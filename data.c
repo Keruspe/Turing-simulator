@@ -67,7 +67,7 @@ newData()
 	if (!scanf("%s", dataFilename) || (dataFile = fopen(dataFilename, "r")) == NULL)
 	{
 		printf("Failed to read file: %s, exiting...\n", dataFilename);
-		return NULL;
+		exit(EXIT_FAILURE);
 	}
 
 	Data * data = _newData();

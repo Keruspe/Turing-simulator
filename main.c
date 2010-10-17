@@ -9,14 +9,10 @@ main()
 
 	do /* Main loop */
 	{
-		if((machine = newMachine()) == NULL)
-			return EXIT_FAILURE;
-
+		machine = newMachine();
 		do /* Loop for using the same machine with various data */
 		{
 			reloadData(machine);
-			if(machine->data == NULL)
-				return EXIT_FAILURE;
 			/* TODO */
 
 int tester;

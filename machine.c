@@ -26,7 +26,7 @@ newMachine()
 	if (!scanf("%s", machineFilename) || (machineFile = fopen(machineFilename, "r")) == NULL)
 	{
 		printf("Failed to read file: %s, exiting...\n", machineFilename);
-		return NULL;
+		exit(EXIT_FAILURE);
 	}
 
 	Machine * machine = _newMachine();
