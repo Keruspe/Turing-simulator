@@ -29,13 +29,72 @@ _readStates(Machine * machine, FILE * machineFile)
 void
 _readTransitions(Machine * machine, FILE * machineFile)
 {
-	return;
+	/* Dummy stuff to skip this for now */
+	char c;
+	while ((c = fgetc(machineFile)) != EOF)
+	{
+		switch (c)
+		{
+		case '#':
+			return;
+		case '$':
+			skipLine(machineFile);
+		}
+		machine->transitions_length = 0; /* Silent warning */
+	}
 }
 
 void
 _readStartAndEndPoints(Machine * machine, FILE * machineFile)
 {
-	return;
+	char c;
+	State current = (State) malloc((1 + BASE_LETTER_SIZE) * sizeof(State));
+	int current_size = 0;
+	while ((c = fgetc(machineFile)) != EOF)
+	{
+		switch (c)
+		{
+		case '$':
+			skipLine(machineFile);
+			break;
+		case ' ':
+		case '\t':
+		case '\n':
+			if (current_size == 0)
+				break;
+			current[current_size] = '\0';
+			machine->initial_state = current;
+			goto next;
+		default:
+			current[current_size] = c;
+			if ((++current_size % BASE_LETTER_SIZE) == 0)
+				current = realloc(current, (current_size + BASE_LETTER_SIZE) * sizeof(State));
+		}
+	}
+next:
+	current = (State) malloc((1 + BASE_LETTER_SIZE) * sizeof(State));
+	current_size = 0;
+	while ((c = fgetc(machineFile)) != EOF)
+	{
+		switch (c)
+		{
+		case '$':
+			skipLine(machineFile);
+			break;
+		case ' ':
+		case '\t':
+		case '\n':
+			if (current_size == 0)
+				break;
+			current[current_size] = '\0';
+			machine->final_state = current;
+			return;
+		default:
+			current[current_size] = c;
+			if ((++current_size % BASE_LETTER_SIZE) == 0)
+				current = realloc(current, (current_size + BASE_LETTER_SIZE) * sizeof(State));
+		}
+	}
 }
 
 Machine *
@@ -69,6 +128,8 @@ freeMachine(Machine * machine)
 		free(machine->alphabet[i]);
 	for (i = 0 ; i < machine->states_length ; ++i)
 		free(machine->states[i]);
+	free(machine->initial_state);
+	free(machine->final_state);
 	free(machine->alphabet);
 	free(machine->states);
 	free(machine->transitions);

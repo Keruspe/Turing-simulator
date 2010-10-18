@@ -26,6 +26,11 @@ printf("data: ");
 for (tester = 0 ; tester < machine->data->data_length ; ++tester)
 	printf("%s ", machine->data->data[tester]);
 printf("\n");
+printf("Initial state: %s\n", machine->initial_state);
+printf("Final state: %s\n", machine->final_state);
+printf("Transitions:\n");
+for (tester = 0 ; tester < machine->transitions_length ; ++tester)
+	printf("transition\n");
 
 			printf("Do you want to continue with this machine ? [Y/n]\n");
 		} while (getchar() != 'n');
