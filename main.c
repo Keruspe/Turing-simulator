@@ -1,6 +1,4 @@
 #include "machine.h"
-#include <stdlib.h>
-#include <stdio.h>
 
 int
 main()
@@ -23,7 +21,7 @@ printf("\n");
 			printf("Do you want to continue with this machine ? [Y/n]\n");
 		} while (getchar() != 'n');
 
-		while (getchar() != '\n'); /* Clear buffer */
+		clearBuffer(); /* Clear buffer */
 		freeMachine(machine);
 		machine = NULL;
 		printf("Do you want to continue with another machine ? [Y/n]\n");

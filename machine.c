@@ -1,6 +1,4 @@
 #include "machine.h"
-#include <stdio.h>
-#include <stdlib.h>
 
 Machine *
 _newMachine()
@@ -55,6 +53,6 @@ reloadData(Machine * machine)
 		freeData(machine->data);
 
 	machine->data = newData();
-	while (getchar() != '\n'); /* Clear buffer */
+	clearBuffer(); /* Clear buffer */
 }
 

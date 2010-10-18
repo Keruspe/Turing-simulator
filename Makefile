@@ -1,4 +1,4 @@
-sources = main.c machine.c data.c
+sources = main.c machine.c data.c utils.c
 objects = $(sources:.c=.o)
 bin = turing-simulator
 

@@ -1,7 +1,6 @@
 #ifndef __MACHINE_H__
 #define __MACHINE_H__
 
-#include "types.h"
 #include "data.h"
 
 struct _Transition {
@@ -18,11 +17,11 @@ struct _Machine {
 	Transition * transitions;
 	State initial_state;
 	State final_state;
-	// Store arrays length too
+	/* Store arrays length too */
 	int alphabet_length;
 	int states_length;
 	int transitions_length;
-	// Data management
+	/* Data management */
 	Data * data;
 };
 

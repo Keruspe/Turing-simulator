@@ -1,7 +1,4 @@
 #include "data.h"
-#include <stdbool.h>
-#include <stdio.h>
-#include <stdlib.h>
 
 Data *
 _newData()
@@ -15,7 +12,7 @@ _newData()
 }
 
 void
-nextData(Data * data, Letter * current, int * current_size)
+_nextData(Data * data, Letter * current, int * current_size)
 {
 	if (*current_size == 0)
 		return;
@@ -28,18 +25,19 @@ nextData(Data * data, Letter * current, int * current_size)
 }
 
 bool
-handleData(char c, FILE * dataFile, Data * data, Letter * current, int * current_size)
+_handleData(char c, FILE * dataFile, Data * data, Letter * current, int * current_size)
 {
 	switch (c)
 	{
 	case '$':
-		while (fgetc(dataFile) != '\n');
+		skipLine(dataFile);
 	case '\n':
 	case '\t':
 	case ' ':
-		nextData(data, current, current_size);
+		_nextData(data, current, current_size);
 		return false;
 	case '#':
+		_nextData(data, current, current_size);
 		free(*current);
 		return true;
 	default:
@@ -51,14 +49,14 @@ handleData(char c, FILE * dataFile, Data * data, Letter * current, int * current
 }
 
 void
-extractData(Data * data, FILE * dataFile)
+_extractData(Data * data, FILE * dataFile)
 {
 	char c;
 	Letter current = (Letter) malloc((1 + BASE_LETTER_SIZE) * sizeof(char));
 	int current_size = 0;
 	while ((c = fgetc(dataFile)) != EOF)
 	{
-		if (handleData(c, dataFile, data, &current, &current_size))
+		if (_handleData(c, dataFile, data, &current, &current_size))
 			break;
 	}
 }
@@ -74,7 +72,7 @@ newData()
 		printf("Failed to read file: %s, please enter a new one.\n", dataFilename);
 
 	Data * data = _newData();
-	extractData(data, dataFile);
+	_extractData(data, dataFile);
 
 	fclose(dataFile);
 	return data;

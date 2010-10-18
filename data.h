@@ -1,12 +1,12 @@
 #ifndef __DATA_H__
 #define __DATA_H__
 
-#include "types.h"
+#include "utils.h"
 
 struct _Data {
 	Letter * data;
 	Letter * extra_data; /* Left side datas in the reverse order */
-	// Store arrays length too
+	/* Store arrays length too */
 	int data_length;
 	int extra_data_length;
 };
