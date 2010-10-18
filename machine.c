@@ -75,7 +75,14 @@ _readAlphabet(Machine * machine, FILE * machineFile)
 void
 _readStates(Machine * machine, FILE * machineFile)
 {
-	return;
+	char c;
+	State current = (State) malloc((1 + BASE_LETTER_SIZE) * sizeof(char));
+	int current_size = 0;
+	while ((c = fgetc(machineFile)) != EOF)
+	{
+		if (_handleInput(c, machineFile, &(machine->states), &(machine->states_length), &current, &current_size))
+			return;
+	}
 }
 
 void
@@ -119,6 +126,8 @@ freeMachine(Machine * machine)
 	int i;
 	for (i = 0 ; i < machine->alphabet_length ; ++i)
 		free(machine->alphabet[i]);
+	for (i = 0 ; i < machine->states_length ; ++i)
+		free(machine->states[i]);
 	free(machine->alphabet);
 	free(machine->states);
 	free(machine->transitions);

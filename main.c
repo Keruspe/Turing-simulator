@@ -14,8 +14,17 @@ main()
 
 			/* TODO */
 int tester;
+printf("alphabet: ");
 for (tester = 0 ; tester < machine->alphabet_length ; ++tester)
 	printf("%s ", machine->alphabet[tester]);
+printf("\n");
+printf("states: ");
+for (tester = 0 ; tester < machine->states_length ; ++tester)
+	printf("%s ", machine->states[tester]);
+printf("\n");
+printf("data: ");
+for (tester = 0 ; tester < machine->data->data_length ; ++tester)
+	printf("%s ", machine->data->data[tester]);
 printf("\n");
 
 			printf("Do you want to continue with this machine ? [Y/n]\n");
