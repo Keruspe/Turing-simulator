@@ -18,6 +18,7 @@ void skipLine(FILE *);
 void clearBuffer();
 
 /* parsing stuff */
+char * _readElement(FILE * file);
 void _storeData(char **, int *, char **, int *);
 void _nextData(char ***, int *, char **, int *);
 bool _handleData(char, FILE *, char ***, int *, char **, int *);

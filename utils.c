@@ -12,6 +12,35 @@ clearBuffer()
 	while (getchar() != '\n');
 }
 
+char *
+_readElement(FILE * file)
+{
+	char c;
+	char * element = (char *) malloc((1 + BASE_LETTER_SIZE) * sizeof(char *));
+	int element_size = 0;
+	while ((c = fgetc(file)) != EOF)
+	{
+		switch (c)
+		{
+		case '$':
+			skipLine(file);
+			break;
+		case ' ':
+		case '\t':
+		case '\n':
+			if (element_size == 0)
+				break;
+			element[element_size] = '\0';
+			return element;
+		default:
+			element[element_size] = c;
+			if ((++element_size % BASE_LETTER_SIZE) == 0)
+				element = realloc(element, (element_size + BASE_LETTER_SIZE) * sizeof(char *));
+		}
+	}
+	return NULL;
+}
+
 void
 _storeData(char ** storage, int * storage_length, char ** current, int * current_size)
 {

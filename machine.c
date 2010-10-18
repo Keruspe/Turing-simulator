@@ -44,40 +44,11 @@ _readTransitions(Machine * machine, FILE * machineFile)
 	}
 }
 
-State
-_readState(FILE * machineFile)
-{
-	char c;
-	State state = (State) malloc((1 + BASE_LETTER_SIZE) * sizeof(State));
-	int state_size = 0;
-	while ((c = fgetc(machineFile)) != EOF)
-	{
-		switch (c)
-		{
-		case '$':
-			skipLine(machineFile);
-			break;
-		case ' ':
-		case '\t':
-		case '\n':
-			if (state_size == 0)
-				break;
-			state[state_size] = '\0';
-			return state;
-		default:
-			state[state_size] = c;
-			if ((++state_size % BASE_LETTER_SIZE) == 0)
-				state = realloc(state, (state_size + BASE_LETTER_SIZE) * sizeof(State));
-		}
-	}
-	return NULL;
-}
-
 void
 _readStartAndEndPoints(Machine * machine, FILE * machineFile)
 {
-	machine->initial_state = _readState(machineFile);
-	machine->final_state = _readState(machineFile);
+	machine->initial_state = _readElement(machineFile);
+	machine->final_state = _readElement(machineFile);
 }
 
 Machine *
