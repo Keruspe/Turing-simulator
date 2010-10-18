@@ -13,6 +13,10 @@ main()
 			reloadData(machine);
 
 			/* TODO */
+int tester;
+for (tester = 0 ; tester < machine->alphabet_length ; ++tester)
+	printf("%s ", machine->alphabet[tester]);
+printf("\n");
 
 			printf("Do you want to continue with this machine ? [Y/n]\n");
 		} while (getchar() != 'n');
