@@ -38,6 +38,7 @@ _readTransitions(Machine * machine, FILE * machineFile)
 		machine->transitions[machine->transitions_length].next_state = _readElement(machineFile).element;
 		element = _readElement(machineFile);
 		Move move = element.element[0];
+		bool endOfElements = element.endOfElements;
 		free(element.element);
 		/* TODO: Empty line ? */
 		if (move != 'R' && move != 'L')
@@ -47,12 +48,12 @@ _readTransitions(Machine * machine, FILE * machineFile)
 			freeMachine(machine);
 			exit(EXIT_FAILURE);
 		}
-		machine->transitions[machine->transitions_length].move = move;
-		if ((++(machine->transitions_length) % BASE_TRANSITIONS_LENGTH) == 0)
+		machine->transitions[machine->transitions_length++].move = move;
+		if (endOfElements)
+			break;
+		if ((machine->transitions_length % BASE_TRANSITIONS_LENGTH) == 0)
 			machine->transitions = realloc(machine->transitions, (machine->transitions_length + BASE_TRANSITIONS_LENGTH) * sizeof(Transition));
 	}
-	/* TODO: Handle if this is an element */
-	free(element.element);
 }
 
 void

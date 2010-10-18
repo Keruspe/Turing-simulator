@@ -25,7 +25,7 @@ q5 _ 0 q5 L
 q5 b _ q5 L
 q5 1 1 q5 L
 q5 0 0 q5 L
-q5 a 0 q6 R #
+q5 a 0 q6 R#
 $ The starting state
 q1
 $ The final state
