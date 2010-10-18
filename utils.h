@@ -8,7 +8,7 @@
 
 #define MAX_FILENAME_LENGTH 100
 
-#define BASE_LETTER_SIZE 10
+#define BASE_ELEMENT_SIZE 10
 
 #define BASE_ALPHABET_LENGTH 10
 #define BASE_TRANSITIONS_LENGTH 25
@@ -19,8 +19,8 @@ void clearBuffer();
 
 /* parsing stuff */
 char * _readElement(FILE * file);
-void _storeData(char **, int *, char **, int *);
-void _nextData(char ***, int *, char **, int *);
+void _storeElement(char **, int *, char **, int *);
+void _nextElement(char ***, int *, char **, int *);
 bool _handleData(char, FILE *, char ***, int *, char **, int *);
 void _extractData(FILE *, char ***, int *);
 

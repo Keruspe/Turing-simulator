@@ -16,7 +16,7 @@ char *
 _readElement(FILE * file)
 {
 	char c;
-	char * element = (char *) malloc((1 + BASE_LETTER_SIZE) * sizeof(char *));
+	char * element = (char *) malloc((1 + BASE_ELEMENT_SIZE) * sizeof(char *));
 	int element_size = 0;
 	while ((c = fgetc(file)) != EOF)
 	{
@@ -34,34 +34,34 @@ _readElement(FILE * file)
 			return element;
 		default:
 			element[element_size] = c;
-			if ((++element_size % BASE_LETTER_SIZE) == 0)
-				element = realloc(element, (element_size + BASE_LETTER_SIZE) * sizeof(char *));
+			if ((++element_size % BASE_ELEMENT_SIZE) == 0)
+				element = realloc(element, (element_size + BASE_ELEMENT_SIZE) * sizeof(char *));
 		}
 	}
 	return NULL;
 }
 
 void
-_storeData(char ** storage, int * storage_length, char ** current, int * current_size)
+_storeElement(char ** storage, int * storage_length, char ** element, int * element_size)
 {
-	(*current)[*current_size] = '\0';
-	storage[(*storage_length)++] = *current;
+	(*element)[*element_size] = '\0';
+	storage[(*storage_length)++] = *element;
 }
 
 void
-_nextData(char *** storage, int * storage_length, char ** current, int * current_size)
+_nextElement(char *** storage, int * storage_length, char ** element, int * element_size)
 {
-	if (*current_size == 0)
+	if (*element_size == 0)
 		return;
-	_storeData(*storage, storage_length, current, current_size);
-	*current_size = 0;
-	*current = (char *) malloc(BASE_LETTER_SIZE * sizeof(char));
+	_storeElement(*storage, storage_length, element, element_size);
+	*element_size = 0;
+	*element = (char *) malloc(BASE_ELEMENT_SIZE * sizeof(char));
 	if ((*storage_length % BASE_ALPHABET_LENGTH) == 0)
 		*storage = realloc(*storage, (*storage_length + BASE_ALPHABET_LENGTH) * sizeof(char**));
 }
 
 bool
-_handleData(char c, FILE * file, char *** storage, int * storage_length, char ** current, int * current_size)
+_handleData(char c, FILE * file, char *** storage, int * storage_length, char ** element, int * element_size)
 {
 	switch (c)
 	{
@@ -70,18 +70,18 @@ _handleData(char c, FILE * file, char *** storage, int * storage_length, char **
 	case '\n':
 	case '\t':
 	case ' ':
-		_nextData(storage, storage_length, current, current_size);
+		_nextElement(storage, storage_length, element, element_size);
 		return false;
 	case '#':
-		if (*current_size != 0)
-			_storeData(*storage, storage_length, current, current_size);
+		if (*element_size != 0)
+			_storeElement(*storage, storage_length, element, element_size);
 		else
-			free(*current);
+			free(*element);
 		return true;
 	default:
-		(*current)[*current_size] = c;
-		if ((++(*current_size) % BASE_LETTER_SIZE) == 0)
-			*current = realloc(*current, (*current_size + BASE_LETTER_SIZE) * sizeof(char));
+		(*element)[*element_size] = c;
+		if ((++(*element_size) % BASE_ELEMENT_SIZE) == 0)
+			*element = realloc(*element, (*element_size + BASE_ELEMENT_SIZE) * sizeof(char));
 		return false;
 	}
 }
@@ -90,11 +90,11 @@ void
 _extractData(FILE * file, char *** storage, int * storage_length)
 {
 	char c;
-	Letter current = (Letter) malloc((1 + BASE_LETTER_SIZE) * sizeof(char));
-	int current_size = 0;
+	Letter element = (Letter) malloc((1 + BASE_ELEMENT_SIZE) * sizeof(char));
+	int element_size = 0;
 	while ((c = fgetc(file)) != EOF)
 	{
-		if (_handleData(c, file, storage, storage_length, &current, &current_size))
+		if (_handleData(c, file, storage, storage_length, &element, &element_size))
 			return;
 	}
 }
