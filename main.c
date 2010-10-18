@@ -30,7 +30,7 @@ printf("Initial state: %s\n", machine->initial_state);
 printf("Final state: %s\n", machine->final_state);
 printf("Transitions:\n");
 for (tester = 0 ; tester < machine->transitions_length ; ++tester)
-	printf("transition\n");
+	printf("%s %s %s %s %c\n", machine->transitions[tester].start_state, machine->transitions[tester].cond, machine->transitions[tester].subst, machine->transitions[tester].next_state, machine->transitions[tester].move);
 
 			printf("Do you want to continue with this machine ? [Y/n]\n");
 		} while (getchar() != 'n');

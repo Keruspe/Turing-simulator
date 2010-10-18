@@ -29,19 +29,30 @@ _readStates(Machine * machine, FILE * machineFile)
 void
 _readTransitions(Machine * machine, FILE * machineFile)
 {
-	/* Dummy stuff to skip this for now */
-	char c;
-	while ((c = fgetc(machineFile)) != EOF)
+	Element element;
+	while (! ((element = _readElement(machineFile)).endOfElements))
 	{
-		switch (c)
+		machine->transitions[machine->transitions_length].start_state = element.element;
+		machine->transitions[machine->transitions_length].cond = _readElement(machineFile).element;
+		machine->transitions[machine->transitions_length].subst = _readElement(machineFile).element;
+		machine->transitions[machine->transitions_length].next_state = _readElement(machineFile).element;
+		element = _readElement(machineFile);
+		Move move = element.element[0];
+		free(element.element);
+		/* TODO: Empty line ? */
+		if (move != 'R' && move != 'L')
 		{
-		case '#':
-			return;
-		case '$':
-			skipLine(machineFile);
+			printf("Bad move, only 'R' or 'L' are allowed, exiting...\n");
+			++machine->transitions_length;
+			freeMachine(machine);
+			exit(EXIT_FAILURE);
 		}
-		machine->transitions_length = 0; /* Silent warning */
+		machine->transitions[machine->transitions_length].move = move;
+		if ((++(machine->transitions_length) % BASE_TRANSITIONS_LENGTH) == 0)
+			machine->transitions = realloc(machine->transitions, (machine->transitions_length + BASE_TRANSITIONS_LENGTH) * sizeof(Transition));
 	}
+	/* TODO: Handle if this is an element */
+	free(element.element);
 }
 
 void
@@ -75,6 +86,15 @@ newMachine()
 }
 
 void
+freeTransition(Transition transition)
+{
+	free(transition.start_state);
+	free(transition.cond);
+	free(transition.subst);
+	free(transition.next_state);
+}
+
+void
 freeMachine(Machine * machine)
 {
 	int i;
@@ -82,6 +102,8 @@ freeMachine(Machine * machine)
 		free(machine->alphabet[i]);
 	for (i = 0 ; i < machine->states_length ; ++i)
 		free(machine->states[i]);
+	for (i = 0 ; i < machine->transitions_length ; ++i)
+		freeTransition(machine->transitions[i]);
 	free(machine->initial_state);
 	free(machine->final_state);
 	free(machine->alphabet);
