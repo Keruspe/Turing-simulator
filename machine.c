@@ -15,74 +15,15 @@ _newMachine()
 }
 
 void
-_storeInput(char ** storage, int * storage_length, char ** current, int * current_size)
-{
-	(*current)[*current_size] = '\0';
-	storage[(*storage_length)++] = *current;
-}
-
-void
-_nextInput(char *** storage, int * storage_length, char ** current, int * current_size)
-{
-	if (*current_size == 0)
-		return;
-	_storeInput(*storage, storage_length, current, current_size);
-	*current_size = 0;
-	*current = (char *) malloc(BASE_LETTER_SIZE * sizeof(char));
-	if ((*storage_length % BASE_ALPHABET_LENGTH) == 0)
-		*storage = realloc(*storage, (*storage_length + BASE_ALPHABET_LENGTH) * sizeof(char**));
-}
-
-bool
-_handleInput(char c, FILE * machineFile, char *** storage, int * storage_length, char ** current, int * current_size)
-{
-	switch (c)
-	{
-	case '$':
-		skipLine(machineFile);
-	case '\n':
-	case '\t':
-	case ' ':
-		_nextInput(storage, storage_length, current, current_size);
-		return false;
-	case '#':
-		if (*current_size != 0)
-			_storeInput(*storage, storage_length, current, current_size);
-		else
-			free(*current);
-		return true;
-	default:
-		(*current)[*current_size] = c;
-		if ((++(*current_size) % BASE_LETTER_SIZE) == 0)
-			*current = realloc(*current, (*current_size + BASE_LETTER_SIZE) * sizeof(char));
-		return false;
-	}
-}
-
-void
 _readAlphabet(Machine * machine, FILE * machineFile)
 {
-	char c;
-	Letter current = (Letter) malloc((1 + BASE_LETTER_SIZE) * sizeof(char));
-	int current_size = 0;
-	while ((c = fgetc(machineFile)) != EOF)
-	{
-		if (_handleInput(c, machineFile, &(machine->alphabet), &(machine->alphabet_length), &current, &current_size))
-			return;
-	}
+	_extractData(&(machine->alphabet), &(machine->alphabet_length), machineFile);
 }
 
 void
 _readStates(Machine * machine, FILE * machineFile)
 {
-	char c;
-	State current = (State) malloc((1 + BASE_LETTER_SIZE) * sizeof(char));
-	int current_size = 0;
-	while ((c = fgetc(machineFile)) != EOF)
-	{
-		if (_handleInput(c, machineFile, &(machine->states), &(machine->states_length), &current, &current_size))
-			return;
-	}
+	_extractData(&(machine->states), &(machine->states_length), machineFile);
 }
 
 void
