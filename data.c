@@ -6,9 +6,9 @@ Data *
 _newData()
 {
 	Data * data = (Data *) malloc(sizeof(Data));
-	data->data = (Letter *) malloc(DATA_BASE_LENGTH * sizeof(Letter));
+	data->data = (Letter *) malloc(BASE_DATA_LENGTH * sizeof(Letter));
 	data->data_length = 0;
-	data->extra_data = (Letter *) malloc(DATA_BASE_LENGTH * sizeof(Letter));
+	data->extra_data = (Letter *) malloc(BASE_DATA_LENGTH * sizeof(Letter));
 	data->extra_data_length = 0;
 	return data;
 }
@@ -22,8 +22,8 @@ nextData(Data * data, Letter * current, int * current_size)
 	data->data[data->data_length] = *current;
 	*current_size = 0;
 	*current = (Letter) malloc(BASE_LETTER_SIZE * sizeof(char));
-	if ((++(data->data_length) % DATA_BASE_LENGTH) == 0)
-		data->data = realloc(data->data, (data->data_length + DATA_BASE_LENGTH) * sizeof(Letter));
+	if ((++(data->data_length) % BASE_DATA_LENGTH) == 0)
+		data->data = realloc(data->data, (data->data_length + BASE_DATA_LENGTH) * sizeof(Letter));
 }
 
 void
