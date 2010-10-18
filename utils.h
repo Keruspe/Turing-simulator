@@ -24,9 +24,6 @@ struct _Element
 	bool endOfElements;
 };
 Element _readElement(FILE * file);
-void _storeElement(char **, int *, char **, int *);
-void _nextElement(char ***, int *, char **, int *);
-bool _handleData(char, FILE *, char ***, int *, char **, int *);
 void _extractData(FILE *, char ***, int *);
 
 #endif /* __UTILS_H__ */
