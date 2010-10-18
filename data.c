@@ -14,10 +14,14 @@ _newData()
 }
 
 void
-nextData(Data * data, int * current_size)
+nextData(Data * data, Letter * current, int * current_size)
 {
-	data->data[data->data_length][*current_size] = '\0';
+	if (*current_size == 0)
+		return;
+	(*current)[*current_size] = '\0';
+	data->data[data->data_length] = *current;
 	*current_size = 0;
+	*current = (Letter) malloc(BASE_LETTER_SIZE * sizeof(char));
 	if ((++(data->data_length) % DATA_BASE_LENGTH) == 0)
 		data->data = realloc(data->data, (data->data_length + DATA_BASE_LENGTH) * sizeof(Letter));
 }
@@ -26,34 +30,30 @@ void
 extractData(Data * data, FILE * dataFile)
 {
 	char c;
+	Letter current = (Letter) malloc((1 + BASE_LETTER_SIZE) * sizeof(char));
 	int current_size = 0;
 	while ((c = fgetc(dataFile)) != EOF)
 	{
-		if (c == '$' || c == '\n' || c == '\t' || c == ' ')
+		if (c == '\n' || c == '\t' || c == ' ')
 		{
-			if (current_size != 0)
-				nextData(data, &current_size);
-			if (c == '$')
-				while (fgetc(dataFile) != '\n');
+			nextData(data, &current, &current_size);
+			continue;
+		}
+		if (c == '$')
+		{
+			nextData(data, &current, &current_size);
+			while (fgetc(dataFile) != '\n');
 			continue;
 		}
 		if (c == '#')
-			break;
-		data->data[data->data_length][current_size] = c;
-		if (++current_size == MAX_LETTER_SIZE)
 		{
-			nextData(data, &current_size);
-			c = fgetc(dataFile);
-			if (c == '$')
-			{
-				while (fgetc(dataFile) != '\n');
-				continue;
-			}
-			if (c == '\n' || c == '\t' || c == ' ')
-				continue;
-			printf("Your alphabet has a too long \"Letter\", max size allowed is: %d\n", MAX_LETTER_SIZE);
-			exit(EXIT_FAILURE);
+			nextData(data, &current, &current_size);
+			free(current);
+			break;
 		}
+		current[current_size] = c;
+		if ((++current_size % BASE_LETTER_SIZE) == 0)
+			current = realloc(current, (current_size + BASE_LETTER_SIZE) * sizeof(char));
 	}
 }
 
@@ -77,6 +77,9 @@ newData()
 void
 freeData(Data * data)
 {
+	int i;
+	for (i = 0 ; i < data->data_length ; ++i)
+		free(data->data[i]);
 	free(data->data);
 	free(data->extra_data);
 	free(data);

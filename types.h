@@ -3,8 +3,8 @@
 
 #define MAX_FILENAME_LENGTH 100
 
-#define MAX_STATE_NAME_SIZE 10
-#define MAX_LETTER_SIZE 10
+#define BASE_STATE_NAME_SIZE 10
+#define BASE_LETTER_SIZE 10
 
 #define ALPHABET_BASE_LENGTH 10
 #define STATES_BASE_LENGTH 10
@@ -12,8 +12,8 @@
 #define DATA_BASE_LENGTH 50
 
 typedef char Move;
-typedef char State[MAX_STATE_NAME_SIZE+1];
-typedef char Letter[MAX_LETTER_SIZE+1];
+typedef char* State;
+typedef char* Letter;
 
 typedef struct _Transition Transition;
 typedef struct _Machine Machine;
