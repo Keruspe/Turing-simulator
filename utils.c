@@ -12,11 +12,13 @@ clearBuffer()
 	while (getchar() != '\n');
 }
 
-char *
+Element
 _readElement(FILE * file)
 {
 	char c;
-	char * element = (char *) malloc((1 + BASE_ELEMENT_SIZE) * sizeof(char *));
+	Element element;
+	element.endOfElements = false;
+	element.element = (char *) malloc((1 + BASE_ELEMENT_SIZE) * sizeof(char *));
 	int element_size = 0;
 	while ((c = fgetc(file)) != EOF)
 	{
@@ -30,15 +32,20 @@ _readElement(FILE * file)
 		case '\n':
 			if (element_size == 0)
 				break;
-			element[element_size] = '\0';
+			element.element[element_size] = '\0';
+			return element;
+		case '#':
+			element.endOfElements = true;
+			element.element[element_size] = '\0';
 			return element;
 		default:
-			element[element_size] = c;
+			element.element[element_size] = c;
 			if ((++element_size % BASE_ELEMENT_SIZE) == 0)
-				element = realloc(element, (element_size + BASE_ELEMENT_SIZE) * sizeof(char *));
+				element.element = realloc(element.element, (element_size + BASE_ELEMENT_SIZE) * sizeof(char *));
 		}
 	}
-	return NULL;
+	element.element[0] = '\0';
+	return element;
 }
 
 void

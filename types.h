@@ -5,6 +5,8 @@ typedef char Move;
 typedef char* State;
 typedef char* Letter;
 
+typedef struct _Element Element;
+
 typedef struct _Transition Transition;
 typedef struct _Machine Machine;
 

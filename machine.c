@@ -47,8 +47,8 @@ _readTransitions(Machine * machine, FILE * machineFile)
 void
 _readStartAndEndPoints(Machine * machine, FILE * machineFile)
 {
-	machine->initial_state = _readElement(machineFile);
-	machine->final_state = _readElement(machineFile);
+	machine->initial_state = _readElement(machineFile).element;
+	machine->final_state = _readElement(machineFile).element;
 }
 
 Machine *
