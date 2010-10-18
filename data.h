@@ -5,7 +5,7 @@
 
 struct _Data {
 	Letter * data;
-	Letter * extra_data; /* Left side datas in the reverse order */
+	Letter * extra_data; /* Left side data in the reverse order */
 	/* Store arrays length too */
 	int data_length;
 	int extra_data_length;

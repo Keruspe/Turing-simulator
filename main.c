@@ -11,12 +11,8 @@ main()
 		do /* Loop for using the same machine with various data */
 		{
 			reloadData(machine);
-			/* TODO */
 
-int tester;
-for (tester = 0 ; tester < machine->data->data_length ; ++tester)
-	printf("%s ", machine->data->data[tester]);
-printf("\n");
+			/* TODO */
 
 			printf("Do you want to continue with this machine ? [Y/n]\n");
 		} while (getchar() != 'n');
