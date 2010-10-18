@@ -6,7 +6,7 @@ _newMachine()
 	Machine * machine = (Machine *) malloc(sizeof(Machine));
 	machine->alphabet = (Letter *) malloc(BASE_ALPHABET_LENGTH * sizeof(Letter));
 	machine->alphabet_length = 0;
-	machine->states = (State *) malloc(BASE_STATES_LENGTH * sizeof(State));
+	machine->states = (State *) malloc(BASE_ALPHABET_LENGTH * sizeof(State));
 	machine->states_length = 0;
 	machine->transitions = (Transition *) malloc(BASE_TRANSITIONS_LENGTH * sizeof(Transition));
 	machine->transitions_length = 0;
@@ -15,26 +15,26 @@ _newMachine()
 }
 
 void
-_storeLetter(Machine * machine, Letter * current, int * current_size)
+_storeInput(char ** storage, int * storage_length, char ** current, int * current_size)
 {
 	(*current)[*current_size] = '\0';
-	machine->alphabet[machine->alphabet_length++] = *current;
+	storage[(*storage_length)++] = *current;
 }
 
 void
-_nextLetter(Machine * machine, Letter * current, int * current_size)
+_nextInput(char *** storage, int * storage_length, char ** current, int * current_size)
 {
 	if (*current_size == 0)
 		return;
-	_storeLetter(machine, current, current_size);
+	_storeInput(*storage, storage_length, current, current_size);
 	*current_size = 0;
-	*current = (Letter) malloc(BASE_LETTER_SIZE * sizeof(char));
-	if ((machine->alphabet_length % BASE_ALPHABET_LENGTH) == 0)
-		machine->alphabet = realloc(machine->alphabet, (machine->alphabet_length + BASE_ALPHABET_LENGTH) * sizeof(Letter));
+	*current = (char *) malloc(BASE_LETTER_SIZE * sizeof(char));
+	if ((*storage_length % BASE_ALPHABET_LENGTH) == 0)
+		*storage = realloc(*storage, (*storage_length + BASE_ALPHABET_LENGTH) * sizeof(char**));
 }
 
 bool
-_handleLetter(char c, FILE * machineFile, Machine * machine, Letter * current, int * current_size)
+_handleInput(char c, FILE * machineFile, char *** storage, int * storage_length, char ** current, int * current_size)
 {
 	switch (c)
 	{
@@ -43,11 +43,11 @@ _handleLetter(char c, FILE * machineFile, Machine * machine, Letter * current, i
 	case '\n':
 	case '\t':
 	case ' ':
-		_nextLetter(machine, current, current_size);
+		_nextInput(storage, storage_length, current, current_size);
 		return false;
 	case '#':
 		if (*current_size != 0)
-			_storeLetter(machine, current, current_size);
+			_storeInput(*storage, storage_length, current, current_size);
 		else
 			free(*current);
 		return true;
@@ -67,7 +67,7 @@ _readAlphabet(Machine * machine, FILE * machineFile)
 	int current_size = 0;
 	while ((c = fgetc(machineFile)) != EOF)
 	{
-		if (_handleLetter(c, machineFile, machine, &current, &current_size))
+		if (_handleInput(c, machineFile, &(machine->alphabet), &(machine->alphabet_length), &current, &current_size))
 			return;
 	}
 }
