@@ -43,7 +43,7 @@ _handleData(char c, FILE * dataFile, Data * data, Letter * current, int * curren
 		_nextData(data, current, current_size);
 		return false;
 	case '#':
-		if (current_size != 0)
+		if (*current_size != 0)
 			_storeData(data, current, current_size);
 		else
 			free(*current);
