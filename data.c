@@ -1,4 +1,5 @@
 #include "data.h"
+#include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -26,6 +27,29 @@ nextData(Data * data, Letter * current, int * current_size)
 		data->data = realloc(data->data, (data->data_length + BASE_DATA_LENGTH) * sizeof(Letter));
 }
 
+bool
+handleData(char c, FILE * dataFile, Data * data, Letter * current, int * current_size)
+{
+	switch (c)
+	{
+	case '$':
+		while (fgetc(dataFile) != '\n');
+	case '\n':
+	case '\t':
+	case ' ':
+		nextData(data, current, current_size);
+		return false;
+	case '#':
+		free(*current);
+		return true;
+	default:
+		(*current)[*current_size] = c;
+		if ((++(*current_size) % BASE_LETTER_SIZE) == 0)
+			*current = realloc(*current, (*current_size + BASE_LETTER_SIZE) * sizeof(char));
+		return false;
+	}
+}
+
 void
 extractData(Data * data, FILE * dataFile)
 {
@@ -34,26 +58,8 @@ extractData(Data * data, FILE * dataFile)
 	int current_size = 0;
 	while ((c = fgetc(dataFile)) != EOF)
 	{
-		if (c == '\n' || c == '\t' || c == ' ')
-		{
-			nextData(data, &current, &current_size);
-			continue;
-		}
-		if (c == '$')
-		{
-			nextData(data, &current, &current_size);
-			while (fgetc(dataFile) != '\n');
-			continue;
-		}
-		if (c == '#')
-		{
-			nextData(data, &current, &current_size);
-			free(current);
+		if (handleData(c, dataFile, data, &current, &current_size))
 			break;
-		}
-		current[current_size] = c;
-		if ((++current_size % BASE_LETTER_SIZE) == 0)
-			current = realloc(current, (current_size + BASE_LETTER_SIZE) * sizeof(char));
 	}
 }
 
