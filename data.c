@@ -12,15 +12,21 @@ _newData()
 }
 
 void
+_storeData(Data * data, Letter * current, int * current_size)
+{
+	(*current)[*current_size] = '\0';
+	data->data[data->data_length++] = *current;
+}
+
+void
 _nextData(Data * data, Letter * current, int * current_size)
 {
 	if (*current_size == 0)
 		return;
-	(*current)[*current_size] = '\0';
-	data->data[data->data_length] = *current;
+	_storeData(data, current, current_size);
 	*current_size = 0;
 	*current = (Letter) malloc(BASE_LETTER_SIZE * sizeof(char));
-	if ((++(data->data_length) % BASE_DATA_LENGTH) == 0)
+	if ((data->data_length % BASE_DATA_LENGTH) == 0)
 		data->data = realloc(data->data, (data->data_length + BASE_DATA_LENGTH) * sizeof(Letter));
 }
 
@@ -37,8 +43,10 @@ _handleData(char c, FILE * dataFile, Data * data, Letter * current, int * curren
 		_nextData(data, current, current_size);
 		return false;
 	case '#':
-		_nextData(data, current, current_size);
-		free(*current);
+		if (current_size != 0)
+			_storeData(data, current, current_size);
+		else
+			free(*current);
 		return true;
 	default:
 		(*current)[*current_size] = c;
