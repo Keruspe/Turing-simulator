@@ -22,7 +22,7 @@ newData()
 		printf("Failed to read file: %s, please enter a new one.\n", dataFilename);
 
 	Data * data = _newData();
-	_extractData(&(data->data), &(data->data_length), dataFile);
+	_extractData(dataFile, &(data->data), &(data->data_length));
 
 	fclose(dataFile);
 	return data;

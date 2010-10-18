@@ -21,6 +21,6 @@ void clearBuffer();
 void _storeData(char **, int *, char **, int *);
 void _nextData(char ***, int *, char **, int *);
 bool _handleData(char, FILE *, char ***, int *, char **, int *);
-void _extractData(char ***, int *, FILE *);
+void _extractData(FILE *, char ***, int *);
 
 #endif /* __UTILS_H__ */

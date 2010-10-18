@@ -17,13 +17,13 @@ _newMachine()
 void
 _readAlphabet(Machine * machine, FILE * machineFile)
 {
-	_extractData(&(machine->alphabet), &(machine->alphabet_length), machineFile);
+	_extractData(machineFile, &(machine->alphabet), &(machine->alphabet_length));
 }
 
 void
 _readStates(Machine * machine, FILE * machineFile)
 {
-	_extractData(&(machine->states), &(machine->states_length), machineFile);
+	_extractData(machineFile, &(machine->states), &(machine->states_length));
 }
 
 void

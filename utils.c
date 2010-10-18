@@ -58,14 +58,14 @@ _handleData(char c, FILE * file, char *** storage, int * storage_length, char **
 }
 
 void
-_extractData(char *** storage, int * storage_length, FILE * dataFile)
+_extractData(FILE * file, char *** storage, int * storage_length)
 {
 	char c;
 	Letter current = (Letter) malloc((1 + BASE_LETTER_SIZE) * sizeof(char));
 	int current_size = 0;
-	while ((c = fgetc(dataFile)) != EOF)
+	while ((c = fgetc(file)) != EOF)
 	{
-		if (_handleData(c, dataFile, storage, storage_length, &current, &current_size))
+		if (_handleData(c, file, storage, storage_length, &current, &current_size))
 			return;
 	}
 }
