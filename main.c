@@ -7,12 +7,15 @@ main()
 
 	do /* Main loop */
 	{
+		/* Get a new Machine */
 		machine = newMachine();
 		do /* Loop for using the same machine with various data */
 		{
+			/* Get new Data for our Machine */
 			reloadData(machine);
 
 			/* TODO */
+/* Only debug output for developping */
 int tester;
 printf("alphabet: ");
 for (tester = 0 ; tester < machine->alphabet_length ; ++tester)
@@ -36,7 +39,7 @@ for (tester = 0 ; tester < machine->transitions_length ; ++tester)
 		} while (getchar() != 'n');
 
 		clearBuffer(); /* Clear buffer */
-		freeMachine(machine);
+		freeMachine(machine); /* No memory leak */
 		machine = NULL;
 		printf("Do you want to continue with another machine ? [Y/n]\n");
 	} while (getchar() != 'n'); /* Only exit on user demand */
