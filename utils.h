@@ -37,6 +37,8 @@ Element _readElement(FILE * file);
 /*
  * Extract data section (until we meet '#') and put all elements into the
  * storage area we pass a pointer to, keeping its length up to date.
+ * The storage is a pointer to an Array of Letter/State.
+ * We need this and not only the Array because we want to be able to resize it.
  */
 void _extractData(FILE * file, char *** storage, int * storage_length);
 
