@@ -7,7 +7,7 @@ a b _ #
 $ The sharp ends the alphabet section
 $ Then the different states
 q1 q2 q3 q4 q5 q6 #
-$ Then the transitions, 1 per line
+$ Then the transitions, 1 per line for more visibility, but you can put them as you want, keeping the right order for each one (start state, condition, substitution value, next state, move direction(L or R)).
 q1 1 a q2 R
 q1 0 a q3 R
 q2 0 0 q2 R
