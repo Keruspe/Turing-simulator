@@ -1,3 +1,9 @@
+/* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 4; tab-width: 4 -*- */
+/*
+ * Turing-simulator
+ * Copyright (C) Marc-Antoine Perennou 2010 <Marc-Antoine@Perennou.com>
+ */
+
 #ifndef __UTILS_H__
 #define __UTILS_H__
 
