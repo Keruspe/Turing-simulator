@@ -55,7 +55,7 @@ _readTransitions(Machine * machine, FILE * machineFile)
 		if (element.endOfElements) /* If we reached a '#', just exit this function */
 			return;
 		if ((machine->transitions_length % BASE_TRANSITIONS_LENGTH) == 0) /* When the Array is full, increase its size */
-			machine->transitions = realloc(machine->transitions, (machine->transitions_length + BASE_TRANSITIONS_LENGTH) * sizeof(Transition));
+			machine->transitions = (Transition *) realloc(machine->transitions, (machine->transitions_length + BASE_TRANSITIONS_LENGTH) * sizeof(Transition));
 	}
 }
 

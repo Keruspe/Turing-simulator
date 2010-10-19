@@ -22,7 +22,7 @@ _readElement(FILE * file)
 	/* Assume we've not reach the end yet */
 	element.endOfElements = false;
 	/* Allocate memory */
-	element.element = (char *) malloc((1 + BASE_ELEMENT_SIZE) * sizeof(char *));
+	element.element = (char *) malloc((1 + BASE_ELEMENT_SIZE) * sizeof(char));
 	int element_size = 0; /* Size of the element */
 	while ((c = fgetc(file)) != EOF) /* While we're not at the end of file */
 	{
@@ -48,7 +48,7 @@ _readElement(FILE * file)
 			/* We read a basic character, nothing special to do here, juste append it to the end of the element */
 			element.element[element_size] = c;
 			if ((++element_size % BASE_ELEMENT_SIZE) == 0) /* Increase the element size, if it's full, increase its size */
-				element.element = realloc(element.element, (element_size + BASE_ELEMENT_SIZE) * sizeof(char *));
+				element.element = (char *) realloc(element.element, (element_size + BASE_ELEMENT_SIZE) * sizeof(char));
 		}
 	}
 	/* We only get here if there was no '#', fallback considerating that the end of file is a '#' */
@@ -65,7 +65,7 @@ _extractData(FILE * file, char *** storage, int * storage_length)
 	{
 		(*storage)[*storage_length] = element.element; /* Store the element in the storage area */
 		 if ((++(*storage_length) % BASE_ALPHABET_LENGTH) == 0) /* Increase the number of elements in the storage area, and increase its size if it's full */
-			*storage = realloc(*storage, (*storage_length + BASE_ALPHABET_LENGTH) * sizeof(char**));
+			*storage = (char **) realloc(*storage, (*storage_length + BASE_ALPHABET_LENGTH) * sizeof(char *));
 	}
 	if (element.element[0] != '\0') /* If a last element was stuck to the '#' */
 		(*storage)[(*storage_length)++] = element.element; /* Store it and increase number of elements into the storage area */
