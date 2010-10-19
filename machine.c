@@ -40,12 +40,17 @@ _readTransitions(Machine * machine, FILE * machineFile)
 {
 	/* Read the available transitions */
 	Element element; /* Will be use to store read data */
-	while (! ((element = _readElement(machineFile)).endOfElements)) /* Keep reading while there are things to read (we did not meet '#') */
+	/* Keep reading while there are things to read (we did not meet '#') */
+	while (! ((element = _readElement(machineFile)).endOfElements))
 	{
-		machine->transitions[machine->transitions_length].start_state = element.element; /* The first element we just read is the start state */
-		machine->transitions[machine->transitions_length].cond = _readElement(machineFile).element; /* Then read the conditionnal value */
-		machine->transitions[machine->transitions_length].subst = _readElement(machineFile).element; /* Then the substitution value */
-		machine->transitions[machine->transitions_length].next_state = _readElement(machineFile).element; /* Continue with the next state */
+		/* The first element we just read is the start state */
+		machine->transitions[machine->transitions_length].start_state = element.element;
+		/* Then read the conditionnal value */
+		machine->transitions[machine->transitions_length].cond = _readElement(machineFile).element;
+		/* Then the substitution value */
+		machine->transitions[machine->transitions_length].subst = _readElement(machineFile).element;
+		/* Continue with the next state */
+		machine->transitions[machine->transitions_length].next_state = _readElement(machineFile).element;
 		element = _readElement(machineFile); /* Now read what will be the direction of the next move */
 		Move move = element.element[0]; /* We only want the first char of it */
 		free(element.element); /* So free this array not to have any leak */
@@ -57,10 +62,12 @@ _readTransitions(Machine * machine, FILE * machineFile)
 			freeMachine(machine);
 			exit(EXIT_FAILURE);
 		}
-		machine->transitions[machine->transitions_length++].move = move; /* Store the move and increase the number of transitions available */
+		/* Store the move and increase the number of transitions available */
+		machine->transitions[machine->transitions_length++].move = move;
 		if (element.endOfElements) /* If we reached a '#', just exit this function */
 			return;
-		if ((machine->transitions_length % BASE_TRANSITIONS_LENGTH) == 0) /* When the Array is full, increase its size */
+		/* When the Array is full, increase its size */
+		if ((machine->transitions_length % BASE_TRANSITIONS_LENGTH) == 0)
 			machine->transitions = (Transition *) realloc(machine->transitions, (machine->transitions_length + BASE_TRANSITIONS_LENGTH) * sizeof(Transition));
 	}
 }

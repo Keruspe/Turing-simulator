@@ -41,8 +41,8 @@ struct _Element
 Element _readElement(FILE * file);
 
 /*
- * Extract data section (until we meet '#') and put all elements into the
- * storage area we pass a pointer to, keeping its length up to date.
+ * Extract data section (until we meet '#') and put all elements into the storage area we pass a pointer to,
+ * keeping by the way its length up to date.
  * The storage is a pointer to an Array of Letter/State.
  * We need this and not only the Array because we want to be able to resize it.
  */

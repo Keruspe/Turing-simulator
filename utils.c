@@ -53,7 +53,8 @@ _readElement(FILE * file)
 		default:
 			/* We read a basic character, nothing special to do here, juste append it to the end of the element */
 			element.element[element_size] = c;
-			if ((++element_size % BASE_ELEMENT_SIZE) == 0) /* Increase the element size, if it's full, increase its size */
+			/* Increase the element size, if it's full, increase its size */
+			if ((++element_size % BASE_ELEMENT_SIZE) == 0)
 				element.element = (char *) realloc(element.element, (element_size + BASE_ELEMENT_SIZE) * sizeof(char));
 		}
 	}
@@ -67,14 +68,17 @@ void
 _extractData(FILE * file, char *** storage, int * storage_length)
 {
 	Element element; /* Will store each element we read */
-	while (! ((element = _readElement(file)).endOfElements)) /* While there are still data to be read, read them (until next '#') */
+	/* While there are still data to be read, read them (until next '#') */
+	while (! ((element = _readElement(file)).endOfElements))
 	{
 		(*storage)[*storage_length] = element.element; /* Store the element in the storage area */
-		 if ((++(*storage_length) % BASE_ALPHABET_LENGTH) == 0) /* Increase the number of elements in the storage area, and increase its size if it's full */
+		/* Increase the number of elements in the storage area, and increase its size if it's full */
+		if ((++(*storage_length) % BASE_ALPHABET_LENGTH) == 0)
 			*storage = (char **) realloc(*storage, (*storage_length + BASE_ALPHABET_LENGTH) * sizeof(char *));
 	}
 	if (element.element[0] != '\0') /* If a last element was stuck to the '#' */
-		(*storage)[(*storage_length)++] = element.element; /* Store it and increase number of elements into the storage area */
+		/* Store it and increase number of elements into the storage area */
+		(*storage)[(*storage_length)++] = element.element;
 	else
 		free(element.element); /* Else free the dummy element to avoid memory leaks */
 }
