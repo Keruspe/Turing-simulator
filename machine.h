@@ -29,7 +29,7 @@ struct _Machine {
 	Letter * alphabet;
 	/* Array containing the states in which the Machine can be */
 	State * states;
-	/* Array containing the transitions the Machine can use */
+	/* Array containing pointers to the transitions the Machine can use */
 	Transition * transitions;
 	/* The State in which the Machine is at the beginning */
 	State initial_state;
@@ -38,7 +38,9 @@ struct _Machine {
 	/* Data used by the Machine */
 	Data * data;
 
-	/* Store arrays length too */
+	/*
+	 * Store arrays length too
+	 */
 
 	/* Number of Letter in the alphabet */
 	int alphabet_length;

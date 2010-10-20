@@ -54,7 +54,7 @@ void
 BadTransitionException(Machine * machine, FILE * file)
 {
 	++machine->transitions_length;
-	MalformedFileException(machine, file, "a malformed transition has been found.\nExpected : State Letter Letter State Move");
+	MalformedFileException(machine, file, "a malformed transition has been found.\nExpected: State Letter Letter State Move");
 }
 
 Element
@@ -62,9 +62,8 @@ _readElement(FILE * file)
 {
 	char c; /* Will store each character we read */
 	Element element; /* The element we're reading */
-	/* Assume we've not reach the end yet */
+	/* Initialize the element */
 	element.endOfElements = false;
-	/* Allocate memory */
 	element.element = (char *) malloc((1 + BASE_ELEMENT_SIZE) * sizeof(char));
 	int element_size = 0; /* Size of the element */
 	while ((c = fgetc(file)) != EOF) /* While we're not at the end of file */
@@ -92,7 +91,7 @@ _readElement(FILE * file)
 			element.element[element_size] = c;
 			/* Increase the element size, if it's full, increase its size */
 			if ((++element_size % BASE_ELEMENT_SIZE) == 0)
-				element.element = (char *) realloc(element.element, (element_size + BASE_ELEMENT_SIZE) * sizeof(char));
+				element.element = (char *) realloc(element.element, (element_size + 1 + BASE_ELEMENT_SIZE) * sizeof(char));
 		}
 	}
 	/* We only get here if there was no '#', fallback considerating that the end of file is a '#' */

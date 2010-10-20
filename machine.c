@@ -24,17 +24,6 @@ _newMachine()
 }
 
 void
-_initTransition(Transition * transition)
-{
-	/* Basic initialisation of a Transition */
-	transition->start_state = NULL;
-	transition->cond = NULL;
-	transition->subst = NULL;
-	transition->next_state = NULL;
-	transition->move = '\0';
-}
-
-void
 _readAlphabet(Machine * machine, FILE * machineFile)
 {
 	/* Read the alphabet recognized by the Machine from machineFile */
@@ -46,6 +35,17 @@ _readStates(Machine * machine, FILE * machineFile)
 {
 	/* Read the states in which the Machine can be from machineFile */
 	_extractData(machineFile, &(machine->states), &(machine->states_length));
+}
+
+void
+_initTransition(Transition * transition)
+{
+	/* Basic initialisation of a Transition */
+	transition->start_state = NULL;
+	transition->cond = NULL;
+	transition->subst = NULL;
+	transition->next_state = NULL;
+	transition->move = '\0';
 }
 
 Element
@@ -63,34 +63,40 @@ _readTransitionElement(Machine * machine, FILE * machineFile)
 	return element;
 }
 
+bool
+_readTransition(Machine * machine, FILE * machineFile, Transition * transition)
+{
+	_initTransition(transition); /* Initialize the Transition */
+	/* The first element we just read is the start state */
+	transition->start_state = _readTransitionElement(machine, machineFile).element;
+	transition->cond = _readTransitionElement(machine, machineFile).element; /* Then read the conditionnal value */
+	transition->subst = _readTransitionElement(machine, machineFile).element; /* Then the substitution value */
+	transition->next_state = _readTransitionElement(machine, machineFile).element; /* Continue with the next state */
+	Element element = _readTransitionElement(machine, machineFile); /* Temporary element to avoid a memory leak */
+	transition->move = element.element[0]; /* We only want the first char of it */
+	free(element.element); /* So free this array not to have any leak */
+	/* Move was not 'R' or 'L', we don't know any other, abort */
+	if (transition->move != 'R' && transition->move != 'L')
+		MalformedFileException(machine, machineFile, "bad move in transition, only 'R' or 'L' are allowed");
+	return !element.endOfElements;
+}
+
 void
 _readTransitions(Machine * machine, FILE * machineFile)
 {
 	/* Read the available transitions */
-	Element element; /* Will be used to store read data */
-	Transition transition; /* Will be used to store each transition */
+	Transition * transition = (Transition *) malloc(sizeof(Transition)); /* Will be used to store each transition */
 	/* Keep reading while there are things to read (we did not meet '#') */
-	while (! ((element = _readTransitionElement(machine, machineFile)).endOfElements))
+	while (_readTransition(machine, machineFile, transition))
 	{
-		_initTransition(&transition); /* Initialize Transition */
-		transition.start_state = element.element; /* The first element we just read is the start state */
-		transition.cond = _readTransitionElement(machine, machineFile).element; /* Then read the conditionnal value */
-		transition.subst = _readTransitionElement(machine, machineFile).element; /* Then the substitution value */
-		transition.next_state = _readTransitionElement(machine, machineFile).element; /* Continue with the next state */
-		element = _readTransitionElement(machine, machineFile); /* Now read what will be the direction of the next move */
-		transition.move = element.element[0]; /* We only want the first char of it */
-		free(element.element); /* So free this array not to have any leak */
 		/* Store the transition and increase the number of transitions available */
-		machine->transitions[machine->transitions_length++] = transition;
-		/* Move was not 'R' or 'L', we don't know any other, abort */
-		if (transition.move != 'R' && transition.move != 'L')
-			MalformedFileException(machine, machineFile, "bad move in transition, only 'R' or 'L' are allowed");
-		if (element.endOfElements) /* If we reached a '#', just exit this function */
-			return;
+		machine->transitions[machine->transitions_length++] = *transition;
 		/* When the Array is full, increase its size */
 		if ((machine->transitions_length % BASE_TRANSITIONS_LENGTH) == 0)
 			machine->transitions = (Transition *) realloc(machine->transitions, (machine->transitions_length + BASE_TRANSITIONS_LENGTH) * sizeof(Transition));
 	}
+	machine->transitions[machine->transitions_length++] = *transition; /* Store the last transition */
+	free(transition); /* Free memory */
 }
 
 char *
