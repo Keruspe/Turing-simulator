@@ -24,6 +24,17 @@ _newMachine()
 }
 
 void
+_initTransition(Transition * transition)
+{
+	/* Basic initialisation of a Transition */
+	transition->start_state = NULL;
+	transition->cond = NULL;
+	transition->subst = NULL;
+	transition->next_state = NULL;
+	transition->move = '\0';
+}
+
+void
 _readAlphabet(Machine * machine, FILE * machineFile)
 {
 	/* Read the alphabet recognized by the Machine from machineFile */
@@ -42,7 +53,13 @@ _readTransitionElement(Machine * machine, FILE * machineFile)
 {
 	Element element = _readElement(machineFile);
 	if (element.element[0] == '\0')
-		BadTransitionException(machine, machineFile);
+	{
+		free(element.element);
+		if (machine->transitions_length == 0)
+			MalformedFileException(machine, machineFile, "your Machine has no Transition.");
+		else
+			BadTransitionException(machine, machineFile);
+	}
 	return element;
 }
 
@@ -50,31 +67,23 @@ void
 _readTransitions(Machine * machine, FILE * machineFile)
 {
 	/* Read the available transitions */
-	Element element; /* Will be use to store read data */
+	Element element; /* Will be used to store read data */
+	Transition transition; /* Will be used to store each transition */
 	/* Keep reading while there are things to read (we did not meet '#') */
 	while (! ((element = _readTransitionElement(machine, machineFile)).endOfElements))
 	{
-		if (element.element[0] == '\0') /* We probably reached EOF, exception will be handled later */
-		{
-			/* Just free memory and leave, nothing more to do here */
-			free (element.element);
-			break;
-		}
-		/* The first element we just read is the start state */
-		machine->transitions[machine->transitions_length].start_state = element.element;
-		/* Then read the conditionnal value */
-		machine->transitions[machine->transitions_length].cond = _readTransitionElement(machine, machineFile).element;
-		/* Then the substitution value */
-		machine->transitions[machine->transitions_length].subst = _readTransitionElement(machine, machineFile).element;
-		/* Continue with the next state */
-		machine->transitions[machine->transitions_length].next_state = _readTransitionElement(machine, machineFile).element;
+		_initTransition(&transition); /* Initialize Transition */
+		transition.start_state = element.element; /* The first element we just read is the start state */
+		transition.cond = _readTransitionElement(machine, machineFile).element; /* Then read the conditionnal value */
+		transition.subst = _readTransitionElement(machine, machineFile).element; /* Then the substitution value */
+		transition.next_state = _readTransitionElement(machine, machineFile).element; /* Continue with the next state */
 		element = _readTransitionElement(machine, machineFile); /* Now read what will be the direction of the next move */
-		Move move = element.element[0]; /* We only want the first char of it */
+		transition.move = element.element[0]; /* We only want the first char of it */
 		free(element.element); /* So free this array not to have any leak */
-		/* Store the move and increase the number of transitions available */
-		machine->transitions[machine->transitions_length++].move = move;
+		/* Store the transition and increase the number of transitions available */
+		machine->transitions[machine->transitions_length++] = transition;
 		/* Move was not 'R' or 'L', we don't know any other, abort */
-		if (move != 'R' && move != 'L')
+		if (transition.move != 'R' && transition.move != 'L')
 			MalformedFileException(machine, machineFile, "bad move in transition, only 'R' or 'L' are allowed");
 		if (element.endOfElements) /* If we reached a '#', just exit this function */
 			return;
@@ -120,14 +129,10 @@ newMachine()
 	if (machine->states_length == 0)
 		MalformedFileException(machine, machineFile, "your Machine has no states.");
 	_readTransitions(machine, machineFile);
-
 	/* Fail if no initial or final state in the machineFile */
 	char * failure_reason = _readStartAndEndPoints(machine, machineFile);
 	if (failure_reason != NULL)
 		MalformedFileException(machine, machineFile, failure_reason);
-	/* Fail if no transitions in the machineFile if the final state isn't equal to the initial one */
-	if (machine->transitions_length == 0 && strcmp(machine->initial_state, machine->final_state) != 0)
-		MalformedFileException(machine, machineFile, "your Machine has no transitions.");
 
 	/* Close the machineFile */
 	fclose(machineFile);
