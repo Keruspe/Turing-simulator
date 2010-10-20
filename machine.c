@@ -37,13 +37,22 @@ _readStates(Machine * machine, FILE * machineFile)
 	_extractData(machineFile, &(machine->states), &(machine->states_length));
 }
 
+Element
+_readTransitionElement(Machine * machine, FILE * machineFile)
+{
+	Element element = _readElement(machineFile);
+	if (element.element[0] == '\0')
+		BadTransitionException(machine, machineFile);
+	return element;
+}
+
 void
 _readTransitions(Machine * machine, FILE * machineFile)
 {
 	/* Read the available transitions */
 	Element element; /* Will be use to store read data */
 	/* Keep reading while there are things to read (we did not meet '#') */
-	while (! ((element = _readElement(machineFile)).endOfElements))
+	while (! ((element = _readTransitionElement(machine, machineFile)).endOfElements))
 	{
 		if (element.element[0] == '\0') /* We probably reached EOF, exception will be handled later */
 		{
@@ -54,25 +63,19 @@ _readTransitions(Machine * machine, FILE * machineFile)
 		/* The first element we just read is the start state */
 		machine->transitions[machine->transitions_length].start_state = element.element;
 		/* Then read the conditionnal value */
-		machine->transitions[machine->transitions_length].cond = _readElement(machineFile).element;
-		if (machine->transitions[machine->transitions_length].cond[0] == '\0')
-			BadTransitionException(machine, machineFile);
+		machine->transitions[machine->transitions_length].cond = _readTransitionElement(machine, machineFile).element;
 		/* Then the substitution value */
-		machine->transitions[machine->transitions_length].subst = _readElement(machineFile).element;
-		if (machine->transitions[machine->transitions_length].subst[0] == '\0')
-			BadTransitionException(machine, machineFile);
+		machine->transitions[machine->transitions_length].subst = _readTransitionElement(machine, machineFile).element;
 		/* Continue with the next state */
-		machine->transitions[machine->transitions_length].next_state = _readElement(machineFile).element;
-		if (machine->transitions[machine->transitions_length].cond[0] == '\0')
-			BadTransitionException(machine, machineFile);
-		element = _readElement(machineFile); /* Now read what will be the direction of the next move */
+		machine->transitions[machine->transitions_length].next_state = _readTransitionElement(machine, machineFile).element;
+		element = _readTransitionElement(machine, machineFile); /* Now read what will be the direction of the next move */
 		Move move = element.element[0]; /* We only want the first char of it */
 		free(element.element); /* So free this array not to have any leak */
 		/* Store the move and increase the number of transitions available */
 		machine->transitions[machine->transitions_length++].move = move;
 		/* Move was not 'R' or 'L', we don't know any other, abort */
 		if (move != 'R' && move != 'L')
-			MalformedFileException(machine, machineFile, "bad move, only 'R' or 'L' are allowed");
+			MalformedFileException(machine, machineFile, "bad move in transition, only 'R' or 'L' are allowed");
 		if (element.endOfElements) /* If we reached a '#', just exit this function */
 			return;
 		/* When the Array is full, increase its size */
