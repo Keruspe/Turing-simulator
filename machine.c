@@ -60,7 +60,7 @@ _readTransitions(Machine * machine, FILE * machineFile)
 		machine->transitions[machine->transitions_length++].move = move;
 		/* Move was not 'R' or 'L', we don't know any other, abort */
 		if (move != 'R' && move != 'L')
-			MalformedFileException(machine, machineFile, "bad move, only 'R' or 'L' are allowed, exiting...");
+			MalformedFileException(machine, machineFile, "bad move, only 'R' or 'L' are allowed");
 		if (element.endOfElements) /* If we reached a '#', just exit this function */
 			return;
 		/* When the Array is full, increase its size */
@@ -75,11 +75,11 @@ _readStartAndEndPoints(Machine * machine, FILE * machineFile)
 	/* Read the initial state of the Machine */
 	machine->initial_state = _readElement(machineFile).element;
 	if(machine->initial_state[0] == '\0')
-		return "no initial state, exiting...";
+		return "no initial state";
 	/* Read the final state of the Machine */
 	machine->final_state = _readElement(machineFile).element;
 	if(machine->final_state[0] == '\0')
-		return "no final state, exiting...";
+		return "no final state";
 	return NULL;
 }
 
@@ -87,15 +87,12 @@ Machine *
 newMachine()
 {
 	FILE * machineFile = NULL;
-	char machineFilename[MAX_FILENAME_LENGTH];
+	char machineFilename[MAX_FILENAME_LENGTH] = "";
 
 	printf("Where is the file describing your turing machine ?\n");
 	/* Read the name of the file in which the Machine is described, fail and exit if we cannot load it */
 	if (!scanf("%s", machineFilename) || (machineFile = fopen(machineFilename, "r")) == NULL)
-	{
-		printf("Failed to read file: %s, exiting...\n", machineFilename);
-		exit(EXIT_FAILURE);
-	}
+		NoSuchFileException("failed to read file: %s", machineFilename);
 
 	Machine * machine = _newMachine(); /* Allocate memory */
 	/* Read machine stuff from machineFile */

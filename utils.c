@@ -26,14 +26,16 @@ _Exception(char * reason)
 {
 	fprintf(stderr, "Exception: %s\n", reason);
 	free(reason);
+	fprintf(stderr, "Exiting...\n");
 	exit(EXIT_FAILURE);
 }
 
 void
-Exception(const char * reason)
+NoSuchFileException(const char * reason, const char * filename)
 {
-	fprintf(stderr, "Exception: %s\n", reason);
-	exit(EXIT_FAILURE);
+	char * full_reason = (char *) malloc((strlen(reason) + strlen(filename)) * sizeof(char));
+	sprintf(full_reason, reason, filename);
+	_Exception(full_reason);
 }
 
 void

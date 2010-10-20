@@ -25,9 +25,9 @@ void skipLine(FILE *);
 /* Clear the buffer after reading an entry */
 void clearBuffer();
 /* There has been a failure and we must exit */
-void Exception(const char *);
-void MalformedFileException(Machine *, FILE *, const char *);
-void BadTransitionException(Machine *, FILE *, const char *);
+void NoSuchFileException(const char * reason, const char * filename);
+void MalformedFileException(Machine *, FILE *, const char * reason);
+void BadTransitionException(Machine *, FILE *, const char * reason);
 
 /*
  * parsing stuff
