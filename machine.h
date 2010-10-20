@@ -7,7 +7,7 @@
 #ifndef __MACHINE_H__
 #define __MACHINE_H__
 
-#include "data.h"
+#include "types.h"
 
 /* Structure to store a Transition */
 struct _Transition {

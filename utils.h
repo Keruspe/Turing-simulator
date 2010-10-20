@@ -7,11 +7,8 @@
 #ifndef __UTILS_H__
 #define __UTILS_H__
 
-#include "types.h"
 #include <stdio.h>
 #include <stdbool.h>
-#include <stdlib.h>
-#include <string.h>
 
 /* Define a few parameters */
 #define MAX_FILENAME_LENGTH 100
@@ -24,24 +21,6 @@
 void skipLine(FILE *);
 /* Clear the buffer after reading an entry */
 void clearBuffer();
-
-/*
- * Exceptions
- */
-
-/* We couldn't read a file */
-void NoSuchFileException(const char * filename);
-/*
- * There was a syntax error in the file (machine and file are optional)
- * machine and file are optional and can be NULL
- */
-void MalformedFileException(Machine *, FILE *, const char * reason);
-/*
- * There was a malformed transition in the file
- * machine and file are optional and can be NULL
- * reason can be NULL for a generic one
- */
-void BadTransitionException(Machine *, FILE *, const char * reason);
 
 /*
  * parsing stuff

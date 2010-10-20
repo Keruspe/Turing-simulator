@@ -5,6 +5,8 @@
  */
 
 #include "data.h"
+#include "utils.h"
+#include <stdlib.h>
 
 Data *
 _newData()

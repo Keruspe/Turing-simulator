@@ -4,7 +4,11 @@
  * Copyright (C) Marc-Antoine Perennou 2010 <Marc-Antoine@Perennou.com>
  */
 
+#include "data.h"
+#include "exceptions.h"
 #include "machine.h"
+#include "utils.h"
+#include <stdlib.h>
 
 Machine *
 _newMachine()
