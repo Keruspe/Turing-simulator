@@ -13,9 +13,9 @@ _newMachine()
 {
 	/* Basic allocation and initialisation stuff to get a ready base Machine */
 	Machine * machine = (Machine *) malloc(sizeof(Machine));
-	machine->alphabet = (Letter *) malloc(BASE_ALPHABET_LENGTH * sizeof(Letter));
+	machine->alphabet = (Letter *) malloc(BASE_STORAGE_LENGTH * sizeof(Letter));
 	machine->alphabet_length = 0;
-	machine->states = (State *) malloc(BASE_ALPHABET_LENGTH * sizeof(State));
+	machine->states = (State *) malloc(BASE_STORAGE_LENGTH * sizeof(State));
 	machine->states_length = 0;
 	machine->transitions = (Transition *) malloc(BASE_TRANSITIONS_LENGTH * sizeof(Transition));
 	machine->transitions_length = 0;

@@ -14,9 +14,9 @@
 /* Define a few parameters */
 #define MAX_FILENAME_LENGTH 100
 #define BASE_ELEMENT_SIZE 10
-#define BASE_ALPHABET_LENGTH 10
+#define BASE_STORAGE_LENGTH 10
 #define BASE_TRANSITIONS_LENGTH 25
-#define BASE_DATA_LENGTH 50
+#define BASE_DATA_LENGTH 5*BASE_STORAGE_LENGTH
 
 /* Skip the rest of the line we're reading (for comments) */
 void skipLine(FILE *);
