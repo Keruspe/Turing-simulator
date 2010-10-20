@@ -64,16 +64,20 @@ freeTransition(Transition transition)
 Element
 _readTransitionElement(Machine * machine, FILE * machineFile, Transition * transition)
 {
-	Element element = _readElement(machineFile);
-	if (element.element[0] == '\0')
+	Element element = _readElement(machineFile); /* Read an Element */
+	if (element.element[0] == '\0') /* If the element is dummy */
 	{
-		freeTransition(*transition);
-		char * reason = NULL;
+		freeTransition(*transition); /* Free the current transition */
+		char * reason = NULL; /* Determine whether we want a generic or a custom error message */
 		if (machine->transitions_length == 0)
 			reason = "your Machine has no Transition.";
+		/*
+		 * If start_state is NULL, the Transition section ended.
+		 * Return a dummy Transition with only an empty start_state
+		 */
 		if (transition->start_state != NULL)
-		{ /* If NULL, Transition section ended, let the error being handled later */
-			free(element.element);
+		{
+			free(element.element); /* Free memory and then fail */
 			BadTransitionException(machine, machineFile, reason);
 		}
 	}
@@ -106,7 +110,7 @@ _readTransitions(Machine * machine, FILE * machineFile)
 	/* Read the available transitions */
 	Transition transition; /* Will be used to store each transition */
 	/* Keep reading while there are things to read (we did not meet '#') */
-	while (_readTransition(machine, machineFile, &transition))
+	while (_readTransition(machine, machineFile, &transition)) /* While there are still transitions to read */
 	{
 		/* Store the transition and increase the number of transitions available */
 		machine->transitions[machine->transitions_length++] = transition;
@@ -114,9 +118,9 @@ _readTransitions(Machine * machine, FILE * machineFile)
 		if ((machine->transitions_length % BASE_TRANSITIONS_LENGTH) == 0)
 			machine->transitions = (Transition *) realloc(machine->transitions, (machine->transitions_length + BASE_TRANSITIONS_LENGTH) * sizeof(Transition));
 	}
-	if (transition.start_state[0] != '\0')
+	if (transition.start_state[0] != '\0') /* We're not facing a dummy transition */
 		machine->transitions[machine->transitions_length++] = transition; /* Store the last transition */
-	else
+	else /* Dummy transition only has a start_state, but we need to free it */
 		free (transition.start_state);
 }
 
@@ -175,7 +179,6 @@ freeMachine(Machine * machine)
 		free(machine->alphabet[i]); /* Free each Letter in the alphabet */
 	for (i = 0 ; i < machine->states_length ; ++i)
 		free(machine->states[i]); /* Free each possible State */
-printf("%d\n", machine->transitions_length);
 	for (i = 0 ; i < machine->transitions_length ; ++i)
 		freeTransition(machine->transitions[i]); /* Free each available Transition */
 	/* Free remaining stuff */
@@ -196,8 +199,6 @@ reloadData(Machine * machine)
 {
 	if (machine->data) /* If the machine had Data, free it */
 		freeData(machine->data);
-
-	/* Then read Data */
-	machine->data = newData();
+	machine->data = newData(); /* Then read Data */
 	clearBuffer(); /* Clear buffer */
 }

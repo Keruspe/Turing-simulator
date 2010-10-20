@@ -24,9 +24,23 @@
 void skipLine(FILE *);
 /* Clear the buffer after reading an entry */
 void clearBuffer();
-/* There has been a failure and we must exit */
+
+/*
+ * Exceptions
+ */
+
+/* We couldn't read a file */
 void NoSuchFileException(const char * filename);
+/*
+ * There was a syntax error in the file (machine and file are optional)
+ * machine and file are optional and can be NULL
+ */
 void MalformedFileException(Machine *, FILE *, const char * reason);
+/*
+ * There was a malformed transition in the file
+ * machine and file are optional and can be NULL
+ * reason can be NULL for a generic one
+ */
 void BadTransitionException(Machine *, FILE *, const char * reason);
 
 /*

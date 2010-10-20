@@ -24,15 +24,16 @@ clearBuffer()
 void
 _Exception(char * reason)
 {
-	fprintf(stderr, "Exception: %s\n", reason);
+	/* The mother of each exception, prints the error, free the memory and exit */
+	fprintf(stderr, "Exception: %s\nExiting...\n", reason);
 	free(reason);
-	fprintf(stderr, "Exiting...\n");
 	exit(EXIT_FAILURE);
 }
 
 void
 NoSuchFileException(const char * filename)
 {
+	/* Gives a precise reason to _Exception */
 	char * full_reason = (char *) malloc((22 + strlen(filename)) * sizeof(char));
 	sprintf(full_reason, "failed to read file: %s", filename);
 	_Exception(full_reason);
@@ -41,10 +42,11 @@ NoSuchFileException(const char * filename)
 void
 MalformedFileException(Machine * machine, FILE * file, const char * reason)
 {
-	if (machine)
+	if (machine) /* If we've a machine to free, free it */
 		freeMachine(machine);
-	if (file)
+	if (file) /* If we've a file to close, close it */
 		fclose(file);
+	/* Gives a precise reason to _Exception */
 	char * full_reason = (char *) malloc ((17 + strlen(reason)) * sizeof(char));
 	sprintf(full_reason, "malformed file, %s", reason);
 	_Exception(full_reason);
@@ -53,12 +55,14 @@ MalformedFileException(Machine * machine, FILE * file, const char * reason)
 void
 _BadTransitionException(Machine * machine, FILE * file)
 {
+	/* Gives a precise reason to MalformedFileException */
 	MalformedFileException(machine, file, "a malformed transition has been found.\nExpected: State Letter Letter State Move");
 }
 
 void
 BadTransitionException(Machine * machine, FILE * file, const char * reason)
 {
+	/* Gives a generic or a custom reason to MalformedFileException */
 	if (reason == NULL)
 		_BadTransitionException(machine, file);
 	else
