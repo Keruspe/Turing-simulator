@@ -5,6 +5,7 @@
  */
 
 #include "utils.h"
+#include "machine.h"
 
 void
 skipLine(FILE * file)
@@ -18,6 +19,17 @@ clearBuffer()
 {
 	/* Read every char until 'enter' from standard input */
 	while (getchar() != '\n');
+}
+
+void
+fail(Machine * machine, FILE * file, char * reason)
+{
+	if (machine)
+		freeMachine(machine);
+	if (file)
+		fclose(file);
+	printf("%s\n", reason);
+	exit(EXIT_FAILURE);
 }
 
 Element

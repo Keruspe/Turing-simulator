@@ -23,6 +23,8 @@
 void skipLine(FILE *);
 /* Clear the buffer after reading an entry */
 void clearBuffer();
+/* There has been a failure and we must exit */
+void fail(Machine *, FILE*, char *);
 
 /*
  * parsing stuff
