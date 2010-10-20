@@ -5,7 +5,6 @@
  */
 
 #include "machine.h"
-#include <string.h>
 
 Machine *
 _newMachine()
@@ -61,7 +60,7 @@ _readTransitions(Machine * machine, FILE * machineFile)
 		machine->transitions[machine->transitions_length++].move = move;
 		/* Move was not 'R' or 'L', we don't know any other, abort */
 		if (move != 'R' && move != 'L')
-			fail(machine, machineFile, "Bad move, only 'R' or 'L' are allowed, exiting...");
+			MalformedFileException(machine, machineFile, "bad move, only 'R' or 'L' are allowed, exiting...");
 		if (element.endOfElements) /* If we reached a '#', just exit this function */
 			return;
 		/* When the Array is full, increase its size */
@@ -76,11 +75,11 @@ _readStartAndEndPoints(Machine * machine, FILE * machineFile)
 	/* Read the initial state of the Machine */
 	machine->initial_state = _readElement(machineFile).element;
 	if(machine->initial_state[0] == '\0')
-		return "File malformed, no initial state, exiting...";
+		return "no initial state, exiting...";
 	/* Read the final state of the Machine */
 	machine->final_state = _readElement(machineFile).element;
 	if(machine->final_state[0] == '\0')
-		return "File malformed, no final state, exiting...";
+		return "no final state, exiting...";
 	return NULL;
 }
 
@@ -103,20 +102,20 @@ newMachine()
 	_readAlphabet(machine,machineFile);
 	/* Fail if no alphabet in the machineFile */
 	if (machine->alphabet_length == 0)
-		fail(machine, machineFile, "Malformed file, your Machine has no alphabet.");
+		MalformedFileException(machine, machineFile, "your Machine has no alphabet.");
 	_readStates(machine, machineFile);
 	/* Fail if no states in the machineFile */
 	if (machine->states_length == 0)
-		fail(machine, machineFile, "Malformed file, your Machine has no states.");
+		MalformedFileException(machine, machineFile, "your Machine has no states.");
 	_readTransitions(machine, machineFile);
 
 	/* Fail if no initial or final state in the machineFile */
 	char * failure_reason = _readStartAndEndPoints(machine, machineFile);
 	if (failure_reason != NULL)
-		fail(machine, machineFile, failure_reason);
+		MalformedFileException(machine, machineFile, failure_reason);
 	/* Fail if no transitions in the machineFile if the final state isn't equal to the initial one */
 	if (machine->transitions_length == 0 && strcmp(machine->initial_state, machine->final_state) != 0)
-		fail(machine, machineFile, "Malformed file, your Machine has no transitions.");
+		MalformedFileException(machine, machineFile, "your Machine has no transitions.");
 
 	/* Close the machineFile */
 	fclose(machineFile);

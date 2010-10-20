@@ -22,14 +22,37 @@ clearBuffer()
 }
 
 void
-fail(Machine * machine, FILE * file, char * reason)
+_Exception(char * reason)
+{
+	fprintf(stderr, "Exception: %s\n", reason);
+	free(reason);
+	exit(EXIT_FAILURE);
+}
+
+void
+Exception(const char * reason)
+{
+	fprintf(stderr, "Exception: %s\n", reason);
+	exit(EXIT_FAILURE);
+}
+
+void
+MalformedFileException(Machine * machine, FILE * file, const char * reason)
 {
 	if (machine)
 		freeMachine(machine);
 	if (file)
 		fclose(file);
-	printf("%s\n", reason);
-	exit(EXIT_FAILURE);
+	char * full_reason = (char *) malloc ((17 + strlen(reason)) * sizeof(char));
+	sprintf(full_reason, "malformed file, %s", reason);
+	_Exception(full_reason);
+}
+
+void
+BadTransitionException(Machine * machine, FILE * file, const char * reason)
+{
+	++machine->transitions_length;
+	MalformedFileException(machine, file, reason);
 }
 
 Element

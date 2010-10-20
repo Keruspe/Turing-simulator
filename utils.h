@@ -11,6 +11,7 @@
 #include <stdio.h>
 #include <stdbool.h>
 #include <stdlib.h>
+#include <string.h>
 
 /* Define a few parameters */
 #define MAX_FILENAME_LENGTH 100
@@ -24,7 +25,9 @@ void skipLine(FILE *);
 /* Clear the buffer after reading an entry */
 void clearBuffer();
 /* There has been a failure and we must exit */
-void fail(Machine *, FILE*, char *);
+void Exception(const char *);
+void MalformedFileException(Machine *, FILE *, const char *);
+void BadTransitionException(Machine *, FILE *, const char *);
 
 /*
  * parsing stuff
