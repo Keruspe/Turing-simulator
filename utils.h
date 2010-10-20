@@ -27,7 +27,7 @@ void clearBuffer();
 /* There has been a failure and we must exit */
 void NoSuchFileException(const char * filename);
 void MalformedFileException(Machine *, FILE *, const char * reason);
-void BadTransitionException(Machine *, FILE *, const char * reason);
+void BadTransitionException(Machine *, FILE *);
 
 /*
  * parsing stuff

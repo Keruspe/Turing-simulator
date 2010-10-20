@@ -45,14 +45,26 @@ _readTransitions(Machine * machine, FILE * machineFile)
 	/* Keep reading while there are things to read (we did not meet '#') */
 	while (! ((element = _readElement(machineFile)).endOfElements))
 	{
+		if (element.element[0] == '\0') /* We probably reached EOF, exception will be handled later */
+		{
+			/* Just free memory and leave, nothing more to do here */
+			free (element.element);
+			break;
+		}
 		/* The first element we just read is the start state */
 		machine->transitions[machine->transitions_length].start_state = element.element;
 		/* Then read the conditionnal value */
 		machine->transitions[machine->transitions_length].cond = _readElement(machineFile).element;
+		if (machine->transitions[machine->transitions_length].cond[0] == '\0')
+			BadTransitionException(machine, machineFile);
 		/* Then the substitution value */
 		machine->transitions[machine->transitions_length].subst = _readElement(machineFile).element;
+		if (machine->transitions[machine->transitions_length].subst[0] == '\0')
+			BadTransitionException(machine, machineFile);
 		/* Continue with the next state */
 		machine->transitions[machine->transitions_length].next_state = _readElement(machineFile).element;
+		if (machine->transitions[machine->transitions_length].cond[0] == '\0')
+			BadTransitionException(machine, machineFile);
 		element = _readElement(machineFile); /* Now read what will be the direction of the next move */
 		Move move = element.element[0]; /* We only want the first char of it */
 		free(element.element); /* So free this array not to have any leak */
@@ -124,9 +136,12 @@ freeTransition(Transition transition)
 {
 	/* Free the memory used by a Transition */
 	free(transition.start_state);
-	free(transition.cond);
-	free(transition.subst);
-	free(transition.next_state);
+	if (transition.cond)
+		free(transition.cond);
+	if (transition.subst)
+		free(transition.subst);
+	if (transition.next_state)
+		free(transition.next_state);
 }
 
 void

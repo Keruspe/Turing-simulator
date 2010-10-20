@@ -51,10 +51,10 @@ MalformedFileException(Machine * machine, FILE * file, const char * reason)
 }
 
 void
-BadTransitionException(Machine * machine, FILE * file, const char * reason)
+BadTransitionException(Machine * machine, FILE * file)
 {
 	++machine->transitions_length;
-	MalformedFileException(machine, file, reason);
+	MalformedFileException(machine, file, "a malformed transition has been found.\nExpected : State Letter Letter State Move");
 }
 
 Element
