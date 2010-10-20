@@ -92,7 +92,7 @@ newMachine()
 	printf("Where is the file describing your turing machine ?\n");
 	/* Read the name of the file in which the Machine is described, fail and exit if we cannot load it */
 	if (!scanf("%s", machineFilename) || (machineFile = fopen(machineFilename, "r")) == NULL)
-		NoSuchFileException("failed to read file: %s", machineFilename);
+		NoSuchFileException(machineFilename);
 
 	Machine * machine = _newMachine(); /* Allocate memory */
 	/* Read machine stuff from machineFile */

@@ -31,10 +31,10 @@ _Exception(char * reason)
 }
 
 void
-NoSuchFileException(const char * reason, const char * filename)
+NoSuchFileException(const char * filename)
 {
-	char * full_reason = (char *) malloc((strlen(reason) + strlen(filename)) * sizeof(char));
-	sprintf(full_reason, reason, filename);
+	char * full_reason = (char *) malloc((22 + strlen(filename)) * sizeof(char));
+	sprintf(full_reason, "failed to read file: %s", filename);
 	_Exception(full_reason);
 }
 
