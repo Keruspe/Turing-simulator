@@ -7,8 +7,9 @@
 #ifndef __UTILS_H__
 #define __UTILS_H__
 
-#include <stdio.h>
 #include <stdbool.h>
+#include <stdio.h>
+#include <stdlib.h>
 
 /* Define a few parameters */
 #define MAX_FILENAME_LENGTH 100

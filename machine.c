@@ -7,8 +7,6 @@
 #include "data.h"
 #include "exceptions.h"
 #include "machine.h"
-#include "utils.h"
-#include <stdlib.h>
 
 Machine *
 _newMachine()

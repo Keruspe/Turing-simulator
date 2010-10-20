@@ -6,9 +6,6 @@
 
 #include "data.h"
 #include "machine.h"
-#include "utils.h"
-#include <stdio.h>
-#include <stdlib.h>
 
 int
 main()

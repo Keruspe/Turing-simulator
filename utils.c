@@ -6,7 +6,6 @@
 
 #include "types.h"
 #include "utils.h"
-#include <stdlib.h>
 
 void
 skipLine(FILE * file)
