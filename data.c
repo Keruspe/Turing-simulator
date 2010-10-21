@@ -31,7 +31,7 @@ newData()
 
 	Data * data = _newData(); /* Allocate memory */
 	/* Extract Data from dataFile */
-	_extractData(dataFile, &(data->data), &(data->data_length));
+	extractData(dataFile, &(data->data), &(data->data_length));
 
 	/* Close the dataFile */
 	fclose(dataFile);

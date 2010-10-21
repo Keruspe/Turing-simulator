@@ -27,17 +27,8 @@ void clearBuffer();
  * parsing stuff
  */
 
-/* A structure designed to be the result of an element extraction */
-struct _Element
-{
-	/* The element we read (State or Letter) */
-	char * element;
-	/* Did we met a '#' (aka end of data section) ? */
-	bool endOfElements;
-};
-
 /* Read the next element in file */
-Element _readElement(FILE * file);
+bool readElement(FILE * file, char **);
 
 /*
  * Extract data section (until we meet '#') and put all elements into the storage area we pass a pointer to,
@@ -45,6 +36,6 @@ Element _readElement(FILE * file);
  * The storage is a pointer to an Array of Letter/State.
  * We need this and not only the Array because we want to be able to resize it.
  */
-void _extractData(FILE * file, char *** storage, int * storage_length);
+void extractData(FILE * file, char *** storage, int * storage_length);
 
 #endif /* __UTILS_H__ */

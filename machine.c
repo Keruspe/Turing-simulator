@@ -29,14 +29,14 @@ void
 _readAlphabet(Machine * machine, FILE * machineFile)
 {
 	/* Read the alphabet recognized by the Machine from machineFile */
-	_extractData(machineFile, &(machine->alphabet), &(machine->alphabet_length));
+	extractData(machineFile, &(machine->alphabet), &(machine->alphabet_length));
 }
 
 void
 _readStates(Machine * machine, FILE * machineFile)
 {
 	/* Read the states in which the Machine can be from machineFile */
-	_extractData(machineFile, &(machine->states), &(machine->states_length));
+	extractData(machineFile, &(machine->states), &(machine->states_length));
 }
 
 void
@@ -63,11 +63,11 @@ freeTransition(Transition transition)
 		free(transition.next_state);
 }
 
-Element
-_readTransitionElement(Machine * machine, FILE * machineFile, Transition * transition)
+bool
+_readTransitionElement(Machine * machine, FILE * machineFile, Transition * transition, char ** element)
 {
-	Element element = _readElement(machineFile); /* Read an Element */
-	if (element.element[0] == '\0') /* If the element is dummy */
+	bool notYetTheEnd = readElement(machineFile, element); /* Read an Element */
+	if (element[0] == '\0') /* If the element is dummy */
 	{
 		freeTransition(*transition); /* Free the current transition */
 		char * reason = NULL; /* Determine whether we want a generic or a custom error message */
@@ -79,11 +79,11 @@ _readTransitionElement(Machine * machine, FILE * machineFile, Transition * trans
 		 */
 		if (transition->start_state != NULL)
 		{
-			free(element.element); /* Free memory and then fail */
+			free(element); /* Free memory and then fail */
 			BadTransitionException(machine, machineFile, reason);
 		}
 	}
-	return element;
+	return notYetTheEnd;
 }
 
 bool
@@ -91,19 +91,20 @@ _readTransition(Machine * machine, FILE * machineFile, Transition * transition)
 {
 	_initTransition(transition); /* Initialize the Transition */
 	/* The first element we just read is the start state */
-	transition->start_state = _readTransitionElement(machine, machineFile, transition).element;
+	_readTransitionElement(machine, machineFile, transition, &(transition->start_state));
 	if (transition->start_state[0] == '\0') /* No more transitions to read */
 		return false;
-	transition->cond = _readTransitionElement(machine, machineFile, transition).element; /* Then read the conditionnal value */
-	transition->subst = _readTransitionElement(machine, machineFile, transition).element; /* Then the substitution value */
-	transition->next_state = _readTransitionElement(machine, machineFile, transition).element; /* Continue with the next state */
-	Element element = _readTransitionElement(machine, machineFile, transition); /* Temporary element to avoid a memory leak */
-	transition->move = element.element[0]; /* We only want the first char of it */
-	free(element.element); /* So free this array not to have any leak */
+	_readTransitionElement(machine, machineFile, transition, &(transition->cond)); /* Then read the conditionnal value */
+	_readTransitionElement(machine, machineFile, transition, &(transition->subst)); /* Then the substitution value */
+	_readTransitionElement(machine, machineFile, transition, &(transition->next_state)); /* Continue with the next state */
+	char * element = NULL;
+	bool notYetTheEnd = _readTransitionElement(machine, machineFile, transition, &element); /* Temporary element to avoid a memory leak */
+	transition->move = element[0]; /* We only want the first char of it */
+	free(element); /* So free this array not to have any leak */
 	/* Move was not 'R' or 'L', we don't know any other, abort */
 	if (transition->move != 'R' && transition->move != 'L')
 		MalformedFileException(machine, machineFile, "bad move in transition, only 'R' or 'L' are allowed");
-	return !element.endOfElements;
+	return notYetTheEnd;
 }
 
 void
@@ -130,11 +131,11 @@ char *
 _readStartAndEndPoints(Machine * machine, FILE * machineFile)
 {
 	/* Read the initial state of the Machine */
-	machine->initial_state = _readElement(machineFile).element;
+	 readElement(machineFile, &(machine->initial_state));
 	if(machine->initial_state[0] == '\0')
 		return "no initial state";
 	/* Read the final state of the Machine */
-	machine->final_state = _readElement(machineFile).element;
+	readElement(machineFile, &(machine->final_state));
 	if(machine->final_state[0] == '\0')
 		return "no final state";
 	return NULL;

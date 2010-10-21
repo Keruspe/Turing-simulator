@@ -17,7 +17,7 @@ typedef char* State;
 typedef char* Letter;
 
 /* More handy name for structs */
-typedef struct _Element Element;
+//typedef struct _Element Element;
 typedef struct _Transition Transition;
 typedef struct _Machine Machine;
 typedef struct _Data Data;
