@@ -14,7 +14,7 @@
 struct _Data {
 	/* Array which contains all the letters we read from the Data file */
 	Letter * data;
-	/* Array which contains left-side extra data (extra_data[X] stands for data[-X]) */
+	/* Array which contains left-side extra data (ex: extra_data[3] stands for data[-4]) */
 	Letter * extra_data;
 
 	/* Store arrays length too */

@@ -37,6 +37,8 @@ struct _Machine {
 	State final_state;
 	/* Data used by the Machine */
 	Data * data;
+	/* Index we're up to in the data */
+	int data_index;
 
 	/*
 	 * Store arrays length too
@@ -58,5 +60,8 @@ void freeMachine(Machine *);
 
 /* Load new Data for the Machine */
 void reloadData(Machine *);
+
+/* Move the Mahcine and return the next value */
+Letter move(Machine *, Move);
 
 #endif /* __MACHINE_H__ */

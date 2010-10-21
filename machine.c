@@ -22,6 +22,7 @@ _newMachine()
 	machine->initial_state = NULL;
 	machine->final_state = NULL;
 	machine->data = NULL;
+	machine->data_index = -1; /* The Machine starts at the left of the first cell */
 	return machine;
 }
 
@@ -204,4 +205,11 @@ reloadData(Machine * machine)
 		freeData(machine->data);
 	machine->data = newData(); /* Then read Data */
 	clearBuffer(); /* Clear buffer */
+}
+
+Letter
+move(Machine *, Move move)
+{
+	/* TODO */
+	return NULL;
 }
