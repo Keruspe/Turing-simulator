@@ -26,11 +26,11 @@ struct _Transition {
 /* Structure to store a Machine */
 struct _Machine {
 	/* Array containing the alphabet recognized by the Machine */
-	Letter * alphabet;
+	LettersCollection alphabet;
 	/* Array containing the states in which the Machine can be */
-	State * states;
+	StatesCollection states;
 	/* Array containing pointers to the transitions the Machine can use */
-	Transition * transitions;
+	TransitionsCollection transitions;
 	/* The State in which the Machine is at the beginning */
 	State initial_state;
 	/* The State in which the Machine is at the end */

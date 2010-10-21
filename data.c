@@ -11,9 +11,9 @@ _newData()
 {
 	/* Basic allocation and initialisation stuff to get a ready base Data */
 	Data * data = (Data *) malloc(sizeof(Data));
-	data->data = (Letter *) malloc(BASE_DATA_LENGTH * sizeof(Letter));
+	data->data = (LettersCollection) malloc(BASE_DATA_LENGTH * sizeof(Letter));
 	data->data_length = 0;
-	data->extra_data = (Letter *) malloc(BASE_DATA_LENGTH * sizeof(Letter));
+	data->extra_data = (LettersCollection) malloc(BASE_DATA_LENGTH * sizeof(Letter));
 	data->extra_data_length = 0;
 	return data;
 }

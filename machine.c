@@ -13,11 +13,11 @@ _newMachine()
 {
 	/* Basic allocation and initialisation stuff to get a ready base Machine */
 	Machine * machine = (Machine *) malloc(sizeof(Machine));
-	machine->alphabet = (Letter *) malloc(BASE_STORAGE_LENGTH * sizeof(Letter));
+	machine->alphabet = (LettersCollection) malloc(BASE_STORAGE_LENGTH * sizeof(Letter));
 	machine->alphabet_length = 0;
-	machine->states = (State *) malloc(BASE_STORAGE_LENGTH * sizeof(State));
+	machine->states = (StatesCollection) malloc(BASE_STORAGE_LENGTH * sizeof(State));
 	machine->states_length = 0;
-	machine->transitions = (Transition *) malloc(BASE_TRANSITIONS_LENGTH * sizeof(Transition));
+	machine->transitions = (TransitionsCollection) malloc(BASE_TRANSITIONS_LENGTH * sizeof(Transition));
 	machine->transitions_length = 0;
 	machine->initial_state = NULL;
 	machine->final_state = NULL;
@@ -65,13 +65,13 @@ freeTransition(Transition transition)
 }
 
 bool
-_readTransitionElement(Machine * machine, FILE * machineFile, Transition * transition, char ** element)
+_readTransitionElement(Machine * machine, FILE * machineFile, Transition * transition, Element * element)
 {
 	bool notYetTheEnd = readElement(machineFile, element); /* Read an Element */
 	if (element[0] == '\0') /* If the element is dummy */
 	{
 		freeTransition(*transition); /* Free the current transition */
-		char * reason = NULL; /* Determine whether we want a generic or a custom error message */
+		String reason = NULL; /* Determine whether we want a generic or a custom error message */
 		if (machine->transitions_length == 0)
 			reason = "your Machine has no Transition.";
 		/*
@@ -98,7 +98,7 @@ _readTransition(Machine * machine, FILE * machineFile, Transition * transition)
 	_readTransitionElement(machine, machineFile, transition, &(transition->cond)); /* Then read the conditionnal value */
 	_readTransitionElement(machine, machineFile, transition, &(transition->subst)); /* Then the substitution value */
 	_readTransitionElement(machine, machineFile, transition, &(transition->next_state)); /* Continue with the next state */
-	char * element = NULL;
+	Element element = NULL;
 	bool notYetTheEnd = _readTransitionElement(machine, machineFile, transition, &element); /* Temporary element to avoid a memory leak */
 	transition->move = element[0]; /* We only want the first char of it */
 	free(element); /* So free this array not to have any leak */
@@ -120,7 +120,7 @@ _readTransitions(Machine * machine, FILE * machineFile)
 		machine->transitions[machine->transitions_length++] = transition;
 		/* When the Array is full, increase its size */
 		if ((machine->transitions_length % BASE_TRANSITIONS_LENGTH) == 0)
-			machine->transitions = (Transition *) realloc(machine->transitions, (machine->transitions_length + BASE_TRANSITIONS_LENGTH) * sizeof(Transition));
+			machine->transitions = (TransitionsCollection) realloc(machine->transitions, (machine->transitions_length + BASE_TRANSITIONS_LENGTH) * sizeof(Transition));
 	}
 	if (transition.start_state[0] != '\0') /* We're not facing a dummy transition */
 		machine->transitions[machine->transitions_length++] = transition; /* Store the last transition */
@@ -128,7 +128,7 @@ _readTransitions(Machine * machine, FILE * machineFile)
 		free (transition.start_state);
 }
 
-char *
+String
 _readStartAndEndPoints(Machine * machine, FILE * machineFile)
 {
 	/* Read the initial state of the Machine */
@@ -165,7 +165,7 @@ newMachine()
 		MalformedFileException(machine, machineFile, "your Machine has no states.");
 	_readTransitions(machine, machineFile);
 	/* Fail if no initial or final state in the machineFile */
-	char * failure_reason = _readStartAndEndPoints(machine, machineFile);
+	String failure_reason = _readStartAndEndPoints(machine, machineFile);
 	if (failure_reason != NULL)
 		MalformedFileException(machine, machineFile, failure_reason);
 
@@ -208,8 +208,11 @@ reloadData(Machine * machine)
 }
 
 Letter
-move(Machine *, Move move)
+move(Machine * machine, Move move)
 {
+	/* Dummy stuff */
+	free (machine);
+	printf("%c", move);
 	/* TODO */
 	return NULL;
 }

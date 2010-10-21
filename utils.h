@@ -28,14 +28,14 @@ void clearBuffer();
  */
 
 /* Read the next element in file */
-bool readElement(FILE * file, char **);
+bool readElement(FILE * file, Element *);
 
 /*
  * Extract data section (until we meet '#') and put all elements into the storage area we pass a pointer to,
  * keeping by the way its length up to date.
- * The storage is a pointer to an Array of Letter/State.
+ * The storage is a pointer to an Array of Element (State/Letter).
  * We need this and not only the Array because we want to be able to resize it.
  */
-void extractData(FILE * file, char *** storage, int * storage_length);
+void extractData(FILE * file, ElementsCollection * storage, int * storage_length);
 
 #endif /* __UTILS_H__ */

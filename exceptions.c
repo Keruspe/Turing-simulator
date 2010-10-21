@@ -10,7 +10,7 @@
 #include <string.h>
 
 void
-_Exception(char * reason)
+_Exception(String reason)
 {
 	/* The mother of each exception, prints the error, free the memory and exit */
 	fprintf(stderr, "Exception: %s\nExiting...\n", reason);
@@ -19,23 +19,23 @@ _Exception(char * reason)
 }
 
 void
-NoSuchFileException(const char * filename)
+NoSuchFileException(const String filename)
 {
 	/* Gives a precise reason to _Exception */
-	char * full_reason = (char *) malloc((22 + strlen(filename)) * sizeof(char));
+	String full_reason = (String) malloc((22 + strlen(filename)) * sizeof(char));
 	sprintf(full_reason, "failed to read file: %s", filename);
 	_Exception(full_reason);
 }
 
 void
-MalformedFileException(Machine * machine, FILE * file, const char * reason)
+MalformedFileException(Machine * machine, FILE * file, const String reason)
 {
 	if (machine) /* If we've a machine to free, free it */
 		freeMachine(machine);
 	if (file) /* If we've a file to close, close it */
 		fclose(file);
 	/* Gives a precise reason to _Exception */
-	char * full_reason = (char *) malloc ((17 + strlen(reason)) * sizeof(char));
+	String full_reason = (String) malloc ((17 + strlen(reason)) * sizeof(char));
 	sprintf(full_reason, "malformed file, %s", reason);
 	_Exception(full_reason);
 }
@@ -48,7 +48,7 @@ _BadTransitionException(Machine * machine, FILE * file)
 }
 
 void
-BadTransitionException(Machine * machine, FILE * file, const char * reason)
+BadTransitionException(Machine * machine, FILE * file, const String reason)
 {
 	/* Gives a generic or a custom reason to MalformedFileException */
 	if (reason == NULL)

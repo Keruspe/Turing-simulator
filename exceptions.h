@@ -11,17 +11,17 @@
 #include <stdio.h>
 
 /* We couldn't read a file */
-void NoSuchFileException(const char * filename);
+void NoSuchFileException(const String filename);
 /*
  * There was a syntax error in the file (machine and file are optional)
  * machine and file are optional and can be NULL
  */
-void MalformedFileException(Machine *, FILE *, const char * reason);
+void MalformedFileException(Machine *, FILE *, const String reason);
 /*
  * There was a malformed transition in the file
  * machine and file are optional and can be NULL
  * reason can be NULL for a generic one
  */
-void BadTransitionException(Machine *, FILE *, const char * reason);
+void BadTransitionException(Machine *, FILE *, const String reason);
 
 #endif /* __EXCEPTIONS_H__ */

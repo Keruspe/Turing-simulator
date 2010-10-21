@@ -13,11 +13,13 @@
 /* Structure to store a set of Data for the Machine */
 struct _Data {
 	/* Array which contains all the letters we read from the Data file */
-	Letter * data;
+	LettersCollection data;
 	/* Array which contains left-side extra data (ex: extra_data[3] stands for data[-4]) */
-	Letter * extra_data;
+	LettersCollection extra_data;
 
-	/* Store arrays length too */
+	/*
+	 * Store arrays length too
+	 */
 
 	/* Number of Letter in the data we read */
 	int data_length;

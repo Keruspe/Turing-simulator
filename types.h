@@ -15,11 +15,20 @@
 typedef char Move;
 typedef char* State;
 typedef char* Letter;
+typedef char* Element; /* Can either be a State or a Letter */
 
 /* More handy name for structs */
-//typedef struct _Element Element;
 typedef struct _Transition Transition;
 typedef struct _Machine Machine;
 typedef struct _Data Data;
+
+/* Collections */
+typedef State* StatesCollection;
+typedef Letter* LettersCollection;
+typedef Element* ElementsCollection;
+typedef Transition* TransitionsCollection;
+
+/* More readable */
+typedef char* String;
 
 #endif /* __TYPES_H__ */

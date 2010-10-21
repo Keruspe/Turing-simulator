@@ -22,10 +22,10 @@ clearBuffer()
 }
 
 bool
-readElement(FILE * file, char ** element)
+readElement(FILE * file, Element * element)
 {
 	char c; /* Will store each character we read */
-	*element = (char *) malloc((1 + BASE_ELEMENT_SIZE) * sizeof(char)); /* Initialization/allocation */
+	*element = (Element) malloc((1 + BASE_ELEMENT_SIZE) * sizeof(char)); /* Initialization/allocation */
 	int element_size = 0; /* Size of the element */
 	while ((c = fgetc(file)) != EOF) /* While we're not at the end of file */
 	{
@@ -51,7 +51,7 @@ readElement(FILE * file, char ** element)
 			(*element)[element_size] = c;
 			/* Increase the element size, if it's full, increase its size */
 			if ((++element_size % BASE_ELEMENT_SIZE) == 0)
-				*element = (char *) realloc(*element, (element_size + 1 + BASE_ELEMENT_SIZE) * sizeof(char));
+				*element = (Element) realloc(*element, (element_size + 1 + BASE_ELEMENT_SIZE) * sizeof(char));
 		}
 	}
 	/* We only get here if there was no '#', fallback considerating that the end of file is a '#' */
@@ -60,16 +60,16 @@ readElement(FILE * file, char ** element)
 }
 
 void
-extractData(FILE * file, char *** storage, int * storage_length)
+extractData(FILE * file, ElementsCollection * storage, int * storage_length)
 {
-	char * element; /* Will store each element we read */
+	Element element; /* Will store each element we read */
 	/* While there are still data to be read, read them (until next '#') */
 	while (readElement(file, &element))
 	{
 		(*storage)[*storage_length] = element; /* Store the element in the storage area */
 		/* Increase the number of elements in the storage area, and increase its size if it's full */
 		if ((++(*storage_length) % BASE_STORAGE_LENGTH) == 0)
-			*storage = (char **) realloc(*storage, (*storage_length + BASE_STORAGE_LENGTH) * sizeof(char *));
+			*storage = (ElementsCollection) realloc(*storage, (*storage_length + BASE_STORAGE_LENGTH) * sizeof(Element));
 	}
 	if (element[0] != '\0') /* If a last element was stuck to the '#' */
 		/* Store it and increase number of elements into the storage area */
