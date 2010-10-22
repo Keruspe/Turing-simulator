@@ -56,22 +56,22 @@ getLetter(Data * data, int index)
 {
 	if (index >= 0) /* Positive index -> data */
 	{
-		if (index > data->data_length) /* If we didn't reach that point yet */
+		if (index >= data->data_length) /* If we didn't reach that point yet */
 		{
 			if (((data->data_length)++ % BASE_STORAGE_LENGTH) == 0) /* If full, increase size, then increment the length */
 				data->data = (ElementsCollection) realloc(data->data, (data->data_length + BASE_STORAGE_LENGTH) * sizeof(Element));
-			Letter letter = DEFAULT_LETTER; /* Fill it with default */
+			DEFAULT_LETTER(letter); /* Macro to create a default Letter named letter */
 			data->data[index] = letter;
 		}
 		return data->data[index];
 	}
 	else /* Negative index -> extra_data */
 	{
-		if (index <= data->extra_data_length) /* If we didn't reach that point yet */
+		if (index < data->extra_data_length) /* If we didn't reach that point yet */
 		{
 			if (((data->extra_data_length)++ % BASE_STORAGE_LENGTH) == 0) /* If full, increase size, then increment the length */
 				data->extra_data = (ElementsCollection) realloc(data->extra_data, (data->extra_data_length + BASE_STORAGE_LENGTH) * sizeof(Element));
-			Letter letter = DEFAULT_LETTER; /* Fill it with default */
+			DEFAULT_LETTER(letter); /* Macro to create a default Letter named letter */
 			data->extra_data[index + 1] = letter;
 		}
 		return data->extra_data[index + 1]; /* Return the Letter we reached */
