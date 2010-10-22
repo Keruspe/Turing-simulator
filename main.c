@@ -5,6 +5,7 @@
  */
 
 #include "data.h"
+#include "exceptions.h"
 #include "machine.h"
 #include <string.h>
 
@@ -17,6 +18,21 @@ main()
 	{
 		/* Get a new Machine */
 		machine = newMachine();
+
+		bool valid = false;
+		int i;
+		for (i = 0 ; i < machine->transitions_length ; ++i)
+		{
+			printf("%s : %s\n", machine->transitions[i].next_state, machine->final_state);
+			if (strcmp(machine->transitions[i].next_state, machine->final_state) == 0)
+			{
+				valid = true;
+				//break;
+			}
+		}
+		if (!valid)
+			MalformedFileException(machine, NULL, "the final state is unreachable.");
+
 		do /* Loop for using the same machine with various data */
 		{
 			/* Get new Data for our Machine */
@@ -30,6 +46,7 @@ main()
 			Letter current_letter = NULL;
 			Transition current_transition;
 			int transition_iterator, steps=0;
+
 			while (strcmp(current_state, machine->final_state) != 0)
 			{
 				current_letter = go(machine, move);
