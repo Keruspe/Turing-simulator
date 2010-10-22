@@ -48,7 +48,8 @@ main()
 			}
 			printf("Done\n");
 
-			machine->data_index = -1;
+			machine->data_index = machine->data->extra_data_length - 1;
+			printf("Result: ");
 			while (machine->data_index < machine->data->data_length - 1)
 				printf("%s ", go(machine,'R'));
 			printf("\n");
