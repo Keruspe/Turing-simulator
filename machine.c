@@ -221,26 +221,5 @@ move(Machine * machine, Move move)
 	default: /* Really weird */
 		BadTransitionException(machine, NULL, "bad move found, this is weird, should have been caught by parser.");
 	}
-	if (machine->data_index >= 0) /* Positive index -> data */
-	{
-		if (machine->data_index >= machine->data->data_length) /* If we didn't reach that point yet */
-		{
-			if (((machine->data->data_length)++ % BASE_STORAGE_LENGTH) == 0) /* If full, increase size, then increment the length */
-				machine->data->data = (ElementsCollection) realloc(machine->data->data, (machine->data->data_length + BASE_STORAGE_LENGTH) * sizeof(Element));
-			Letter letter = DEFAULT_LETTER; /* Fill it with default */
-			machine->data->data[machine->data_index] = letter;
-		}
-		return machine->data->data[machine->data_index];
-	}
-	else /* Negative index -> extra_data */
-	{
-		if (machine->data_index < machine->data->extra_data_length) /* If we didn't reach that point yet */
-		{
-			if (((machine->data->extra_data_length)++ % BASE_STORAGE_LENGTH) == 0) /* If full, increase size, then increment the length */
-				machine->data->extra_data = (ElementsCollection) realloc(machine->data->extra_data, (machine->data->extra_data_length + BASE_STORAGE_LENGTH) * sizeof(Element));
-			Letter letter = DEFAULT_LETTER; /* Fill it with default */
-			machine->data->extra_data[machine->data_index + 1] = letter;
-		}
-		return machine->data->extra_data[machine->data_index + 1]; /* Return the Letter we reached */
-	}
+	return getLetter(machine->data, machine->data_index);
 }

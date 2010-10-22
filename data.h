@@ -33,4 +33,7 @@ Data * newData();
 /* Free memory, leaks are evil */
 void freeData(Data *);
 
+/* Get Letter at index */
+Letter getLetter(Data *, int index);
+
 #endif /* __DATA_H__ */
