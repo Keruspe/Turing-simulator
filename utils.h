@@ -18,6 +18,8 @@
 #define BASE_TRANSITIONS_LENGTH 25
 #define BASE_DATA_LENGTH 5*BASE_STORAGE_LENGTH
 
+#define DEFAULT_LETTER "_"
+
 /* Skip the rest of the line we're reading (for comments) */
 void skipLine(FILE *);
 /* Clear the buffer after reading an entry */
