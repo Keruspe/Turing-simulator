@@ -5,6 +5,7 @@
  */
 
 #include "data.h"
+#include <string.h>
 
 Data *
 _newData()
@@ -76,4 +77,13 @@ getLetter(Data * data, int index)
 		}
 		return data->extra_data[index + 1]; /* Return the Letter we reached */
 	}
+}
+
+void
+setLetter(Data * data, int index, Letter letter)
+{
+	if (index >= 0) /* Positive index -> data */
+		strcpy(data->data[index], letter);
+	else /* Negative index -> extra_data */
+		strcpy(data->extra_data[index + 1], letter);
 }

@@ -6,6 +6,8 @@
 
 #include "types.h"
 #include "utils.h"
+#include "machine.h"
+#include "data.h"
 
 void
 skipLine(FILE * file)
@@ -76,4 +78,27 @@ extractData(FILE * file, ElementsCollection * storage, int * storage_length)
 		(*storage)[(*storage_length)++] = element;
 	else
 		free(element); /* Else free the dummy element to avoid memory leaks */
+}
+
+void
+debug(Machine * machine)
+{
+	int tester;
+	printf("alphabet: ");
+	for (tester = 0 ; tester < machine->alphabet_length ; ++tester)
+		printf("%s ", machine->alphabet[tester]);
+	printf("\n");
+	printf("states: ");
+	for (tester = 0 ; tester < machine->states_length ; ++tester)
+		printf("%s ", machine->states[tester]);
+	printf("\n");
+	printf("data: ");
+	for (tester = 0 ; tester < machine->data->data_length ; ++tester)
+		printf("%s ", machine->data->data[tester]);
+	printf("\n");
+	printf("Initial state: %s\n", machine->initial_state);
+	printf("Final state: %s\n", machine->final_state);
+	printf("Transitions:\n");
+	for (tester = 0 ; tester < machine->transitions_length ; ++tester)
+		printf("%s %s %s %s %c\n", machine->transitions[tester].start_state, machine->transitions[tester].cond, machine->transitions[tester].subst, machine->transitions[tester].next_state, machine->transitions[tester].move);
 }

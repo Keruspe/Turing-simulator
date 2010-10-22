@@ -208,7 +208,7 @@ reloadData(Machine * machine)
 }
 
 Letter
-move(Machine * machine, Move move)
+go(Machine * machine, Move move)
 {
 	switch (move)
 	{

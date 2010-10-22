@@ -62,6 +62,6 @@ void freeMachine(Machine *);
 void reloadData(Machine *);
 
 /* Move the Mahcine and return the next value */
-Letter move(Machine *, Move);
+Letter go(Machine *, Move);
 
 #endif /* __MACHINE_H__ */

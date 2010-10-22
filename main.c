@@ -6,6 +6,7 @@
 
 #include "data.h"
 #include "machine.h"
+#include <string.h>
 
 int
 main()
@@ -21,26 +22,36 @@ main()
 			/* Get new Data for our Machine */
 			reloadData(machine);
 
-			/* TODO */
-/* Only debug output for developping */
-int tester;
-printf("alphabet: ");
-for (tester = 0 ; tester < machine->alphabet_length ; ++tester)
-	printf("%s ", machine->alphabet[tester]);
-printf("\n");
-printf("states: ");
-for (tester = 0 ; tester < machine->states_length ; ++tester)
-	printf("%s ", machine->states[tester]);
-printf("\n");
-printf("data: ");
-while (machine->data_index < machine->data->data_length - 1)
-	printf("%s ", move(machine, 'R'));
-printf("\n");
-printf("Initial state: %s\n", machine->initial_state);
-printf("Final state: %s\n", machine->final_state);
-printf("Transitions:\n");
-for (tester = 0 ; tester < machine->transitions_length ; ++tester)
-	printf("%s %s %s %s %c\n", machine->transitions[tester].start_state, machine->transitions[tester].cond, machine->transitions[tester].subst, machine->transitions[tester].next_state, machine->transitions[tester].move);
+			/* Only debug output for developping */
+			debug(machine);
+
+			Move move = 'R'; /* First move */
+			State current_state = machine->initial_state;
+			Letter current_letter = NULL;
+			Transition current_transition;
+			int transition_iterator, steps=0;
+			while (strcmp(current_state, machine->final_state) != 0)
+			{
+				current_letter = go(machine, move);
+				for (transition_iterator = 0 ; transition_iterator < machine->transitions_length ; ++transition_iterator)
+				{
+					current_transition = machine->transitions[transition_iterator];
+					if ((strcmp(current_transition.start_state, current_state) == 0) && (strcmp(current_transition.cond, current_letter) == 0))
+					{
+						current_state = current_transition.next_state;
+						move = current_transition.move;
+						setLetter(machine->data, machine->data_index, current_transition.subst);
+						break;
+					}
+				}
+				printf("%3d steps\n", ++steps);
+			}
+			printf("Done\n");
+
+			machine->data_index = -1;
+			while (machine->data_index < machine->data->data_length - 1)
+				printf("%s ", go(machine,'R'));
+			printf("\n");
 
 			printf("Do you want to continue with this machine ? [Y/n]\n");
 		} while (getchar() != 'n');

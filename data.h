@@ -36,4 +36,7 @@ void freeData(Data *);
 /* Get Letter at index */
 Letter getLetter(Data *, int index);
 
+/* Set Letter at index */
+void setLetter(Data *, int index, Letter);
+
 #endif /* __DATA_H__ */
