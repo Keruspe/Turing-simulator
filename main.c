@@ -33,8 +33,8 @@ for (tester = 0 ; tester < machine->states_length ; ++tester)
 	printf("%s ", machine->states[tester]);
 printf("\n");
 printf("data: ");
-for (tester = 0 ; tester < machine->data->data_length ; ++tester)
-	printf("%s ", machine->data->data[tester]);
+while (machine->data_index < machine->data->data_length - 1)
+	printf("%s ", move(machine, 'R'));
 printf("\n");
 printf("Initial state: %s\n", machine->initial_state);
 printf("Final state: %s\n", machine->final_state);
