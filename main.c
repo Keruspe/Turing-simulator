@@ -23,11 +23,10 @@ main()
 		int i;
 		for (i = 0 ; i < machine->transitions_length ; ++i)
 		{
-			printf("%s : %s\n", machine->transitions[i].next_state, machine->final_state);
 			if (strcmp(machine->transitions[i].next_state, machine->final_state) == 0)
 			{
 				valid = true;
-				//break;
+				break;
 			}
 		}
 		if (!valid)
