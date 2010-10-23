@@ -23,6 +23,13 @@ clearBuffer()
 	while (getchar() != '\n');
 }
 
+void
+eraseSteps()
+{
+	char back[12] = {'\010','\010','\010','\010','\010','\010','\010','\010','\010','\010','\010','\0'};
+	printf("%s", back);
+}
+
 bool
 readElement(FILE * file, Element * element)
 {

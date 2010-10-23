@@ -24,4 +24,7 @@ void MalformedFileException(Machine *, FILE *, const String reason);
  */
 void BadTransitionException(Machine *, FILE *, const String reason);
 
+/* We reached the max steps number,consider the Machine as broken */
+void TooMuchStepsException(Machine *);
+
 #endif /* __EXCEPTIONS_H__ */

@@ -24,10 +24,15 @@
 	letter[0] = '_'; \
 	letter[1] = '\0'
 
+/* Avoid infinite loop */
+#define MAX_STEPS 99999
+
 /* Skip the rest of the line we're reading (for comments) */
 void skipLine(FILE *);
 /* Clear the buffer after reading an entry */
 void clearBuffer();
+/* Tool to rewrite steps count over previous */
+void eraseSteps();
 
 /*
  * parsing stuff

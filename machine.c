@@ -265,9 +265,15 @@ execute(Machine * machine)
 				break;
 			}
 		}
-		printf("%3d steps\n", ++steps);
+		eraseSteps();
+		printf("%5d steps", ++steps);
+		if (steps > MAX_STEPS)
+		{
+			printf("\n");
+			TooMuchStepsException(machine);
+		}
 	}
-	printf("Done\n");
+	printf("\nDone\n");
 
 	machine->data_index = machine->data->extra_data_length - 1;
 	printf("Result: ");
