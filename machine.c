@@ -23,7 +23,6 @@ _newMachine()
 	machine->initial_state = NULL;
 	machine->final_state = NULL;
 	machine->data = NULL;
-	machine->data_index = -1; /* The Machine starts at the left of the first cell */
 	return machine;
 }
 
@@ -204,6 +203,7 @@ reloadData(Machine * machine)
 {
 	if (machine->data) /* If the machine had Data, free it */
 		freeData(machine->data);
+	machine->data_index = -1; /* The Machine starts at the left of the first cell */
 	machine->data = newData(); /* Then read Data */
 	clearBuffer(); /* Clear buffer */
 }
