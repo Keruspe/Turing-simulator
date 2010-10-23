@@ -7,7 +7,6 @@
 #include "data.h"
 #include "exceptions.h"
 #include "machine.h"
-#include <string.h>
 
 int
 main()
@@ -19,18 +18,8 @@ main()
 		/* Get a new Machine */
 		machine = newMachine();
 
-		bool valid = false;
-		int i;
-		for (i = 0 ; i < machine->transitions_length ; ++i)
-		{
-			if (strcmp(machine->transitions[i].next_state, machine->final_state) == 0)
-			{
-				valid = true;
-				break;
-			}
-		}
-		if (!valid)
-			MalformedFileException(machine, NULL, "the final state is unreachable.");
+		/* Validate the Machine */
+		validate(machine);
 
 		do /* Loop for using the same machine with various data */
 		{
@@ -40,35 +29,8 @@ main()
 			/* Only debug output for developping */
 			debug(machine);
 
-			Move move = 'R'; /* First move */
-			State current_state = machine->initial_state;
-			Letter current_letter = NULL;
-			Transition current_transition;
-			int transition_iterator, steps=0;
-
-			while (strcmp(current_state, machine->final_state) != 0)
-			{
-				current_letter = go(machine, move);
-				for (transition_iterator = 0 ; transition_iterator < machine->transitions_length ; ++transition_iterator)
-				{
-					current_transition = machine->transitions[transition_iterator];
-					if ((strcmp(current_transition.start_state, current_state) == 0) && (strcmp(current_transition.cond, current_letter) == 0))
-					{
-						current_state = current_transition.next_state;
-						move = current_transition.move;
-						setLetter(machine->data, machine->data_index, current_transition.subst);
-						break;
-					}
-				}
-				printf("%3d steps\n", ++steps);
-			}
-			printf("Done\n");
-
-			machine->data_index = machine->data->extra_data_length - 1;
-			printf("Result: ");
-			while (machine->data_index < machine->data->data_length - 1)
-				printf("%s ", go(machine,'R'));
-			printf("\n");
+			/* Execute the Machine */
+			execute(machine);
 
 			printf("Do you want to continue with this machine ? [Y/n]\n");
 		} while (getchar() != 'n');
