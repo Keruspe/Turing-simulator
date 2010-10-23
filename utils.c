@@ -26,8 +26,7 @@ clearBuffer()
 void
 eraseSteps()
 {
-	char back[12] = {'\010','\010','\010','\010','\010','\010','\010','\010','\010','\010','\010','\0'};
-	printf("%s", back);
+	printf("\b\b\b\b\b\b\b\b\b\b\b");
 }
 
 bool
