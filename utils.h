@@ -19,8 +19,8 @@
 #define BASE_DATA_LENGTH 5*BASE_STORAGE_LENGTH
 
 /* Macro to create a default Letter */
-#define DEFAULT_LETTER(letter) \
-	Letter (letter) = (Letter) malloc(2 * sizeof(char)); \
+#define DEFAULT_LETTER(x) \
+	Letter (x) = (Letter) malloc(2 * sizeof(char)); \
 	letter[0] = '_'; \
 	letter[1] = '\0'
 
