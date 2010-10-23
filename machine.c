@@ -251,6 +251,7 @@ execute(Machine * machine)
 	Transition current_transition;
 	int transition_iterator, steps=0;
 
+	printf("\n====== Start ======\n");
 	while (strcmp(current_state, machine->final_state) != 0)
 	{
 		current_letter = go(machine, move);
@@ -273,11 +274,11 @@ execute(Machine * machine)
 			TooMuchStepsException(machine);
 		}
 	}
-	printf("\nDone\n");
+	printf("\n======= Done ======\n");
 
 	machine->data_index = machine->data->extra_data_length - 1;
 	printf("Result: ");
 	while (machine->data_index < machine->data->data_length - 1)
 		printf("%s ", go(machine,'R'));
-	printf("\n");
+	printf("\n===================\n\n");
 }

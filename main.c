@@ -15,23 +15,13 @@ main()
 
 	do /* Main loop */
 	{
-		/* Get a new Machine */
-		machine = newMachine();
-
-		/* Validate the Machine */
-		validate(machine);
+		machine = newMachine(); /* Get a new Machine */
+		validate(machine); /* Validate the Machine */
 
 		do /* Loop for using the same machine with various data */
 		{
-			/* Get new Data for our Machine */
-			reloadData(machine);
-
-			/* Only debug output for developping */
-			debug(machine);
-
-			/* Execute the Machine */
-			execute(machine);
-
+			reloadData(machine); /* Get new Data for our Machine */
+			execute(machine); /* Execute the Machine */
 			printf("Do you want to continue with this machine ? [Y/n]\n");
 		} while (getchar() != 'n');
 

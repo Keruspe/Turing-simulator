@@ -49,6 +49,4 @@ bool readElement(FILE * file, Element *);
  */
 void extractData(FILE * file, ElementsCollection * storage, int * storage_length);
 
-void debug(Machine *);
-
 #endif /* __UTILS_H__ */
