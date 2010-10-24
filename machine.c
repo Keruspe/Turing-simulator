@@ -234,7 +234,7 @@ execute(Machine * machine)
 	Transition current_transition;
 	int count, steps=0;
 
-	printf("\n================ Start ================\nData:");
+	printf("\n================== Start ==================\nData:  ");
 	for (count = 0 ; count < machine->data->data_length ; ++count)
 		printf(" %s", machine->data->data[count]);
 	printf("\n");
@@ -260,11 +260,11 @@ execute(Machine * machine)
 			TooMuchStepsException(machine);
 		}
 	}
-	printf("\n================= Done ================\n");
+	printf("\n=================== Done ==================\n");
 
 	machine->data_index = machine->data->extra_data_length - 1;
 	printf("Result:");
 	while (machine->data_index < machine->data->data_length - 1)
 		printf(" %s", go(machine,'R'));
-	printf("\n=======================================\n\n");
+	printf("\n===========================================\n\n");
 }
