@@ -12,15 +12,37 @@
 #include <string.h>
 
 bool
-_validateLetter(Letter letter, LettersCollection valid_letters, int valid_letters_length)
+_validateLetter(Letter letter, Machine * machine)
 {
 	int count;
-	for (count = 0 ; count < valid_letters_length ; ++count)
+	for (count = 0 ; count < machine->alphabet_length ; ++count)
 	{
-		if (strcmp(letter, valid_letters[count]) == 0)
+		if (strcmp(letter, machine->alphabet[count]) == 0)
 			return true;
 	}
 	return false;
+}
+
+bool
+_checkInitialStateDeparture(Machine * machine)
+{
+	int count;
+	for (count = 0 ; count < machine->transitions_length ; ++count)
+	{
+		if (strcmp(machine->transitions[count].start_state, machine->initial_state) == 0)
+			return true;
+	}
+	return false;
+}
+
+bool
+_checkInitialState(Machine * machine)
+{
+	if (!_validateLetter(machine->initial_state, machine))
+		return false;
+	if (!_checkInitialStateDeparture(machine))
+		MalformedFileException(machine, NULL, "cannot leave the initial state.");
+	return true;
 }
 
 bool
@@ -38,7 +60,7 @@ _checkFinalStateReachability(Machine * machine)
 bool
 _checkFinalState(Machine * machine)
 {
-	if (!_validateLetter(machine->final_state, machine->alphabet, machine->alphabet_length))
+	if (!_validateLetter(machine->final_state, machine))
 		return false;
 	if (!_checkFinalStateReachability(machine))
 		MalformedFileException(machine, NULL, "the final state is unreachable.");
@@ -48,6 +70,8 @@ _checkFinalState(Machine * machine)
 void
 validate(Machine * machine)
 {
+	if (!_checkInitialState(machine))
+		MalformedFileException(machine, NULL, "the final state is not part of the alphabet.");
 	if (!_checkFinalState(machine))
 		MalformedFileException(machine, NULL, "the final state is not part of the alphabet.");
 }
@@ -60,7 +84,7 @@ validateData(Machine * machine)
 	for (count = 0 ; count < machine->data->data_length ; ++count)
 	{
 		current_letter = machine->data->data[count];
-		if (!_validateLetter(current_letter, machine->alphabet, machine->alphabet_length))
+		if (!_validateLetter(current_letter, machine))
 		{
 			String reason = (String) malloc((38 + strlen(current_letter)) * sizeof(char));
 			sprintf(reason, "%s is not part of the Machine alphabet.", current_letter);
