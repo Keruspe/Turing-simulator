@@ -12,6 +12,18 @@
 #include <string.h>
 
 bool
+_validateLetter(Letter letter, LettersCollection valid_letters, int valid_letters_length)
+{
+	int count;
+	for (count = 0 ; count < valid_letters_length ; ++count)
+	{
+		if (strcmp(letter, valid_letters[count]) == 0)
+			return true;
+	}
+	return false;
+}
+
+bool
 _checkFinalStateReachability(Machine * machine)
 {
 	int count;
@@ -23,23 +35,21 @@ _checkFinalStateReachability(Machine * machine)
 	return false;
 }
 
+bool
+_checkFinalState(Machine * machine)
+{
+	if (!_validateLetter(machine->final_state, machine->alphabet, machine->alphabet_length))
+		return false;
+	if (!_checkFinalStateReachability(machine))
+		MalformedFileException(machine, NULL, "the final state is unreachable.");
+	return true;
+}
+
 void
 validate(Machine * machine)
 {
-	if (!_checkFinalStateReachability(machine))
-		MalformedFileException(machine, NULL, "the final state is unreachable.");
-}
-
-bool
-_validateLetter(Letter letter, LettersCollection valid_letters, int valid_letters_length)
-{
-	int count;
-	for (count = 0 ; count < valid_letters_length ; ++count)
-	{
-		if (strcmp(letter, valid_letters[count]) == 0)
-			return true;
-	}
-	return false;
+	if (!_checkFinalState(machine))
+		MalformedFileException(machine, NULL, "the final state is not part of the alphabet.");
 }
 
 void
