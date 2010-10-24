@@ -12,11 +12,13 @@
 
 /* We couldn't read a file */
 void NoSuchFileException(const String filename);
+
 /*
  * There was a syntax error in the file (machine and file are optional)
  * machine and file are optional and can be NULL
  */
 void MalformedFileException(Machine *, FILE *, const String reason);
+
 /*
  * There was a malformed transition in the file
  * machine and file are optional and can be NULL

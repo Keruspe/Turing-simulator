@@ -27,20 +27,6 @@ _newMachine()
 }
 
 void
-_readAlphabet(Machine * machine, FILE * machineFile)
-{
-	/* Read the alphabet recognized by the Machine from machineFile */
-	extractData(machineFile, &(machine->alphabet), &(machine->alphabet_length));
-}
-
-void
-_readStates(Machine * machine, FILE * machineFile)
-{
-	/* Read the states in which the Machine can be from machineFile */
-	extractData(machineFile, &(machine->states), &(machine->states_length));
-}
-
-void
 _initTransition(Transition * transition)
 {
 	/* Basic initialisation of a Transition */
@@ -62,6 +48,24 @@ freeTransition(Transition transition)
 		free(transition.subst);
 	if (transition.next_state)
 		free(transition.next_state);
+}
+
+void
+_readAlphabet(Machine * machine, FILE * machineFile)
+{
+	/* Read the alphabet recognized by the Machine from machineFile */
+	extractData(machineFile, &(machine->alphabet), &(machine->alphabet_length));
+	if (machine->alphabet_length == 0) /* Fail if no alphabet in the machineFile */
+		MalformedFileException(machine, machineFile, "your Machine has no alphabet.");
+}
+
+void
+_readStates(Machine * machine, FILE * machineFile)
+{
+	/* Read the states in which the Machine can be from machineFile */
+	extractData(machineFile, &(machine->states), &(machine->states_length));
+	if (machine->states_length == 0) /* Fail if no states in the machineFile */
+		MalformedFileException(machine, machineFile, "your Machine has no states.");
 }
 
 bool
@@ -128,18 +132,17 @@ _readTransitions(Machine * machine, FILE * machineFile)
 		free (transition.start_state);
 }
 
-String
+void
 _readStartAndEndPoints(Machine * machine, FILE * machineFile)
 {
 	/* Read the initial state of the Machine */
-	 readElement(machineFile, &(machine->initial_state));
+	readElement(machineFile, &(machine->initial_state));
 	if(machine->initial_state[0] == '\0')
-		return "no initial state";
+		MalformedFileException(machine, machineFile, "no initial state");
 	/* Read the final state of the Machine */
 	readElement(machineFile, &(machine->final_state));
 	if(machine->final_state[0] == '\0')
-		return "no final state";
-	return NULL;
+		MalformedFileException(machine, machineFile, "no final state");
 }
 
 Machine *
@@ -156,18 +159,9 @@ newMachine()
 	Machine * machine = _newMachine(); /* Allocate memory */
 	/* Read machine stuff from machineFile */
 	_readAlphabet(machine,machineFile);
-	/* Fail if no alphabet in the machineFile */
-	if (machine->alphabet_length == 0)
-		MalformedFileException(machine, machineFile, "your Machine has no alphabet.");
 	_readStates(machine, machineFile);
-	/* Fail if no states in the machineFile */
-	if (machine->states_length == 0)
-		MalformedFileException(machine, machineFile, "your Machine has no states.");
 	_readTransitions(machine, machineFile);
-	/* Fail if no initial or final state in the machineFile */
-	String failure_reason = _readStartAndEndPoints(machine, machineFile);
-	if (failure_reason != NULL)
-		MalformedFileException(machine, machineFile, failure_reason);
+	_readStartAndEndPoints(machine, machineFile);
 
 	/* Close the machineFile */
 	fclose(machineFile);
@@ -225,36 +219,49 @@ go(Machine * machine, Move move)
 	return getLetter(machine->data, machine->data_index);
 }
 
+Transition *
+_getTransition(Machine * machine, State current_state, Letter current_letter)
+{
+	Transition * current_transition;
+	int count;
+	for (count = 0 ; count < machine->transitions_length ; ++count)
+	{
+		current_transition = &(machine->transitions[count]);
+		if ((strcmp(current_transition->start_state, current_state) == 0) && (strcmp(current_transition->cond, current_letter) == 0))
+			return current_transition;
+	}
+	return NULL;
+}
+
 void
 execute(Machine * machine)
 {
 	Move move = 'R'; /* First move */
+	/* Initializations */
+	Transition * current_transition;
 	State current_state = machine->initial_state;
 	Letter current_letter = NULL;
-	Transition current_transition;
 	int count, steps=0;
 
+	/* Print the start state (Data) */
 	printf("\n================== Start ==================\nData:  ");
 	for (count = 0 ; count < machine->data->data_length ; ++count)
 		printf(" %s", machine->data->data[count]);
 	printf("\n");
 
-	while (strcmp(current_state, machine->final_state) != 0)
+	while (strcmp(current_state, machine->final_state) != 0) /* Loop until we reach the final state */
 	{
-		current_letter = go(machine, move);
-		for (count = 0 ; count < machine->transitions_length ; ++count)
-		{
-			current_transition = machine->transitions[count];
-			if ((strcmp(current_transition.start_state, current_state) == 0) && (strcmp(current_transition.cond, current_letter) == 0))
-			{
-				current_state = current_transition.next_state;
-				move = current_transition.move;
-				setLetter(machine->data, machine->data_index, current_transition.subst);
-				break;
-			}
-		}
-		printf("\rExecuting your machine: %d steps", ++steps);
-		if (steps >= MAX_STEPS)
+		current_letter = go(machine, move); /* Move and get the new Letter */
+		/* Get the good Transition to apply */
+		if ((current_transition = _getTransition(machine, current_state, current_letter)) == NULL)
+			BadTransitionException(machine, NULL, "no matching transition found.");
+		/* Apply Transition */
+		current_state = current_transition->next_state;
+		move = current_transition->move;
+		setLetter(machine->data, machine->data_index, current_transition->subst);
+
+		printf("\rExecuting your machine: %d steps", ++steps); /* Print the number of steps we're up to */
+		if (steps >= MAX_STEPS) /* Avoid infinite loop */
 		{
 			printf("\n");
 			TooMuchStepsException(machine);
@@ -262,9 +269,10 @@ execute(Machine * machine)
 	}
 	printf("\n=================== Done ==================\n");
 
+	/* Put the Machine at the left of the first data */
 	machine->data_index = machine->data->extra_data_length - 1;
 	printf("Result:");
-	while (machine->data_index < machine->data->data_length - 1)
+	while (machine->data_index < machine->data->data_length - 1) /* Go through all data to print the result */
 		printf(" %s", go(machine,'R'));
 	printf("\n===========================================\n\n");
 }

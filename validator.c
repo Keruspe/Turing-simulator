@@ -11,25 +11,18 @@
 #include <stdlib.h>
 #include <string.h>
 
-bool
-_validateLetter(Letter letter, Machine * machine)
-{
-	int count;
-	for (count = 0 ; count < machine->alphabet_length ; ++count)
-	{
-		if (strcmp(letter, machine->alphabet[count]) == 0)
-			return true;
-	}
-	return false;
-}
+/* Macros to improve readability */
+#define _validateLetter(x,y) _validateElement(x,y->alphabet,y->alphabet_length)
+#define _validateState(x,y) _validateElement(x,y->states,y->states_length)
 
 bool
-_validateState(Letter letter, Machine * machine)
+_validateElement(Element element, ElementsCollection valid_elements, int collection_length)
 {
+	/* Check if element is in valid_elements */
 	int count;
-	for (count = 0 ; count < machine->states_length ; ++count)
+	for (count = 0 ; count < collection_length ; ++count)
 	{
-		if (strcmp(letter, machine->states[count]) == 0)
+		if (strcmp(element, valid_elements[count]) == 0)
 			return true;
 	}
 	return false;
@@ -38,6 +31,7 @@ _validateState(Letter letter, Machine * machine)
 bool
 _validateTransition(Transition transition, Machine * machine)
 {
+	/* Check if all states and letters used by a Transition are known by the Machine */
 	return (_validateLetter(transition.cond, machine)
 		&& _validateLetter(transition.subst, machine)
 		&& _validateState(transition.start_state, machine)
@@ -47,6 +41,7 @@ _validateTransition(Transition transition, Machine * machine)
 bool
 _checkTransitions(Machine * machine)
 {
+	/* Check if all transitions are valid */
 	int count;
 	for (count = 0 ; count < machine->transitions_length ; ++count)
 	{
@@ -59,6 +54,7 @@ _checkTransitions(Machine * machine)
 bool
 _checkInitialStateDeparture(Machine * machine)
 {
+	/* Check if there is at least one Transition available to leave the initial state */
 	int count;
 	for (count = 0 ; count < machine->transitions_length ; ++count)
 	{
@@ -71,9 +67,9 @@ _checkInitialStateDeparture(Machine * machine)
 bool
 _checkInitialState(Machine * machine)
 {
-	if (!_validateState(machine->initial_state, machine))
+	if (!_validateState(machine->initial_state, machine)) /* Check if the initial state is recognized by the Machine */
 		return false;
-	if (!_checkInitialStateDeparture(machine))
+	if (!_checkInitialStateDeparture(machine)) /* Check if we can leave it */
 		MalformedFileException(machine, NULL, "cannot leave the initial state.");
 	return true;
 }
@@ -81,6 +77,7 @@ _checkInitialState(Machine * machine)
 bool
 _checkFinalStateReachability(Machine * machine)
 {
+	/* Check if there is at least one Transition available to reach the final state */
 	int count;
 	for (count = 0 ; count < machine->transitions_length ; ++count)
 	{
@@ -93,9 +90,9 @@ _checkFinalStateReachability(Machine * machine)
 bool
 _checkFinalState(Machine * machine)
 {
-	if (!_validateState(machine->final_state, machine))
+	if (!_validateState(machine->final_state, machine)) /* Check if the final state is recognized by the Machine */
 		return false;
-	if (!_checkFinalStateReachability(machine))
+	if (!_checkFinalStateReachability(machine)) /* Check if we can reach it */
 		MalformedFileException(machine, NULL, "the final state is unreachable.");
 	return true;
 }
@@ -103,17 +100,18 @@ _checkFinalState(Machine * machine)
 void
 validate(Machine * machine)
 {
-	if (!_checkTransitions(machine))
+	if (!_checkTransitions(machine)) /* Check if all transitions are alright */
 		MalformedFileException(machine, NULL, "a bad transition has been found.");
-	if (!_checkInitialState(machine))
+	if (!_checkInitialState(machine)) /* Check if the initial state is alright */
 		MalformedFileException(machine, NULL, "the initial state is not part of the alphabet.");
-	if (!_checkFinalState(machine))
+	if (!_checkFinalState(machine)) /* Check if the final state is alright */
 		MalformedFileException(machine, NULL, "the final state is not part of the alphabet.");
 }
 
 void
 validateData(Machine * machine)
 {
+	/* Check if every Letter in the Data set is recognized by the Machine */
 	int count;
 	Letter current_letter = NULL;
 	for (count = 0 ; count < machine->data->data_length ; ++count)

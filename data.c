@@ -43,9 +43,9 @@ void
 freeData(Data * data)
 {
 	/* Free the memory used by a Data set */
-	int i; /* Counter */
-	for (i = 0 ; i < data->data_length ; ++i)
-		free(data->data[i]); /* Free each Letter from data */
+	int count;
+	for (count = 0 ; count < data->data_length ; ++count)
+		free(data->data[count]); /* Free each Letter from data */
 	/* Free remaining stuff */
 	free(data->data);
 	free(data->extra_data);
@@ -61,8 +61,7 @@ getLetter(Data * data, int index)
 		{
 			if (((data->data_length)++ % BASE_STORAGE_LENGTH) == 0) /* If full, increase size, then increment the length */
 				data->data = (ElementsCollection) realloc(data->data, (data->data_length + BASE_STORAGE_LENGTH) * sizeof(Element));
-			DEFAULT_LETTER(letter); /* Macro to create a default Letter named letter */
-			data->data[index] = letter;
+			data->data[index] = getDefaultLetter();
 		}
 		return data->data[index];
 	}
@@ -72,8 +71,7 @@ getLetter(Data * data, int index)
 		{
 			if (((data->extra_data_length)++ % BASE_STORAGE_LENGTH) == 0) /* If full, increase size, then increment the length */
 				data->extra_data = (ElementsCollection) realloc(data->extra_data, (data->extra_data_length + BASE_STORAGE_LENGTH) * sizeof(Element));
-			DEFAULT_LETTER(letter); /* Macro to create a default Letter named letter */
-			data->extra_data[index + 1] = letter;
+			data->extra_data[index + 1] = getDefaultLetter();
 		}
 		return data->extra_data[index + 1]; /* Return the Letter we reached */
 	}

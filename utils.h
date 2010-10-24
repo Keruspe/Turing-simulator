@@ -18,17 +18,15 @@
 #define BASE_TRANSITIONS_LENGTH 25
 #define BASE_DATA_LENGTH 5*BASE_STORAGE_LENGTH
 
-/* Macro to create a default Letter */
-#define DEFAULT_LETTER(x) \
-	Letter (x) = (Letter) malloc(2 * sizeof(char)); \
-	letter[0] = '_'; \
-	letter[1] = '\0'
-
 /* Avoid infinite loop */
 #define MAX_STEPS 99999
 
+/* Get the default Letter */
+Letter getDefaultLetter();
+
 /* Skip the rest of the line we're reading (for comments) */
 void skipLine(FILE *);
+
 /* Clear the buffer after reading an entry */
 void clearBuffer();
 
