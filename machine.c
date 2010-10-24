@@ -249,15 +249,19 @@ execute(Machine * machine)
 	State current_state = machine->initial_state;
 	Letter current_letter = NULL;
 	Transition current_transition;
-	int transition_iterator, steps=0;
+	int count, steps=0;
 
-	printf("\n====== Start ======\n");
+	printf("\n================ Start ================\nData:");
+	for (count = 0 ; count < machine->data->data_length ; ++count)
+		printf(" %s", machine->data->data[count]);
+	printf("\n");
+
 	while (strcmp(current_state, machine->final_state) != 0)
 	{
 		current_letter = go(machine, move);
-		for (transition_iterator = 0 ; transition_iterator < machine->transitions_length ; ++transition_iterator)
+		for (count = 0 ; count < machine->transitions_length ; ++count)
 		{
-			current_transition = machine->transitions[transition_iterator];
+			current_transition = machine->transitions[count];
 			if ((strcmp(current_transition.start_state, current_state) == 0) && (strcmp(current_transition.cond, current_letter) == 0))
 			{
 				current_state = current_transition.next_state;
@@ -266,19 +270,18 @@ execute(Machine * machine)
 				break;
 			}
 		}
-		eraseSteps();
-		printf("%5d steps", ++steps);
-		if (steps > MAX_STEPS)
+		printf("\rExecuting your machine: %d steps", ++steps);
+		if (steps >= MAX_STEPS)
 		{
 			printf("\n");
 			TooMuchStepsException(machine);
 		}
 	}
-	printf("\n======= Done ======\n");
+	printf("\n================= Done ================\n");
 
 	machine->data_index = machine->data->extra_data_length - 1;
-	printf("Result: ");
+	printf("Result:");
 	while (machine->data_index < machine->data->data_length - 1)
-		printf("%s ", go(machine,'R'));
-	printf("\n===================\n\n");
+		printf(" %s", go(machine,'R'));
+	printf("\n=======================================\n\n");
 }

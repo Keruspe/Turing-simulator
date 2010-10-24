@@ -23,12 +23,6 @@ clearBuffer()
 	while (getchar() != '\n');
 }
 
-void
-eraseSteps()
-{
-	printf("\b\b\b\b\b\b\b\b\b\b\b");
-}
-
 bool
 readElement(FILE * file, Element * element)
 {

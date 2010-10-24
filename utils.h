@@ -31,8 +31,6 @@
 void skipLine(FILE *);
 /* Clear the buffer after reading an entry */
 void clearBuffer();
-/* Tool to rewrite steps count over previous */
-void eraseSteps();
 
 /*
  * parsing stuff
