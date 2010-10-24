@@ -64,9 +64,6 @@ void reloadData(Machine *);
 /* Move the Mahcine and return the next value */
 Letter go(Machine *, Move);
 
-/* Validate a Machine */
-void validate(Machine *);
-
 /* Execute a Machine */
 void execute(Machine *);
 

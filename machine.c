@@ -226,23 +226,6 @@ go(Machine * machine, Move move)
 }
 
 void
-validate(Machine * machine)
-{
-	bool valid = false;
-	int i;
-	for (i = 0 ; i < machine->transitions_length ; ++i)
-	{
-		if (strcmp(machine->transitions[i].next_state, machine->final_state) == 0)
-		{
-			valid = true;
-			break;
-		}
-	}
-	if (!valid)
-		MalformedFileException(machine, NULL, "the final state is unreachable.");
-}
-
-void
 execute(Machine * machine)
 {
 	Move move = 'R'; /* First move */

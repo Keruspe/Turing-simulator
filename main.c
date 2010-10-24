@@ -7,6 +7,7 @@
 #include "data.h"
 #include "exceptions.h"
 #include "machine.h"
+#include "validator.h"
 
 int
 main()
