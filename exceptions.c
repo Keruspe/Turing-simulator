@@ -4,10 +4,9 @@
  * Copyright (C) Marc-Antoine Perennou 2010 <Marc-Antoine@Perennou.com>
  */
 
-#include "exceptions.h"
 #include "machine.h"
+#include "types.h"
 #include "utils.h"
-#include <stdlib.h>
 #include <string.h>
 
 void
