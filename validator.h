@@ -10,4 +10,7 @@
 /* Validate a Machine */
 void validate(Machine *);
 
+/* Validate a Data set for a Machine */
+void validateData(Machine *);
+
 #endif /* __VALIDATOR_H__ */

@@ -21,6 +21,7 @@ main()
 		do /* Loop for using the same machine with various data */
 		{
 			reloadData(machine); /* Get new Data for our Machine */
+			validateData(machine); /* Validate the new Data set */
 			execute(machine); /* Execute the Machine */
 			printf("Do you want to continue with this machine ? [Y/n]\n");
 		} while (getchar() != 'n');
