@@ -14,7 +14,7 @@ _newData()
 	Data * data = (Data *) malloc(sizeof(Data));
 	data->data = (LettersCollection) malloc(BASE_DATA_LENGTH * sizeof(Letter));
 	data->data_length = 0;
-	data->extra_data = (LettersCollection) malloc(BASE_DATA_LENGTH * sizeof(Letter));
+	data->extra_data = NULL;
 	data->extra_data_length = 0;
 	return data;
 }
@@ -60,7 +60,7 @@ getLetter(Data * data, int index)
 		if (index >= data->data_length) /* If we didn't reach that point yet */
 		{
 			if (((data->data_length)++ % BASE_STORAGE_LENGTH) == 0) /* If full, increase size, then increment the length */
-				data->data = (ElementsCollection) realloc(data->data, (data->data_length + BASE_STORAGE_LENGTH) * sizeof(Element));
+				data->data = (LettersCollection) realloc(data->data, (data->data_length + BASE_STORAGE_LENGTH) * sizeof(Letter));
 			data->data[index] = getDefaultLetter();
 		}
 		return data->data[index];
@@ -69,8 +69,11 @@ getLetter(Data * data, int index)
 	{
 		if (index < data->extra_data_length) /* If we didn't reach that point yet */
 		{
-			if (((data->extra_data_length)++ % BASE_STORAGE_LENGTH) == 0) /* If full, increase size, then increment the length */
-				data->extra_data = (ElementsCollection) realloc(data->extra_data, (data->extra_data_length + BASE_STORAGE_LENGTH) * sizeof(Element));
+			if (data->extra_data_length == 0)
+				data->extra_data = (LettersCollection) malloc(BASE_DATA_LENGTH * sizeof(Letter));
+			else if ((data->extra_data_length % BASE_STORAGE_LENGTH) == 0) /* If full, increase size, then increment the length */
+				data->extra_data = (LettersCollection) realloc(data->extra_data, (data->extra_data_length + BASE_STORAGE_LENGTH) * sizeof(Letter));
+			++(data->extra_data_length);
 			data->extra_data[index + 1] = getDefaultLetter();
 		}
 		return data->extra_data[index + 1]; /* Return the Letter we reached */

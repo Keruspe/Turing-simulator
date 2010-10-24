@@ -251,6 +251,12 @@ execute(Machine * machine)
 
 	while (strcmp(current_state, machine->final_state) != 0) /* Loop until we reach the final state */
 	{
+		if (steps >= MAX_STEPS) /* Avoid infinite loop */
+		{
+			printf("\n");
+			TooMuchStepsException(machine);
+		}
+
 		current_letter = go(machine, move); /* Move and get the new Letter */
 		/* Get the good Transition to apply */
 		if ((current_transition = _getTransition(machine, current_state, current_letter)) == NULL)
@@ -261,11 +267,6 @@ execute(Machine * machine)
 		setLetter(machine->data, machine->data_index, current_transition->subst);
 
 		printf("\rExecuting your machine: %d steps", ++steps); /* Print the number of steps we're up to */
-		if (steps >= MAX_STEPS) /* Avoid infinite loop */
-		{
-			printf("\n");
-			TooMuchStepsException(machine);
-		}
 	}
 	printf("\n=================== Done ==================\n");
 
