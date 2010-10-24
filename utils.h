@@ -21,8 +21,7 @@
 /* Avoid infinite loop */
 #define MAX_STEPS 99999
 
-/* Get the default Letter */
-Letter getDefaultLetter();
+#define DEFAULT_LETTER "_"
 
 /* Skip the rest of the line we're reading (for comments) */
 void skipLine(FILE *);

@@ -7,16 +7,6 @@
 #include "types.h"
 #include "utils.h"
 
-Letter
-getDefaultLetter()
-{
-	/* Use a malloc so that we don't get invalid free calls when freeing Data */
-	Letter letter = (Letter) malloc(2 * sizeof(char));
-	letter[0] = '_';
-	letter[1] = '\0';
-	return letter;
-}
-
 void
 skipLine(FILE * file)
 {
