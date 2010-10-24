@@ -24,6 +24,39 @@ _validateLetter(Letter letter, Machine * machine)
 }
 
 bool
+_validateState(Letter letter, Machine * machine)
+{
+	int count;
+	for (count = 0 ; count < machine->states_length ; ++count)
+	{
+		if (strcmp(letter, machine->states[count]) == 0)
+			return true;
+	}
+	return false;
+}
+
+bool
+_validateTransition(Transition transition, Machine * machine)
+{
+	return (_validateLetter(transition.cond, machine)
+		&& _validateLetter(transition.subst, machine)
+		&& _validateState(transition.start_state, machine)
+		&& _validateState(transition.next_state, machine));
+}
+
+bool
+_checkTransitions(Machine * machine)
+{
+	int count;
+	for (count = 0 ; count < machine->transitions_length ; ++count)
+	{
+		if (!_validateTransition(machine->transitions[count], machine))
+			return false;
+	}
+	return true;
+}
+
+bool
 _checkInitialStateDeparture(Machine * machine)
 {
 	int count;
@@ -38,7 +71,7 @@ _checkInitialStateDeparture(Machine * machine)
 bool
 _checkInitialState(Machine * machine)
 {
-	if (!_validateLetter(machine->initial_state, machine))
+	if (!_validateState(machine->initial_state, machine))
 		return false;
 	if (!_checkInitialStateDeparture(machine))
 		MalformedFileException(machine, NULL, "cannot leave the initial state.");
@@ -60,7 +93,7 @@ _checkFinalStateReachability(Machine * machine)
 bool
 _checkFinalState(Machine * machine)
 {
-	if (!_validateLetter(machine->final_state, machine))
+	if (!_validateState(machine->final_state, machine))
 		return false;
 	if (!_checkFinalStateReachability(machine))
 		MalformedFileException(machine, NULL, "the final state is unreachable.");
@@ -70,8 +103,10 @@ _checkFinalState(Machine * machine)
 void
 validate(Machine * machine)
 {
+	if (!_checkTransitions(machine))
+		MalformedFileException(machine, NULL, "a bad transition has been found.");
 	if (!_checkInitialState(machine))
-		MalformedFileException(machine, NULL, "the final state is not part of the alphabet.");
+		MalformedFileException(machine, NULL, "the initial state is not part of the alphabet.");
 	if (!_checkFinalState(machine))
 		MalformedFileException(machine, NULL, "the final state is not part of the alphabet.");
 }
