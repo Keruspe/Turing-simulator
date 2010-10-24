@@ -1,1 +1,6 @@
 Student project for Nantes' University of Sciences
+This software takes two files, one describing a Turing Machine and another containing the Data. It then executes the Machine on the Data.
+Just type "make" to build it.
+Then launch it with ./turing-simulator
+A sample Machine file is available in sample/machine
+A sammple Data file is available in sample/data
