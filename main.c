@@ -18,7 +18,7 @@ main()
 		machine = newMachine(); /* Get a new Machine */
 		validate(machine); /* Validate the Machine */
 
-		do /* Loop for using the same machine with various data */
+		do /* Loop for using the same Machine with various Data sets */
 		{
 			reloadData(machine); /* Get new Data for our Machine */
 			validateData(machine); /* Validate the new Data set */

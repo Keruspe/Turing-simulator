@@ -30,26 +30,30 @@ validate(Machine * machine)
 		MalformedFileException(machine, NULL, "the final state is unreachable.");
 }
 
+bool
+_validateLetter(Letter letter, LettersCollection valid_letters, int valid_letters_length)
+{
+	int count;
+	for (count = 0 ; count < valid_letters_length ; ++count)
+	{
+		if (strcmp(letter, valid_letters[count]) == 0)
+			return true;
+	}
+	return false;
+}
+
 void
 validateData(Machine * machine)
 {
-	int data_count, alphabet_count;
-	bool valid;
-	for (data_count = 0 ; data_count < machine->data->data_length ; ++data_count)
+	int count;
+	Letter current_letter = NULL;
+	for (count = 0 ; count < machine->data->data_length ; ++count)
 	{
-		valid = false;
-		for (alphabet_count = 0 ; alphabet_count < machine->alphabet_length ; ++alphabet_count)
+		current_letter = machine->data->data[count];
+		if (!_validateLetter(current_letter, machine->alphabet, machine->alphabet_length))
 		{
-			if (strcmp(machine->data->data[data_count], machine->alphabet[alphabet_count]) == 0)
-			{
-				valid = true;
-				break;
-			}
-		}
-		if (!valid)
-		{
-			String reason = (String) malloc((38 + strlen(machine->data->data[data_count])) * sizeof(char));
-			sprintf(reason, "%s is not part of the Machine alphabet.", machine->data->data[data_count]);
+			String reason = (String) malloc((38 + strlen(current_letter)) * sizeof(char));
+			sprintf(reason, "%s is not part of the Machine alphabet.", current_letter);
 			MalformedFileException(machine, NULL, reason);
 		}
 	}
