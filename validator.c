@@ -101,7 +101,7 @@ void
 validate(Machine * machine)
 {
 	if (!_checkTransitions(machine)) /* Check if all transitions are alright */
-		MalformedFileException(machine, NULL, "a bad transition has been found.");
+		BadTransitionException(machine, NULL, NULL);
 	if (!_checkInitialState(machine)) /* Check if the initial state is alright */
 		MalformedFileException(machine, NULL, "the initial state is not part of the alphabet.");
 	if (!_checkFinalState(machine)) /* Check if the final state is alright */
