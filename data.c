@@ -48,7 +48,8 @@ freeData(Data * data)
 		free(data->data[count]); /* Free each Letter from data */
 	/* Free remaining stuff */
 	free(data->data);
-	free(data->extra_data);
+	if (data->extra_data)
+		free(data->extra_data);
 	free(data);
 }
 
