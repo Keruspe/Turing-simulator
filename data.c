@@ -62,6 +62,7 @@ getLetter(Data * data, int index)
 		{
 			if (((data->data_length)++ % BASE_STORAGE_LENGTH) == 0) /* If full, increase size, then increment the length */
 				data->data = (LettersCollection) realloc(data->data, (data->data_length + BASE_STORAGE_LENGTH) * sizeof(Letter));
+			data->data[index] = NULL;
 			setLetter(data, index, DEFAULT_LETTER);
 		}
 		return data->data[index];
@@ -87,7 +88,10 @@ setLetter(Data * data, int index, Letter letter)
 {
 	if (index >= 0) /* Positive index -> data */
 	{
-		data->data[index] = (Letter) realloc(data->data[index], (strlen(letter) + 1) * sizeof(char));
+		if (data->data[index])
+			data->data[index] = (Letter) realloc(data->data[index], (strlen(letter) + 1) * sizeof(char));
+		else
+			data->data[index] = (Letter) malloc((strlen(letter) + 1) * sizeof(char));
 		strcpy(data->data[index], letter);
 	}
 	else /* Negative index -> extra_data */
