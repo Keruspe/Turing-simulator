@@ -60,7 +60,7 @@ void
 TooMuchStepsException(Machine * machine)
 {
 	/* Machine was probably in an infinite loop, abort */
-	free(machine);
+	freeMachine(machine);
 	String reason = (String) malloc(100 * sizeof(char));
 	sprintf(reason, "your Machine needed too much steps to execute (max allowed: %d), considerating it as broken.", MAX_STEPS);
 	_Exception(reason);
