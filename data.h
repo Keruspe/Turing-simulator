@@ -39,4 +39,7 @@ Letter getLetter(Machine *);
 /* Set Letter at index */
 void setLetter(Data *, int index, Letter);
 
+/* Print the Data */
+void printData(Data*);
+
 #endif /* __DATA_H__ */

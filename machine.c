@@ -247,22 +247,16 @@ execute(Machine * machine)
 	Transition * current_transition;
 	State current_state = machine->initial_state;
 	Letter current_letter = NULL;
-	int count, steps=0;
+	int steps=0;
 
 	/* Print the start state (Data) */
-	printf("\n================== Start ==================\nData:  ");
-	for (count = 0 ; count < machine->data->data_length ; ++count)
-		printf(" %s", machine->data->data[count]);
-	printf("\n");
+	printf("\n===========================================\nInitial Data:\n");
+	printData(machine->data);
+	printf("\n================== Start ==================\nExecuting your Machine:\n");
 
+	printData(machine->data);
 	while (strcmp(current_state, machine->final_state) != 0) /* Loop until we reach the final state */
 	{
-		if (steps >= MAX_STEPS) /* Avoid infinite loop */
-		{
-			TooMuchStepsException(machine);
-		}
-		printf("\rExecuting your machine: %d steps", ++steps); /* Print the number of steps we're up to */
-
 		current_letter = go(machine, move); /* Move and get the new Letter */
 		/* Get the good Transition to apply */
 		if ((current_transition = _getTransition(machine, current_state, current_letter)) == NULL)
@@ -271,13 +265,16 @@ execute(Machine * machine)
 		current_state = current_transition->next_state;
 		move = current_transition->move;
 		setLetter(machine->data, machine->data_index, current_transition->subst);
-	}
-	printf("\n=================== Done ==================\n");
+		printf("\n");
+		printData(machine->data);
 
-	/* Put the Machine at the left of the first data */
-	machine->data_index = machine->data->extra_data_length - 1;
-	printf("Result:");
-	while (machine->data_index < machine->data->data_length - 1) /* Go through all data to print the result */
-		printf(" %s", go(machine,'R'));
+		if (++steps >= MAX_STEPS) /* Avoid infinite loop */
+		{
+			TooMuchStepsException(machine);
+		}
+	}
+
+	printf("\n=================== Done ==================\nResult after %d steps:\n", steps);
+	printData(machine->data);
 	printf("\n===========================================\n\n");
 }

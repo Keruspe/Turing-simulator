@@ -126,3 +126,13 @@ setLetter(Data * data, int index, Letter letter)
 		strcpy(data->extra_data[-index-1], letter); /* Copy the letter */
 	}
 }
+
+void
+printData(Data * data)
+{
+	int count;
+	for (count = data->extra_data_length ; count > 0 ; --count)
+		printf("%s ", data->extra_data[count-1]);
+	for (count = 0 ; count < data->data_length ; ++count)
+		printf("%s ", data->data[count]);
+}
