@@ -12,6 +12,7 @@ void
 _Exception(const String prefix, String reason)
 {
 	/* The mother of each exception, prints the error, free the memory and exit */
+	printf("\n===========================================\n\n");
 	fprintf(stderr, "%s: %s\nExiting...\n", prefix, reason);
 	free(reason);
 	exit(EXIT_FAILURE);

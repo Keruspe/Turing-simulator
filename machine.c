@@ -109,7 +109,7 @@ _readTransition(Machine * machine, FILE * machine_file, Transition * transition,
 	free(element); /* So free this array not to have any leak */
 	/* Move was not 'R' or 'L', we don't know any other, abort */
 	if (transition->move != 'R' && transition->move != 'L')
-		MalformedFileException(machine, machine_file, "bad move in transition, only 'R' or 'L' are allowed", *line_number);
+		BadTransitionException(machine, machine_file, "bad move in transition, only 'R' or 'L' are allowed", *line_number);
 	return notYetTheEnd;
 }
 
@@ -259,9 +259,9 @@ execute(Machine * machine)
 	{
 		if (steps >= MAX_STEPS) /* Avoid infinite loop */
 		{
-			printf("\n");
 			TooMuchStepsException(machine);
 		}
+		printf("\rExecuting your machine: %d steps", ++steps); /* Print the number of steps we're up to */
 
 		current_letter = go(machine, move); /* Move and get the new Letter */
 		/* Get the good Transition to apply */
@@ -271,8 +271,6 @@ execute(Machine * machine)
 		current_state = current_transition->next_state;
 		move = current_transition->move;
 		setLetter(machine->data, machine->data_index, current_transition->subst);
-
-		printf("\rExecuting your machine: %d steps", ++steps); /* Print the number of steps we're up to */
 	}
 	printf("\n=================== Done ==================\n");
 
