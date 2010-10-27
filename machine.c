@@ -79,10 +79,10 @@ _readTransitionElement(Machine * machine, FILE * machine_file, Transition * tran
 		if (machine->transitions_length == 0)
 			reason = "your Machine has no Transition.";
 		/*
-		 * If start_state is NULL, the Transition section ended.
-		 * Return a dummy Transition with only an empty start_state
+		 * If start_state is dummy, it's the one we're reading, the Transition section ended.
+		 * Let the dummy Transition with only an empty start_state be trated later
 		 */
-		if (transition->start_state != NULL)
+		if (transition->start_state[0] != '\0') /* Else */
 		{
 			freeTransition(*transition); /* Free the current transition */
 			BadTransitionException(machine, machine_file, reason, *line_number);
