@@ -75,18 +75,17 @@ _readTransitionElement(Machine * machine, FILE * machine_file, Transition * tran
 	bool notYetTheEnd = readElement(machine_file, element, line_number); /* Read an Element */
 	if ((*element)[0] == '\0') /* If the element is dummy */
 	{
-		String reason = NULL; /* Determine whether we want a generic or a custom error message */
-		if (machine->transitions_length == 0)
-			reason = "your Machine has no Transition.";
-		/*
-		 * If start_state is dummy, it's the one we're reading, the Transition section ended.
-		 * Let the dummy Transition with only an empty start_state be trated later
-		 */
-		if (transition->start_state[0] != '\0') /* Else */
-		{
-			freeTransition(*transition); /* Free the current transition */
-			BadTransitionException(machine, machine_file, reason, *line_number);
+		if (transition->start_state != *element)
+		{ /* We're not reading the first Element of the Transition, it's malformed */
+			freeTransition(*transition);
+			BadTransitionException(machine, machine_file, NULL, *line_number);
 		}
+		else if (machine->transitions_length == 0)
+		{ /* We're reading the first Element of the first Transition, there is no Transition */
+			free (*element);
+			BadTransitionException(machine, machine_file, "your Machine has no Transition.", *line_number);
+		}
+		/* Else let the dummy Transition being treated later */
 	}
 	return notYetTheEnd;
 }
@@ -265,7 +264,7 @@ execute(Machine * machine)
 		current_letter = go(machine, move); /* Move and get the new Letter */
 		/* Get the good Transition to apply */
 		if ((current_transition = _getTransition(machine, current_state, current_letter)) == NULL)
-			RuntimeException(machine, "no matching transition found.");
+			RuntimeException(machine, "no matching transition found."); /* TODO: fix segv */
 		/* Apply Transition */
 		current_state = current_transition->next_state;
 		move = current_transition->move;
