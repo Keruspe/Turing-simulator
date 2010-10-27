@@ -43,7 +43,7 @@ void
 _BadTransitionException(Machine * machine, FILE * file, int line_number)
 {
 	/* Gives a precise reason to MalformedFileException */
-	MalformedFileException(machine, file, "a malformed transition has been found.\nExpected: State Letter Letter State Move", line_number);
+	MalformedFileException(machine, file, "a malformed transition has been found.\nExpected: State Letter Letter State Move (Must be values recognized by the Machine)", line_number);
 }
 
 void
