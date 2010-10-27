@@ -52,27 +52,27 @@ freeTransition(Transition transition)
 }
 
 void
-_readAlphabet(Machine * machine, FILE * machineFile, int * line_number)
+_readAlphabet(Machine * machine, FILE * machine_file, int * line_number)
 {
-	/* Read the alphabet recognized by the Machine from machineFile */
-	extractData(machineFile, &(machine->alphabet), &(machine->alphabet_length), line_number);
-	if (machine->alphabet_length == 0) /* Fail if no alphabet in the machineFile */
-		MalformedFileException(machine, machineFile, "your Machine has no alphabet.");
+	/* Read the alphabet recognized by the Machine from machine_file */
+	extractData(machine_file, &(machine->alphabet), &(machine->alphabet_length), line_number);
+	if (machine->alphabet_length == 0) /* Fail if no alphabet in the machine_file */
+		MalformedFileException(machine, machine_file, "your Machine has no alphabet.");
 }
 
 void
-_readStates(Machine * machine, FILE * machineFile, int * line_number)
+_readStates(Machine * machine, FILE * machine_file, int * line_number)
 {
-	/* Read the states in which the Machine can be from machineFile */
-	extractData(machineFile, &(machine->states), &(machine->states_length), line_number);
-	if (machine->states_length == 0) /* Fail if no states in the machineFile */
-		MalformedFileException(machine, machineFile, "your Machine has no states.");
+	/* Read the states in which the Machine can be from machine_file */
+	extractData(machine_file, &(machine->states), &(machine->states_length), line_number);
+	if (machine->states_length == 0) /* Fail if no states in the machine_file */
+		MalformedFileException(machine, machine_file, "your Machine has no states.");
 }
 
 bool
-_readTransitionElement(Machine * machine, FILE * machineFile, Transition * transition, Element * element, int * line_number)
+_readTransitionElement(Machine * machine, FILE * machine_file, Transition * transition, Element * element, int * line_number)
 {
-	bool notYetTheEnd = readElement(machineFile, element, line_number); /* Read an Element */
+	bool notYetTheEnd = readElement(machine_file, element, line_number); /* Read an Element */
 	if (element[0] == '\0') /* If the element is dummy */
 	{
 		freeTransition(*transition); /* Free the current transition */
@@ -86,46 +86,46 @@ _readTransitionElement(Machine * machine, FILE * machineFile, Transition * trans
 		if (transition->start_state != NULL)
 		{
 			free(element); /* Free memory and then fail */
-			BadTransitionException(machine, machineFile, reason);
+			BadTransitionException(machine, machine_file, reason);
 		}
 	}
 	return notYetTheEnd;
 }
 
 bool
-_readTransition(Machine * machine, FILE * machineFile, Transition * transition, int * line_number)
+_readTransition(Machine * machine, FILE * machine_file, Transition * transition, int * line_number)
 {
 	_initTransition(transition); /* Initialize the Transition */
 	/* The first element we just read is the start state */
-	_readTransitionElement(machine, machineFile, transition, &(transition->start_state), line_number);
+	_readTransitionElement(machine, machine_file, transition, &(transition->start_state), line_number);
 	if (transition->start_state[0] == '\0') /* No more transitions to read */
 		return false;
-	_readTransitionElement(machine, machineFile, transition, &(transition->cond), line_number); /* Then read the conditionnal value */
-	_readTransitionElement(machine, machineFile, transition, &(transition->subst), line_number); /* Then the substitution value */
-	_readTransitionElement(machine, machineFile, transition, &(transition->next_state), line_number); /* Continue with the next state */
+	_readTransitionElement(machine, machine_file, transition, &(transition->cond), line_number); /* Then read the conditionnal value */
+	_readTransitionElement(machine, machine_file, transition, &(transition->subst), line_number); /* Then the substitution value */
+	_readTransitionElement(machine, machine_file, transition, &(transition->next_state), line_number); /* Continue with the next state */
 	Element element = NULL;
-	bool notYetTheEnd = _readTransitionElement(machine, machineFile, transition, &element, line_number); /* Temporary element to avoid a memory leak */
+	bool notYetTheEnd = _readTransitionElement(machine, machine_file, transition, &element, line_number); /* Temporary element to avoid a memory leak */
 	transition->move = element[0]; /* We only want the first char of it */
 	free(element); /* So free this array not to have any leak */
 	/* Move was not 'R' or 'L', we don't know any other, abort */
 	if (transition->move != 'R' && transition->move != 'L')
-		MalformedFileException(machine, machineFile, "bad move in transition, only 'R' or 'L' are allowed");
+		MalformedFileException(machine, machine_file, "bad move in transition, only 'R' or 'L' are allowed");
 	return notYetTheEnd;
 }
 
 void
-_readTransitions(Machine * machine, FILE * machineFile, int * line_number)
+_readTransitions(Machine * machine, FILE * machine_file, int * line_number)
 {
 	/* Read the available transitions */
 	Transition transition; /* Will be used to store each transition */
 	/* Keep reading while there are things to read (we did not meet '#') */
-	while (_readTransition(machine, machineFile, &transition, line_number)) /* While there are still transitions to read */
+	while (_readTransition(machine, machine_file, &transition, line_number)) /* While there are still transitions to read */
 	{
 		/* Store the transition and increase the number of transitions available */
 		machine->transitions[machine->transitions_length++] = transition;
 		/* Validate the transition */
 		if (!validateTransition(transition, machine))
-			BadTransitionException(machine, machineFile, NULL);
+			BadTransitionException(machine, machine_file, NULL);
 		/* When the Array is full, increase its size */
 		if ((machine->transitions_length % BASE_TRANSITIONS_LENGTH) == 0)
 			machine->transitions = (TransitionsCollection) realloc(machine->transitions, (machine->transitions_length + BASE_TRANSITIONS_LENGTH) * sizeof(Transition));
@@ -137,39 +137,39 @@ _readTransitions(Machine * machine, FILE * machineFile, int * line_number)
 }
 
 void
-_readStartAndEndPoints(Machine * machine, FILE * machineFile, int * line_number)
+_readStartAndEndPoints(Machine * machine, FILE * machine_file, int * line_number)
 {
 	/* Read the initial state of the Machine */
-	readElement(machineFile, &(machine->initial_state), line_number);
+	readElement(machine_file, &(machine->initial_state), line_number);
 	if(machine->initial_state[0] == '\0')
-		MalformedFileException(machine, machineFile, "no initial state");
+		MalformedFileException(machine, machine_file, "no initial state");
 	/* Read the final state of the Machine */
-	readElement(machineFile, &(machine->final_state), line_number);
+	readElement(machine_file, &(machine->final_state), line_number);
 	if(machine->final_state[0] == '\0')
-		MalformedFileException(machine, machineFile, "no final state");
+		MalformedFileException(machine, machine_file, "no final state");
 }
 
 Machine *
 newMachine()
 {
-	FILE * machineFile = NULL;
-	char machineFilename[MAX_FILENAME_LENGTH] = "";
+	FILE * machine_file = NULL;
+	char machine_filename[MAX_FILENAME_LENGTH] = "";
 	int line_number = 1;
 
 	printf("Where is the file describing your turing machine ?\n");
 	/* Read the name of the file in which the Machine is described, fail and exit if we cannot load it */
-	if (!scanf("%s", machineFilename) || (machineFile = fopen(machineFilename, "r")) == NULL)
-		NoSuchFileException(machineFilename);
+	if (!scanf("%s", machine_filename) || (machine_file = fopen(machine_filename, "r")) == NULL)
+		NoSuchFileException(machine_filename);
 
 	Machine * machine = _newMachine(); /* Allocate memory */
-	/* Read machine stuff from machineFile */
-	_readAlphabet(machine, machineFile, &line_number);
-	_readStates(machine, machineFile, &line_number);
-	_readTransitions(machine, machineFile, &line_number);
-	_readStartAndEndPoints(machine, machineFile, &line_number);
+	/* Read machine stuff from machine_file */
+	_readAlphabet(machine, machine_file, &line_number);
+	_readStates(machine, machine_file, &line_number);
+	_readTransitions(machine, machine_file, &line_number);
+	_readStartAndEndPoints(machine, machine_file, &line_number);
 
-	/* Close the machineFile */
-	fclose(machineFile);
+	/* Close the machine_file */
+	fclose(machine_file);
 	return machine;
 }
 

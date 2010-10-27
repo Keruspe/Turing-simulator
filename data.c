@@ -25,21 +25,21 @@ _newData()
 Data *
 newData()
 {
-	FILE * dataFile = NULL;
-	char dataFilename[MAX_FILENAME_LENGTH];
+	FILE * data_file = NULL;
+	char data_filename[MAX_FILENAME_LENGTH];
 	int line_number = 1;
 
 	printf("Where is the file containing the data for your machine ?\n");
 	/* Read the name of the file in which the Data are stored, don't fail if we cannot, just ask for another one */
-	while (!scanf("%s", dataFilename) || (dataFile = fopen(dataFilename, "r")) == NULL)
-		printf("Failed to read file: %s, please enter a new one.\n", dataFilename);
+	while (!scanf("%s", data_filename) || (data_file = fopen(data_filename, "r")) == NULL)
+		printf("Failed to read file: %s, please enter a new one.\n", data_filename);
 
 	Data * data = _newData(); /* Allocate memory */
-	/* Extract Data from dataFile */
-	extractData(dataFile, &(data->data), &(data->data_length), &line_number);
+	/* Extract Data from data_file */
+	extractData(data_file, &(data->data), &(data->data_length), &line_number);
 
-	/* Close the dataFile */
-	fclose(dataFile);
+	/* Close the data_file */
+	fclose(data_file);
 	return data;
 }
 
