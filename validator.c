@@ -47,7 +47,7 @@ _checkInitialState(Machine * machine)
 	if (!_validateState(machine->initial_state, machine)) /* Check if the initial state is recognized by the Machine */
 		return false;
 	if (!_checkInitialStateDeparture(machine)) /* Check if we can leave it */
-		MalformedFileException(machine, NULL, "cannot leave the initial state.");
+		ValidationException(machine, "machine", "cannot leave the initial state.");
 	return true;
 }
 
@@ -70,7 +70,7 @@ _checkFinalState(Machine * machine)
 	if (!_validateState(machine->final_state, machine)) /* Check if the final state is recognized by the Machine */
 		return false;
 	if (!_checkFinalStateReachability(machine)) /* Check if we can reach it */
-		MalformedFileException(machine, NULL, "the final state is unreachable.");
+		ValidationException(machine, "machine", "the final state is unreachable.");
 	return true;
 }
 
@@ -88,9 +88,9 @@ void
 validate(Machine * machine)
 {
 	if (!_checkInitialState(machine)) /* Check if the initial state is alright */
-		MalformedFileException(machine, NULL, "the initial state is not part of the alphabet.");
+		ValidationException(machine, "machine", "the initial state is not part of the alphabet.");
 	if (!_checkFinalState(machine)) /* Check if the final state is alright */
-		MalformedFileException(machine, NULL, "the final state is not part of the alphabet.");
+		ValidationException(machine, "machine", "the final state is not part of the alphabet.");
 }
 
 void
@@ -107,7 +107,7 @@ validateData(Machine * machine)
 			/* Throw an exception if it's not */
 			String reason = (String) malloc((38 + strlen(current_letter)) * sizeof(char));
 			sprintf(reason, "%s is not part of the Machine alphabet.", current_letter);
-			MalformedFileException(machine, NULL, reason);
+			ValidationException(machine, "data", reason);
 		}
 	}
 }

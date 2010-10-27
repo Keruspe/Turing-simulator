@@ -9,10 +9,10 @@
 #include <string.h>
 
 void
-_Exception(String reason)
+_Exception(const String prefix, String reason)
 {
 	/* The mother of each exception, prints the error, free the memory and exit */
-	fprintf(stderr, "Exception: %s\nExiting...\n", reason);
+	fprintf(stderr, "%s: %s\nExiting...\n", prefix, reason);
 	free(reason);
 	exit(EXIT_FAILURE);
 }
@@ -23,55 +23,69 @@ NoSuchFileException(const String filename)
 	/* Gives a precise reason to _Exception */
 	String full_reason = (String) malloc((22 + strlen(filename)) * sizeof(char));
 	sprintf(full_reason, "failed to read file: %s", filename);
-	_Exception(full_reason);
+	_Exception("Exception", full_reason);
 }
 
 void
-MalformedFileException(Machine * machine, FILE * file, const String reason)
+MalformedFileException(Machine * machine, FILE * file, const String reason, int line_number)
 {
 	if (machine) /* If we've a machine to free, free it */
 		freeMachine(machine);
 	if (file) /* If we've a file to close, close it */
 		fclose(file);
 	/* Gives a precise reason to _Exception */
-	String full_reason = (String) malloc ((17 + strlen(reason)) * sizeof(char));
-	sprintf(full_reason, "malformed file, %s", reason);
-	_Exception(full_reason);
+	String full_reason = (String) malloc ((25 + strlen(reason)) * sizeof(char));
+	sprintf(full_reason, "malformed file, line %d: %s", line_number, reason);
+	_Exception("Exception", full_reason);
 }
 
 void
-_BadTransitionException(Machine * machine, FILE * file)
+_BadTransitionException(Machine * machine, FILE * file, int line_number)
 {
 	/* Gives a precise reason to MalformedFileException */
-	MalformedFileException(machine, file, "a malformed transition has been found.\nExpected: State Letter Letter State Move");
+	MalformedFileException(machine, file, "a malformed transition has been found.\nExpected: State Letter Letter State Move", line_number);
 }
 
 void
-BadTransitionException(Machine * machine, FILE * file, const String reason)
+BadTransitionException(Machine * machine, FILE * file, const String reason, int line_number)
 {
 	/* Gives a generic or a custom reason to MalformedFileException */
 	if (reason == NULL)
-		_BadTransitionException(machine, file);
+		_BadTransitionException(machine, file, line_number);
 	else
-		MalformedFileException(machine, file, reason);
+		MalformedFileException(machine, file, reason, line_number);
+}
+
+void
+RuntimeException(Machine * machine, const String reason)
+{
+	freeMachine(machine);
+	_Exception("Runtime exception", reason);
 }
 
 void
 TooMuchStepsException(Machine * machine)
 {
 	/* Machine was probably in an infinite loop, abort */
-	freeMachine(machine);
 	String reason = (String) malloc(100 * sizeof(char));
 	sprintf(reason, "your Machine needed too much steps to execute (max allowed: %d), considerating it as broken.", MAX_STEPS);
-	_Exception(reason);
+	RuntimeException(machine, reason);
 }
 
 void
 DefaultLetterException(Machine * machine)
 {
 	/* Give an exception sepcifying the default Letter */
-	freeMachine(machine);
 	String reason = (String) malloc((115 + strlen(DEFAULT_LETTER)) * sizeof(char));
 	sprintf(reason, "the alphabet of your Machine didn't contain the default Letter (%s) and it was needed to get out of the data range.", DEFAULT_LETTER);
-	_Exception(reason);
+	RuntimeException(machine, reason);
+}
+
+void
+ValidationException(Machine * machine, const String what, const String reason)
+{
+	freeMachine(machine);
+	String full_reason = (String) malloc((strlen(reason) + 37) * sizeof(char));
+	sprintf(full_reason, "your %s failed the validation: %s", what, reason);
+	_Exception("Validation exception", full_reason);
 }

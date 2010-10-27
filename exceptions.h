@@ -17,19 +17,28 @@ void NoSuchFileException(const String filename);
  * There was a syntax error in the file (machine and file are optional)
  * machine and file are optional and can be NULL
  */
-void MalformedFileException(Machine *, FILE *, const String reason);
+void MalformedFileException(Machine *, FILE *, const String reason, int line_number);
 
 /*
  * There was a malformed transition in the file
  * machine and file are optional and can be NULL
  * reason can be NULL for a generic one
  */
-void BadTransitionException(Machine *, FILE *, const String reason);
+void BadTransitionException(Machine *, FILE *, const String reason, int line_number);
+
+/* Exception encountered during runtime */
+void RuntimeException(Machine *, const String reason);
 
 /* We reached the max steps number,consider the Machine as broken */
 void TooMuchStepsException(Machine *);
 
 /* We needed to use the default Letter but it was not in the Machine's alphabet */
 void DefaultLetterException(Machine *);
+
+/*
+ * Validation of "what" failed
+ * "what" should be either "machine" or "data"
+ */
+void ValidationException(Machine *, const String what, const String reason);
 
 #endif /* __EXCEPTIONS_H__ */

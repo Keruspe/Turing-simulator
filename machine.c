@@ -56,8 +56,8 @@ _readAlphabet(Machine * machine, FILE * machine_file, int * line_number)
 {
 	/* Read the alphabet recognized by the Machine from machine_file */
 	extractData(machine_file, &(machine->alphabet), &(machine->alphabet_length), line_number);
-	if (machine->alphabet_length == 0) /* Fail if no alphabet in the machine_file */
-		MalformedFileException(machine, machine_file, "your Machine has no alphabet.");
+	if (machine->alphabet_length == 0) /* Fail if no alphabet in the machine file */
+		MalformedFileException(machine, machine_file, "your Machine has no alphabet.", *line_number);
 }
 
 void
@@ -65,8 +65,8 @@ _readStates(Machine * machine, FILE * machine_file, int * line_number)
 {
 	/* Read the states in which the Machine can be from machine_file */
 	extractData(machine_file, &(machine->states), &(machine->states_length), line_number);
-	if (machine->states_length == 0) /* Fail if no states in the machine_file */
-		MalformedFileException(machine, machine_file, "your Machine has no states.");
+	if (machine->states_length == 0) /* Fail if no states in the machine file */
+		MalformedFileException(machine, machine_file, "your Machine has no states.", *line_number);
 }
 
 bool
@@ -86,7 +86,7 @@ _readTransitionElement(Machine * machine, FILE * machine_file, Transition * tran
 		if (transition->start_state != NULL)
 		{
 			free(element); /* Free memory and then fail */
-			BadTransitionException(machine, machine_file, reason);
+			BadTransitionException(machine, machine_file, reason, *line_number);
 		}
 	}
 	return notYetTheEnd;
@@ -109,7 +109,7 @@ _readTransition(Machine * machine, FILE * machine_file, Transition * transition,
 	free(element); /* So free this array not to have any leak */
 	/* Move was not 'R' or 'L', we don't know any other, abort */
 	if (transition->move != 'R' && transition->move != 'L')
-		MalformedFileException(machine, machine_file, "bad move in transition, only 'R' or 'L' are allowed");
+		MalformedFileException(machine, machine_file, "bad move in transition, only 'R' or 'L' are allowed", *line_number);
 	return notYetTheEnd;
 }
 
@@ -125,7 +125,7 @@ _readTransitions(Machine * machine, FILE * machine_file, int * line_number)
 		machine->transitions[machine->transitions_length++] = transition;
 		/* Validate the transition */
 		if (!validateTransition(transition, machine))
-			BadTransitionException(machine, machine_file, NULL);
+			BadTransitionException(machine, machine_file, NULL, *line_number);
 		/* When the Array is full, increase its size */
 		if ((machine->transitions_length % BASE_TRANSITIONS_LENGTH) == 0)
 			machine->transitions = (TransitionsCollection) realloc(machine->transitions, (machine->transitions_length + BASE_TRANSITIONS_LENGTH) * sizeof(Transition));
@@ -142,11 +142,11 @@ _readStartAndEndPoints(Machine * machine, FILE * machine_file, int * line_number
 	/* Read the initial state of the Machine */
 	readElement(machine_file, &(machine->initial_state), line_number);
 	if(machine->initial_state[0] == '\0')
-		MalformedFileException(machine, machine_file, "no initial state");
+		MalformedFileException(machine, machine_file, "no initial state", *line_number);
 	/* Read the final state of the Machine */
 	readElement(machine_file, &(machine->final_state), line_number);
 	if(machine->final_state[0] == '\0')
-		MalformedFileException(machine, machine_file, "no final state");
+		MalformedFileException(machine, machine_file, "no final state", *line_number);
 }
 
 Machine *
@@ -154,7 +154,7 @@ newMachine()
 {
 	FILE * machine_file = NULL;
 	char machine_filename[MAX_FILENAME_LENGTH] = "";
-	int line_number = 1;
+	int line_number = 0;
 
 	printf("Where is the file describing your turing machine ?\n");
 	/* Read the name of the file in which the Machine is described, fail and exit if we cannot load it */
@@ -219,7 +219,7 @@ go(Machine * machine, Move move)
 		--(machine->data_index);
 		break;
 	default: /* Really weird */
-		BadTransitionException(machine, NULL, "bad move found, this is weird, should have been caught by parser.");
+		RuntimeException(machine, "bad move found, this is weird, should have been caught by parser.");
 	}
 	return getLetter(machine);
 }
@@ -266,7 +266,7 @@ execute(Machine * machine)
 		current_letter = go(machine, move); /* Move and get the new Letter */
 		/* Get the good Transition to apply */
 		if ((current_transition = _getTransition(machine, current_state, current_letter)) == NULL)
-			BadTransitionException(machine, NULL, "no matching transition found.");
+			RuntimeException(machine, "no matching transition found.");
 		/* Apply Transition */
 		current_state = current_transition->next_state;
 		move = current_transition->move;

@@ -27,7 +27,7 @@ newData()
 {
 	FILE * data_file = NULL;
 	char data_filename[MAX_FILENAME_LENGTH];
-	int line_number = 1;
+	int line_number = 0;
 
 	printf("Where is the file containing the data for your machine ?\n");
 	/* Read the name of the file in which the Data are stored, don't fail if we cannot, just ask for another one */
