@@ -222,15 +222,16 @@ go(Machine * machine, Move move)
 Transition *
 _getTransition(Machine * machine, State current_state, Letter current_letter)
 {
+	/* Get the transition we must now apply */
 	Transition * current_transition;
 	int count;
 	for (count = 0 ; count < machine->transitions_length ; ++count)
 	{
 		current_transition = &(machine->transitions[count]);
 		if ((strcmp(current_transition->start_state, current_state) == 0) && (strcmp(current_transition->cond, current_letter) == 0))
-			return current_transition;
+			return current_transition; /* If the conditions of the Transition are satisfied by the current state, return it, it's the one '*/
 	}
-	return NULL;
+	return NULL; /* No good Transition has been found */
 }
 
 void

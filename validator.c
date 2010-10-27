@@ -119,6 +119,7 @@ validateData(Machine * machine)
 		current_letter = machine->data->data[count];
 		if (!_validateLetter(current_letter, machine))
 		{
+			/* Throw an exception if it's not */
 			String reason = (String) malloc((38 + strlen(current_letter)) * sizeof(char));
 			sprintf(reason, "%s is not part of the Machine alphabet.", current_letter);
 			MalformedFileException(machine, NULL, reason);

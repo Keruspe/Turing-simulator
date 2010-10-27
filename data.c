@@ -66,8 +66,8 @@ getLetter(Data * data, int index)
 		{
 			if (((data->data_length)++ % BASE_STORAGE_LENGTH) == 0) /* If full, increase size, then increment the length */
 				data->data = (LettersCollection) realloc(data->data, (data->data_length + BASE_STORAGE_LENGTH) * sizeof(Letter));
-			data->data[index] = NULL;
-			setLetter(data, index, DEFAULT_LETTER);
+			data->data[index] = NULL; /* Initialize to NULL so that memory will get allocated */
+			setLetter(data, index, DEFAULT_LETTER); /* Set to default Letter */
 		}
 		return data->data[index];
 	}
@@ -75,13 +75,14 @@ getLetter(Data * data, int index)
 	{
 		if (index < data->extra_data_length) /* If we didn't reach that point yet */
 		{
-			if (data->extra_data_length == 0)
+			if (data->extra_data_length == 0) /* If we don't have extra data yet, allocate memory */
 				data->extra_data = (LettersCollection) malloc(BASE_DATA_LENGTH * sizeof(Letter));
 			else if ((data->extra_data_length % BASE_STORAGE_LENGTH) == 0) /* If full, increase size, then increment the length */
 				data->extra_data = (LettersCollection) realloc(data->extra_data, (data->extra_data_length + BASE_STORAGE_LENGTH) * sizeof(Letter));
 			++(data->extra_data_length);
-			data->extra_data[-index-1] = NULL;
-			setLetter(data, index, DEFAULT_LETTER);
+			/* See in setLetter (right behind) for an explanation of the "-index-1" */
+			data->extra_data[-index-1] = NULL; /* Initialize to NULL so that memory will get allocated */
+			setLetter(data, index, DEFAULT_LETTER); /* Set to default Letter */
 		}
 		return data->extra_data[-index-1]; /* Return the Letter we reached */
 	}
@@ -90,20 +91,25 @@ getLetter(Data * data, int index)
 void
 setLetter(Data * data, int index, Letter letter)
 {
+	/* TODO: check if default in alphabet */
 	if (index >= 0) /* Positive index -> data */
 	{
-		if (data->data[index])
+		if (data->data[index]) /* If there already was a Letter here, adjust size to the size of the new one */
 			data->data[index] = (Letter) realloc(data->data[index], (strlen(letter) + 1) * sizeof(char));
-		else
+		else /* Allocate memory if it's the first letter here */
 			data->data[index] = (Letter) malloc((strlen(letter) + 1) * sizeof(char));
-		strcpy(data->data[index], letter);
+		strcpy(data->data[index], letter); /* Copy the letter */
 	}
 	else /* Negative index -> extra_data */
 	{
-		if (data->extra_data[-index-1])
+		/*
+		 * Here we deal with -index-1, not with index, because we want -4 to become 3 and so on
+		 * (negative data index to positive extra_data index, see Data struct declaration)
+		 */
+		if (data->extra_data[-index-1]) /* If there already was a Letter here, adjust size to the size of the new one */
 			data->extra_data[-index-1] = (Letter) realloc(data->extra_data[-index-1], (strlen(letter) + 1) * sizeof(char));
-		else
+		else /* Allocate memory if it's the first letter here */
 			data->extra_data[-index-1] = (Letter) malloc((strlen(letter) + 1) * sizeof(char));
-		strcpy(data->extra_data[-index-1], letter);
+		strcpy(data->extra_data[-index-1], letter); /* Copy the letter */
 	}
 }
