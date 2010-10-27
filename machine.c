@@ -73,9 +73,8 @@ bool
 _readTransitionElement(Machine * machine, FILE * machine_file, Transition * transition, Element * element, int * line_number)
 {
 	bool notYetTheEnd = readElement(machine_file, element, line_number); /* Read an Element */
-	if (element[0] == '\0') /* If the element is dummy */
+	if ((*element)[0] == '\0') /* If the element is dummy */
 	{
-		freeTransition(*transition); /* Free the current transition */
 		String reason = NULL; /* Determine whether we want a generic or a custom error message */
 		if (machine->transitions_length == 0)
 			reason = "your Machine has no Transition.";
@@ -85,7 +84,7 @@ _readTransitionElement(Machine * machine, FILE * machine_file, Transition * tran
 		 */
 		if (transition->start_state != NULL)
 		{
-			free(element); /* Free memory and then fail */
+			freeTransition(*transition); /* Free the current transition */
 			BadTransitionException(machine, machine_file, reason, *line_number);
 		}
 	}
@@ -109,7 +108,7 @@ _readTransition(Machine * machine, FILE * machine_file, Transition * transition,
 	free(element); /* So free this array not to have any leak */
 	/* Move was not 'R' or 'L', we don't know any other, abort */
 	if (transition->move != 'R' && transition->move != 'L')
-		BadTransitionException(machine, machine_file, "bad move in transition, only 'R' or 'L' are allowed", *line_number);
+		BadTransitionException(machine, machine_file, "bad move in Transition, only 'R' or 'L' are allowed", *line_number);
 	return notYetTheEnd;
 }
 
