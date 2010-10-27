@@ -61,7 +61,9 @@ void
 RuntimeException(Machine * machine, const String reason)
 {
 	freeMachine(machine);
-	_Exception("Runtime exception", reason);
+	String full_reason = (String) malloc((18 + strlen(reason)) * sizeof(char));
+	sprintf(full_reason, "machine failure: %s", reason);
+	_Exception("Runtime exception", full_reason);
 }
 
 void

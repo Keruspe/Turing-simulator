@@ -264,7 +264,7 @@ execute(Machine * machine)
 		current_letter = go(machine, move); /* Move and get the new Letter */
 		/* Get the good Transition to apply */
 		if ((current_transition = _getTransition(machine, current_state, current_letter)) == NULL)
-			RuntimeException(machine, "no matching transition found."); /* TODO: fix segv */
+			RuntimeException(machine, "no matching transition found.");
 		/* Apply Transition */
 		current_state = current_transition->next_state;
 		move = current_transition->move;
