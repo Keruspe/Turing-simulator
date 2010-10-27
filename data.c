@@ -5,6 +5,9 @@
  */
 
 #include "data.h"
+#include "exceptions.h"
+#include "machine.h"
+#include "validator.h"
 #include <string.h>
 
 Data *
@@ -58,8 +61,12 @@ freeData(Data * data)
 }
 
 Letter
-getLetter(Data * data, int index)
+getLetter(Machine * machine)
 {
+	/* Local variables for readability */
+	int index = machine->data_index;
+	Data * data = machine->data;
+
 	if (index >= 0) /* Positive index -> data */
 	{
 		if (index >= data->data_length) /* If we didn't reach that point yet */
@@ -67,7 +74,10 @@ getLetter(Data * data, int index)
 			if (((data->data_length)++ % BASE_STORAGE_LENGTH) == 0) /* If full, increase size, then increment the length */
 				data->data = (LettersCollection) realloc(data->data, (data->data_length + BASE_STORAGE_LENGTH) * sizeof(Letter));
 			data->data[index] = NULL; /* Initialize to NULL so that memory will get allocated */
-			setLetter(data, index, DEFAULT_LETTER); /* Set to default Letter */
+			if (hasDefaultLetter(machine))
+				setLetter(data, index, DEFAULT_LETTER); /* Set to default Letter */
+			else
+				DefaultLetterException(machine);
 		}
 		return data->data[index];
 	}
@@ -82,7 +92,10 @@ getLetter(Data * data, int index)
 			++(data->extra_data_length);
 			/* See in setLetter (right behind) for an explanation of the "-index-1" */
 			data->extra_data[-index-1] = NULL; /* Initialize to NULL so that memory will get allocated */
-			setLetter(data, index, DEFAULT_LETTER); /* Set to default Letter */
+			if (hasDefaultLetter(machine))
+				setLetter(data, index, DEFAULT_LETTER); /* Set to default Letter */
+			else
+				DefaultLetterException(machine);
 		}
 		return data->extra_data[-index-1]; /* Return the Letter we reached */
 	}
@@ -91,7 +104,6 @@ getLetter(Data * data, int index)
 void
 setLetter(Data * data, int index, Letter letter)
 {
-	/* TODO: check if default in alphabet */
 	if (index >= 0) /* Positive index -> data */
 	{
 		if (data->data[index]) /* If there already was a Letter here, adjust size to the size of the new one */

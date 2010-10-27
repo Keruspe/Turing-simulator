@@ -29,4 +29,7 @@ void BadTransitionException(Machine *, FILE *, const String reason);
 /* We reached the max steps number,consider the Machine as broken */
 void TooMuchStepsException(Machine *);
 
+/* We needed to use the default Letter but it was not in the Machine's alphabet */
+void DefaultLetterException(Machine *);
+
 #endif /* __EXCEPTIONS_H__ */

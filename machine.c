@@ -7,6 +7,7 @@
 #include "data.h"
 #include "exceptions.h"
 #include "machine.h"
+#include "validator.h"
 #include <string.h>
 
 Machine *
@@ -122,6 +123,9 @@ _readTransitions(Machine * machine, FILE * machineFile)
 	{
 		/* Store the transition and increase the number of transitions available */
 		machine->transitions[machine->transitions_length++] = transition;
+		/* Validate the transition */
+		if (!validateTransition(transition, machine))
+			BadTransitionException(machine, machineFile, NULL);
 		/* When the Array is full, increase its size */
 		if ((machine->transitions_length % BASE_TRANSITIONS_LENGTH) == 0)
 			machine->transitions = (TransitionsCollection) realloc(machine->transitions, (machine->transitions_length + BASE_TRANSITIONS_LENGTH) * sizeof(Transition));
@@ -216,7 +220,7 @@ go(Machine * machine, Move move)
 	default: /* Really weird */
 		BadTransitionException(machine, NULL, "bad move found, this is weird, should have been caught by parser.");
 	}
-	return getLetter(machine->data, machine->data_index);
+	return getLetter(machine);
 }
 
 Transition *

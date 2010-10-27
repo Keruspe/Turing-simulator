@@ -29,29 +29,6 @@ _validateElement(Element element, ElementsCollection valid_elements, int collect
 }
 
 bool
-_validateTransition(Transition transition, Machine * machine)
-{
-	/* Check if all states and letters used by a Transition are known by the Machine */
-	return (_validateLetter(transition.cond, machine)
-		&& _validateLetter(transition.subst, machine)
-		&& _validateState(transition.start_state, machine)
-		&& _validateState(transition.next_state, machine));
-}
-
-bool
-_checkTransitions(Machine * machine)
-{
-	/* Check if all transitions are valid */
-	int count;
-	for (count = 0 ; count < machine->transitions_length ; ++count)
-	{
-		if (!_validateTransition(machine->transitions[count], machine))
-			return false;
-	}
-	return true;
-}
-
-bool
 _checkInitialStateDeparture(Machine * machine)
 {
 	/* Check if there is at least one Transition available to leave the initial state */
@@ -97,11 +74,19 @@ _checkFinalState(Machine * machine)
 	return true;
 }
 
+bool
+validateTransition(Transition transition, Machine * machine)
+{
+	/* Check if all states and letters used by a Transition are known by the Machine */
+	return (_validateLetter(transition.cond, machine)
+		&& _validateLetter(transition.subst, machine)
+		&& _validateState(transition.start_state, machine)
+		&& _validateState(transition.next_state, machine));
+}
+
 void
 validate(Machine * machine)
 {
-	if (!_checkTransitions(machine)) /* Check if all transitions are alright */
-		BadTransitionException(machine, NULL, NULL);
 	if (!_checkInitialState(machine)) /* Check if the initial state is alright */
 		MalformedFileException(machine, NULL, "the initial state is not part of the alphabet.");
 	if (!_checkFinalState(machine)) /* Check if the final state is alright */
@@ -125,4 +110,16 @@ validateData(Machine * machine)
 			MalformedFileException(machine, NULL, reason);
 		}
 	}
+}
+
+bool
+hasDefaultLetter(Machine * machine)
+{
+	int count;
+	for (count = 0 ; count < machine->alphabet_length ; ++count)
+	{
+		if(strcmp(machine->alphabet[count], DEFAULT_LETTER) == 0)
+			return true; /* If we find the default Letter in the alphabet, return true */
+	}
+	return false; /* We didn't find it */
 }

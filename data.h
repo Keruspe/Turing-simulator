@@ -33,8 +33,8 @@ Data * newData();
 /* Free memory, leaks are evil */
 void freeData(Data *);
 
-/* Get Letter at index */
-Letter getLetter(Data *, int index);
+/* Get Letter at Machine position */
+Letter getLetter(Machine *);
 
 /* Set Letter at index */
 void setLetter(Data *, int index, Letter);

@@ -65,3 +65,12 @@ TooMuchStepsException(Machine * machine)
 	sprintf(reason, "your Machine needed too much steps to execute (max allowed: %d), considerating it as broken.", MAX_STEPS);
 	_Exception(reason);
 }
+
+void
+DefaultLetterException(Machine * machine)
+{
+	freeMachine(machine);
+	String reason = (String) malloc((115 + strlen(DEFAULT_LETTER)) * sizeof(char));
+	sprintf(reason, "the alphabet of your Machine didn't contain the default Letter (%s) and it was needed to get out of the data range.", DEFAULT_LETTER);
+	_Exception(reason);
+}
