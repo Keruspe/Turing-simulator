@@ -24,13 +24,12 @@ main()
 			validateData(machine); /* Validate the new Data set */
 			execute(machine); /* Execute the Machine */
 			printf("Do you want to continue with this machine ? [Y/n]\n");
-		} while (getchar() != 'n');
+		} while (getChoice());
 
-		clearBuffer(); /* Clear buffer */
 		freeMachine(machine); /* No memory leak */
 		machine = NULL;
 		printf("Do you want to continue with another machine ? [Y/n]\n");
-	} while (getchar() != 'n'); /* Only exit on user demand */
+	} while (getChoice()); /* Only exit on user demand */
 
 	return EXIT_SUCCESS;
 }

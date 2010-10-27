@@ -23,6 +23,17 @@ clearBuffer()
 }
 
 bool
+getChoice()
+{
+	/* Get user choice (Y/n) */
+	bool answer = true; /* Default to yes */
+	if (getchar() == 'n')
+		answer = false; /* User answered no */
+	clearBuffer();
+	return answer;
+}
+
+bool
 readElement(FILE * file, Element * element, int * line_number)
 {
 	char c; /* Will store each character we read */

@@ -29,6 +29,9 @@ void skipLine(FILE *, int * line_number);
 /* Clear the buffer after reading an entry */
 void clearBuffer();
 
+/* Used to get user choice in main */
+bool getChoice();
+
 /*
  * parsing stuff
  */
