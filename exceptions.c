@@ -69,6 +69,7 @@ TooMuchStepsException(Machine * machine)
 void
 DefaultLetterException(Machine * machine)
 {
+	/* Give an exception sepcifying the default Letter */
 	freeMachine(machine);
 	String reason = (String) malloc((115 + strlen(DEFAULT_LETTER)) * sizeof(char));
 	sprintf(reason, "the alphabet of your Machine didn't contain the default Letter (%s) and it was needed to get out of the data range.", DEFAULT_LETTER);

@@ -8,10 +8,11 @@
 #include "utils.h"
 
 void
-skipLine(FILE * file)
+skipLine(FILE * file, int * line_number)
 {
 	/* Read every char until next line in file */
 	while (fgetc(file) != '\n');
+	++(*line_number);
 }
 
 void
@@ -22,7 +23,7 @@ clearBuffer()
 }
 
 bool
-readElement(FILE * file, Element * element)
+readElement(FILE * file, Element * element, int * line_number)
 {
 	char c; /* Will store each character we read */
 	*element = (Element) malloc((1 + BASE_ELEMENT_SIZE) * sizeof(char)); /* Initialization/allocation */
@@ -32,11 +33,12 @@ readElement(FILE * file, Element * element)
 		switch (c) /* Deal with the character we just read */
 		{
 		case '$': /* We're facing a comment, ignore the end of line */
-			skipLine(file);
+			skipLine(file, line_number);
 			break;
+		case '\n':
+			++(*line_number);
 		case ' ':
 		case '\t':
-		case '\n':
 			if (element_size == 0)
 				break; /* We're reading a chain of blank stuff, go to next char */
 			/* We just finished to read an element, close the string and return true */
@@ -60,11 +62,11 @@ readElement(FILE * file, Element * element)
 }
 
 void
-extractData(FILE * file, ElementsCollection * storage, int * storage_length)
+extractData(FILE * file, ElementsCollection * storage, int * storage_length, int * line_number)
 {
 	Element element; /* Will store each element we read */
 	/* While there are still data to be read, read them (until next '#') */
-	while (readElement(file, &element))
+	while (readElement(file, &element, line_number))
 	{
 		(*storage)[*storage_length] = element; /* Store the element in the storage area */
 		/* Increase the number of elements in the storage area, and increase its size if it's full */

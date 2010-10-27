@@ -24,7 +24,7 @@
 #define DEFAULT_LETTER "_"
 
 /* Skip the rest of the line we're reading (for comments) */
-void skipLine(FILE *);
+void skipLine(FILE *, int * line_number);
 
 /* Clear the buffer after reading an entry */
 void clearBuffer();
@@ -33,8 +33,8 @@ void clearBuffer();
  * parsing stuff
  */
 
-/* Read the next element in file */
-bool readElement(FILE * file, Element *);
+/* Read the next element in the file */
+bool readElement(FILE *, Element *, int * line_number);
 
 /*
  * Extract data section (until we meet '#') and put all elements into the storage area we pass a pointer to,
@@ -42,6 +42,6 @@ bool readElement(FILE * file, Element *);
  * The storage is a pointer to an Array of Element (State/Letter).
  * We need this and not only the Array because we want to be able to resize it.
  */
-void extractData(FILE * file, ElementsCollection * storage, int * storage_length);
+void extractData(FILE * file, ElementsCollection * storage, int * storage_length, int * line_number);
 
 #endif /* __UTILS_H__ */

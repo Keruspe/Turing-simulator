@@ -27,6 +27,7 @@ newData()
 {
 	FILE * dataFile = NULL;
 	char dataFilename[MAX_FILENAME_LENGTH];
+	int line_number = 1;
 
 	printf("Where is the file containing the data for your machine ?\n");
 	/* Read the name of the file in which the Data are stored, don't fail if we cannot, just ask for another one */
@@ -35,7 +36,7 @@ newData()
 
 	Data * data = _newData(); /* Allocate memory */
 	/* Extract Data from dataFile */
-	extractData(dataFile, &(data->data), &(data->data_length));
+	extractData(dataFile, &(data->data), &(data->data_length), &line_number);
 
 	/* Close the dataFile */
 	fclose(dataFile);
