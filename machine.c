@@ -166,8 +166,9 @@ newMachine()
 	_readTransitions(machine, machine_file, &line_number);
 	_readStartAndEndPoints(machine, machine_file, &line_number);
 
-	/* Close the machine_file */
-	fclose(machine_file);
+	fclose(machine_file); /* Close the machine_file */
+	validate(machine); /* Validate the Machine */
+
 	return machine;
 }
 
@@ -202,6 +203,7 @@ reloadData(Machine * machine)
 		freeData(machine->data);
 	machine->data_index = -1; /* The Machine starts at the left of the first cell */
 	machine->data = newData(); /* Then read Data */
+	validateData(machine); /* Validate the new Data set */
 	clearBuffer(); /* Clear buffer */
 }
 

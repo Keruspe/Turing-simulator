@@ -6,7 +6,6 @@
 
 #include "machine.h"
 #include "utils.h"
-#include "validator.h"
 
 int
 main()
@@ -16,12 +15,10 @@ main()
 	do /* Main loop */
 	{
 		machine = newMachine(); /* Get a new Machine */
-		validate(machine); /* Validate the Machine */
 
 		do /* Loop for using the same Machine with various Data sets */
 		{
 			reloadData(machine); /* Get new Data for our Machine */
-			validateData(machine); /* Validate the new Data set */
 			execute(machine); /* Execute the Machine */
 			printf("Do you want to continue with this machine ? [Y/n]\n");
 		} while (getChoice());
