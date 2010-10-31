@@ -29,6 +29,16 @@ _validateElement(Element element, ElementsCollection valid_elements, int collect
 }
 
 bool
+validateTransition(Transition transition, Machine * machine)
+{
+	/* Check if all states and letters used by a Transition are known by the Machine */
+	return (_validateLetter(transition.cond, machine)
+		&& _validateLetter(transition.subst, machine)
+		&& _validateState(transition.start_state, machine)
+		&& _validateState(transition.next_state, machine));
+}
+
+bool
 _checkInitialStateDeparture(Machine * machine)
 {
 	/* Check if there is at least one Transition available to leave the initial state */
@@ -73,16 +83,6 @@ _checkFinalState(Machine * machine)
 	if (!_checkFinalStateReachability(machine)) /* Check if we can reach it */
 		ValidationException(machine, "machine", "the final state is unreachable.");
 	return true;
-}
-
-bool
-validateTransition(Transition transition, Machine * machine)
-{
-	/* Check if all states and letters used by a Transition are known by the Machine */
-	return (_validateLetter(transition.cond, machine)
-		&& _validateLetter(transition.subst, machine)
-		&& _validateState(transition.start_state, machine)
-		&& _validateState(transition.next_state, machine));
 }
 
 void
