@@ -44,8 +44,9 @@ void
 _BadTransitionException(Machine * machine, FILE * file, int line_number)
 {
 	/* Gives a precise generic reason to MalformedFileException */
-	MalformedFileException(machine, file, "a malformed transition has been found.\nExpected: \
-		State Letter Letter State Move (Must be values recognized by the Machine)", line_number);
+	MalformedFileException(machine, file,
+		"a malformed transition has been found.\nExpected: State Letter Letter State Move (Must be values recognized by the Machine)",
+		line_number);
 }
 
 void
@@ -81,8 +82,9 @@ DefaultLetterException(Machine * machine)
 {
 	/* Give an exception sepcifying the default Letter */
 	String reason = (String) malloc((115 + strlen(DEFAULT_LETTER)) * sizeof(char));
-	sprintf(reason, "the alphabet of your Machine didn't contain the default Letter (%s) \
-		and it was needed to get out of the data range.", DEFAULT_LETTER);
+	sprintf(reason,
+		"the alphabet of your Machine didn't contain the default Letter (%s) and it was needed to get out of the data range.",
+		DEFAULT_LETTER);
 	RuntimeException(machine, reason);
 }
 

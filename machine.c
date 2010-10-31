@@ -111,8 +111,8 @@ _readTransition(Machine * machine, FILE * machine_file, Transition * transition,
 	free(element); /* So free this array not to have any leak */
 	/* Move was not 'R' or 'L', we don't know any other, abort */
 	if (transition->move != 'R' && transition->move != 'L')
-		BadTransitionException(machine, machine_file, "bad move in Transition, \
-			only 'R' or 'L' are allowed", *line_number);
+		BadTransitionException(machine, machine_file,
+			"bad move in Transition, only 'R' or 'L' are allowed", *line_number);
 	return notYetTheEnd;
 }
 
