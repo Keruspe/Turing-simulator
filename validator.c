@@ -85,6 +85,53 @@ _checkFinalState(Machine * machine)
 	return true;
 }
 
+bool
+_checkAtLeastOntPathExists(Machine * machine)
+{
+	/* Check if at least one path exist from initial state to final state, not taking care of datas */
+	int states_checked = 0; /* The number of states we have checked ATM */
+	int count, checker; /* Two counters */
+
+	/* The states we found */
+	StatesCollection states_found = (StatesCollection) malloc(machine->states_length * sizeof(State));
+	State current_state = NULL; /* The state we're dealing with */
+
+	bool valid = false; /* The value we'll return */
+	int states_found_number = 1; /* The number of states we found ATM (first one is the initial state) */
+	states_found[0] = machine->initial_state;
+
+	/* Loop while no transition allowed to reach the final state */
+	while (!valid)
+	{
+		current_state = states_found[states_checked++]; /* Get a new current state and mark it as checked */
+		/* Go through the Machine transitions */
+		for (count = 0 ; count < machine->transitions_length ; ++count)
+		{
+			/* If the start State of the Transition is our current State, deal with it, otherwise ignore it */
+			if (strcmp(machine->transitions[count].start_state, current_state) == 0)
+			{
+				/* Check if we already met the final State of this Transition */
+				for (checker = 0 ; checker < states_found_number - 1 ; ++checker)
+				{
+					/* If we did, go to the next Transition */
+					if (strcmp(states_found[checker], machine->transitions[count].next_state) == 0)
+						goto next;
+				}
+				/* We did not meet it yet, so register it */
+				states_found[states_found_number++] = machine->transitions[count].next_state;
+			}
+			next: continue;
+		}
+		/* Check if the final State is now in the list of states we found */
+		valid = _validateElement(machine->final_state, states_found, states_found_number);
+		if (states_checked == states_found_number) /* If we checked all the states we found, stop */
+			break;
+	}
+	/* Free the memory and return the result */
+	free(states_found);
+	return valid;
+}
+
 void
 validate(Machine * machine)
 {
@@ -92,6 +139,11 @@ validate(Machine * machine)
 		ValidationException(machine, "machine", "the initial state is not part of the alphabet.");
 	if (!_checkFinalState(machine)) /* Check if the final state is alright */
 		ValidationException(machine, "machine", "the final state is not part of the alphabet.");
+	if (!_checkAtLeastOntPathExists(machine)) /* Check if the final state has any chance to be reached */
+	{
+		ValidationException(machine, "machine",
+			"no matter the Data, there is no path available from the initial State of your Machine to its final State.");
+	}
 }
 
 void
