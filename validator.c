@@ -90,11 +90,12 @@ _checkAtLeastOntPathExists(Machine * machine)
 {
 	/* Check if at least one path exist from initial state to final state, not taking care of datas */
 	int states_checked = 0; /* The number of states we have checked ATM */
-	int count, checker; /* Two counters */
+	int count; /* A counter */
 
 	/* The states we found */
 	StatesCollection states_found = (StatesCollection) malloc(machine->states_length * sizeof(State));
-	State current_state = NULL; /* The state we're dealing with */
+	State current_state = NULL; /* The State we're dealing with */
+	Transition current_transition; /* The Transition we're dealing with */
 
 	bool valid = false; /* The value we'll return */
 	int states_found_number = 1; /* The number of states we found ATM (first one is the initial state) */
@@ -107,20 +108,14 @@ _checkAtLeastOntPathExists(Machine * machine)
 		/* Go through the Machine transitions */
 		for (count = 0 ; count < machine->transitions_length ; ++count)
 		{
+			current_transition = machine->transitions[count]; /* Get a new Transition */
 			/* If the start State of the Transition is our current State, deal with it, otherwise ignore it */
-			if (strcmp(machine->transitions[count].start_state, current_state) == 0)
+			if (strcmp(current_transition.start_state, current_state) == 0)
 			{
-				/* Check if we already met the final State of this Transition */
-				for (checker = 0 ; checker < states_found_number - 1 ; ++checker)
-				{
-					/* If we did, go to the next Transition */
-					if (strcmp(states_found[checker], machine->transitions[count].next_state) == 0)
-						goto next;
-				}
-				/* We did not meet it yet, so register it */
-				states_found[states_found_number++] = machine->transitions[count].next_state;
+				/* Register the final state of the Transition if we didn't already meet it */
+				if (!_validateElement(current_transition.next_state, states_found, states_found_number))
+					states_found[states_found_number++] = current_transition.next_state;
 			}
-			next: continue;
 		}
 		/* Check if the final State is now in the list of states we found */
 		valid = _validateElement(machine->final_state, states_found, states_found_number);
