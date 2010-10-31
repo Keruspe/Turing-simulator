@@ -86,9 +86,9 @@ _checkFinalState(Machine * machine)
 }
 
 bool
-_checkAtLeastOntPathExists(Machine * machine)
+_checkAtLeastOnePathExists(Machine * machine)
 {
-	/* Check if at least one path exist from initial state to final state, not taking care of datas */
+	/* Check if at least one path exists from initial state to final state, not taking care of data */
 	int states_checked = 0; /* The number of states we have checked ATM */
 	int count; /* A counter */
 
@@ -134,7 +134,7 @@ validate(Machine * machine)
 		ValidationException(machine, "machine", "the initial state is not part of the alphabet.");
 	if (!_checkFinalState(machine)) /* Check if the final state is alright */
 		ValidationException(machine, "machine", "the final state is not part of the alphabet.");
-	if (!_checkAtLeastOntPathExists(machine)) /* Check if the final state has any chance to be reached */
+	if (!_checkAtLeastOnePathExists(machine)) /* Check if the final state has any chance to be reached */
 	{
 		ValidationException(machine, "machine",
 			"no matter the Data, there is no path available from the initial State of your Machine to its final State.");
