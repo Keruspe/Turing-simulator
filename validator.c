@@ -29,6 +29,13 @@ _validateElement(Element element, ElementsCollection valid_elements, int collect
 }
 
 bool
+hasDefaultLetter(Machine * machine)
+{
+	/* Check if we find the default Letter in the alphabet */
+	return _validateLetter(DEFAULT_LETTER, machine);
+}
+
+bool
 validateTransition(Transition transition, Machine * machine)
 {
 	/* Check if all states and letters used by a Transition are known by the Machine */
@@ -158,16 +165,4 @@ validateData(Machine * machine)
 			ValidationException(machine, "data", reason);
 		}
 	}
-}
-
-bool
-hasDefaultLetter(Machine * machine)
-{
-	int count;
-	for (count = 0 ; count < machine->alphabet_length ; ++count)
-	{
-		if(strcmp(machine->alphabet[count], DEFAULT_LETTER) == 0)
-			return true; /* If we find the default Letter in the alphabet, return true */
-	}
-	return false; /* We didn't find it */
 }

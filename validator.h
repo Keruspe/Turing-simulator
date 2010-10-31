@@ -7,6 +7,9 @@
 #ifndef __VALIDATOR_H__
 #define __VALIDATOR_H__
 
+/* Check if the Machine allows the use of the default Letter */
+bool hasDefaultLetter(Machine *);
+
 /* Validate a transition */
 bool validateTransition(Transition, Machine *);
 
@@ -15,8 +18,5 @@ void validate(Machine *);
 
 /* Validate a Data set for a Machine */
 void validateData(Machine *);
-
-/* Check if the Machine allows the use of the default Letter */
-bool hasDefaultLetter(Machine *);
 
 #endif /* __VALIDATOR_H__ */
