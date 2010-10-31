@@ -109,13 +109,13 @@ _checkAtLeastOntPathExists(Machine * machine)
 		for (count = 0 ; count < machine->transitions_length ; ++count)
 		{
 			current_transition = machine->transitions[count]; /* Get a new Transition */
-			/* If the start State of the Transition is our current State, deal with it, otherwise ignore it */
-			if (strcmp(current_transition.start_state, current_state) == 0)
-			{
-				/* Register the final state of the Transition if we didn't already meet it */
-				if (!_validateElement(current_transition.next_state, states_found, states_found_number))
+			/*
+			 * If the start State of the Transition is our current State and we didn't already meet its final State,
+			 * register this final State.
+			 */
+			if ((strcmp(current_transition.start_state, current_state) == 0)
+				&& (!_validateElement(current_transition.next_state, states_found, states_found_number)))
 					states_found[states_found_number++] = current_transition.next_state;
-			}
 		}
 		/* Check if the final State is now in the list of states we found */
 		valid = _validateElement(machine->final_state, states_found, states_found_number);
