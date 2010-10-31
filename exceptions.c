@@ -43,18 +43,19 @@ MalformedFileException(Machine * machine, FILE * file, const String reason, int 
 void
 _BadTransitionException(Machine * machine, FILE * file, int line_number)
 {
-	/* Gives a precise reason to MalformedFileException */
-	MalformedFileException(machine, file, "a malformed transition has been found.\nExpected: State Letter Letter State Move (Must be values recognized by the Machine)", line_number);
+	/* Gives a precise generic reason to MalformedFileException */
+	MalformedFileException(machine, file, "a malformed transition has been found.\nExpected: \
+		State Letter Letter State Move (Must be values recognized by the Machine)", line_number);
 }
 
 void
 BadTransitionException(Machine * machine, FILE * file, const String reason, int line_number)
 {
 	/* Gives a generic or a custom reason to MalformedFileException */
-	if (reason == NULL)
-		_BadTransitionException(machine, file, line_number);
-	else
+	if (reason)
 		MalformedFileException(machine, file, reason, line_number);
+	else
+		_BadTransitionException(machine, file, line_number);
 }
 
 void
