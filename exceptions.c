@@ -72,7 +72,7 @@ TooMuchStepsException(Machine * machine)
 {
 	/* Machine was probably in an infinite loop, abort */
 	String reason = (String) malloc(100 * sizeof(char));
-	sprintf(reason, "your Machine needed too much steps to execute (max allowed: %d), considerating it as broken.", MAX_STEPS);
+	sprintf(reason, "your Machine needed too much steps to execute (max allowed: %d).", MAX_STEPS);
 	RuntimeException(machine, reason);
 }
 
@@ -81,7 +81,8 @@ DefaultLetterException(Machine * machine)
 {
 	/* Give an exception sepcifying the default Letter */
 	String reason = (String) malloc((115 + strlen(DEFAULT_LETTER)) * sizeof(char));
-	sprintf(reason, "the alphabet of your Machine didn't contain the default Letter (%s) and it was needed to get out of the data range.", DEFAULT_LETTER);
+	sprintf(reason, "the alphabet of your Machine didn't contain the default Letter (%s) \
+		and it was needed to get out of the data range.", DEFAULT_LETTER);
 	RuntimeException(machine, reason);
 }
 

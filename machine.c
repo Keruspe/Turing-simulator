@@ -98,16 +98,21 @@ _readTransition(Machine * machine, FILE * machine_file, Transition * transition,
 	_readTransitionElement(machine, machine_file, transition, &(transition->start_state), line_number);
 	if (transition->start_state[0] == '\0') /* No more transitions to read */
 		return false;
-	_readTransitionElement(machine, machine_file, transition, &(transition->cond), line_number); /* Then read the conditionnal value */
-	_readTransitionElement(machine, machine_file, transition, &(transition->subst), line_number); /* Then the substitution value */
-	_readTransitionElement(machine, machine_file, transition, &(transition->next_state), line_number); /* Continue with the next state */
+	/* Then read the conditionnal value */
+	_readTransitionElement(machine, machine_file, transition, &(transition->cond), line_number);
+	/* Then the substitution value */
+	_readTransitionElement(machine, machine_file, transition, &(transition->subst), line_number);
+	/* Continue with the next state */
+	_readTransitionElement(machine, machine_file, transition, &(transition->next_state), line_number);
+	/* Temporary element to avoid a memory leak */
 	Element element = NULL;
-	bool notYetTheEnd = _readTransitionElement(machine, machine_file, transition, &element, line_number); /* Temporary element to avoid a memory leak */
+	bool notYetTheEnd = _readTransitionElement(machine, machine_file, transition, &element, line_number);
 	transition->move = element[0]; /* We only want the first char of it */
 	free(element); /* So free this array not to have any leak */
 	/* Move was not 'R' or 'L', we don't know any other, abort */
 	if (transition->move != 'R' && transition->move != 'L')
-		BadTransitionException(machine, machine_file, "bad move in Transition, only 'R' or 'L' are allowed", *line_number);
+		BadTransitionException(machine, machine_file, "bad move in Transition, \
+			only 'R' or 'L' are allowed", *line_number);
 	return notYetTheEnd;
 }
 
@@ -117,8 +122,8 @@ _readTransitions(Machine * machine, FILE * machine_file, int * line_number)
 	/* Read the available transitions */
 	Transition transition; /* Will be used to store each transition */
 	/* Keep reading while there are things to read (we did not meet '#') */
-	while (_readTransition(machine, machine_file, &transition, line_number)) /* While there are still transitions to read */
-	{
+	while (_readTransition(machine, machine_file, &transition, line_number))
+	{ /* While there are still transitions to read */
 		/* Store the transition and increase the number of transitions available */
 		machine->transitions[machine->transitions_length++] = transition;
 		/* Validate the transition */
@@ -126,7 +131,8 @@ _readTransitions(Machine * machine, FILE * machine_file, int * line_number)
 			BadTransitionException(machine, machine_file, NULL, *line_number);
 		/* When the Array is full, increase its size */
 		if ((machine->transitions_length % BASE_TRANSITIONS_LENGTH) == 0)
-			machine->transitions = (TransitionsCollection) realloc(machine->transitions, (machine->transitions_length + BASE_TRANSITIONS_LENGTH) * sizeof(Transition));
+			machine->transitions = (TransitionsCollection) realloc(machine->transitions,
+				(machine->transitions_length + BASE_TRANSITIONS_LENGTH) * sizeof(Transition));
 	}
 	if (transition.start_state[0] != '\0') /* We're not facing a dummy transition */
 		machine->transitions[machine->transitions_length++] = transition; /* Store the last transition */
@@ -233,8 +239,10 @@ _getTransition(Machine * machine, State current_state, Letter current_letter)
 	for (count = 0 ; count < machine->transitions_length ; ++count)
 	{
 		current_transition = &(machine->transitions[count]);
-		if ((strcmp(current_transition->start_state, current_state) == 0) && (strcmp(current_transition->cond, current_letter) == 0))
-			return current_transition; /* If the conditions of the Transition are satisfied by the current state, return it, it's the one '*/
+		/* If the conditions of the Transition are satisfied by the current state, return it, it's the one '*/
+		if ((strcmp(current_transition->start_state, current_state) == 0) &&
+			(strcmp(current_transition->cond, current_letter) == 0))
+				return current_transition;
 	}
 	return NULL; /* No good Transition has been found */
 }

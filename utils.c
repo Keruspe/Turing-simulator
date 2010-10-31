@@ -82,7 +82,10 @@ extractData(FILE * file, ElementsCollection * storage, int * storage_length, int
 		(*storage)[*storage_length] = element; /* Store the element in the storage area */
 		/* Increase the number of elements in the storage area, and increase its size if it's full */
 		if ((++(*storage_length) % BASE_STORAGE_LENGTH) == 0)
-			*storage = (ElementsCollection) realloc(*storage, (*storage_length + BASE_STORAGE_LENGTH) * sizeof(Element));
+		{
+			*storage = (ElementsCollection) realloc(*storage,
+				(*storage_length + BASE_STORAGE_LENGTH) * sizeof(Element));
+		}
 	}
 	if (element[0] != '\0') /* If a last element was stuck to the '#' */
 		/* Store it and increase number of elements into the storage area */

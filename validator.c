@@ -44,7 +44,8 @@ _checkInitialStateDeparture(Machine * machine)
 bool
 _checkInitialState(Machine * machine)
 {
-	if (!_validateState(machine->initial_state, machine)) /* Check if the initial state is recognized by the Machine */
+	/* Check if the initial state is recognized by the Machine */
+	if (!_validateState(machine->initial_state, machine))
 		return false;
 	if (!_checkInitialStateDeparture(machine)) /* Check if we can leave it */
 		ValidationException(machine, "machine", "cannot leave the initial state.");
