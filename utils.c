@@ -27,9 +27,11 @@ getChoice()
 {
 	/* Get user choice (Y/n) */
 	bool answer = true; /* Default to yes */
-	if (getchar() == 'n')
+	char c;
+	if ((c = getchar()) == 'n')
 		answer = false; /* User answered no */
-	clearBuffer();
+	if (c != '\n') /* Default doesn't need any value */
+		clearBuffer();
 	return answer;
 }
 
