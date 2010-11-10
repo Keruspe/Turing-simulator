@@ -1,5 +1,5 @@
 /* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 4; tab-width: 4 -*- */
-/*
+/**
  * Turing-simulator
  * Copyright (C) Marc-Antoine Perennou 2010 <Marc-Antoine@Perennou.com>
  */
@@ -7,7 +7,7 @@
 #ifndef __TYPES_H__
 #define __TYPES_H__
 
-/*
+/**
  * Define a few custom types for readability purpose
  */
 

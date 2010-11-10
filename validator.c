@@ -1,5 +1,5 @@
 /* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 4; tab-width: 4 -*- */
-/*
+/**
  * Turing-simulator
  * Copyright (C) Marc-Antoine Perennou 2010 <Marc-Antoine@Perennou.com>
  */
@@ -116,7 +116,7 @@ _checkAtLeastOnePathExists(Machine * machine)
 		for (count = 0 ; count < machine->transitions_length ; ++count)
 		{
 			current_transition = machine->transitions[count]; /* Get a new Transition */
-			/*
+			/**
 			 * If the start State of the Transition is our current State and we didn't already meet its final State,
 			 * register this final State.
 			 */

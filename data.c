@@ -1,5 +1,5 @@
 /* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 4; tab-width: 4 -*- */
-/*
+/**
  * Turing-simulator
  * Copyright (C) Marc-Antoine Perennou 2010 <Marc-Antoine@Perennou.com>
  */
@@ -115,27 +115,23 @@ setLetter(Data * data, int index, Letter letter)
 {
 	if (index >= 0) /* Positive index -> data */
 	{
-		/* If there already was a Letter here, adjust size to the size of the new one */
-		if (data->data[index])
-			data->data[index] = (Letter) realloc(data->data[index], (strlen(letter) + 1) * sizeof(char));
-		else /* Allocate memory if it's the first letter here */
-			data->data[index] = (Letter) malloc((strlen(letter) + 1) * sizeof(char));
+		/**
+		 * If there already was a Letter here, adjust size to the size of the new one
+		 * Otherwise allocate memory
+		 */
+		data->data[index] = (Letter) realloc(data->data[index], (strlen(letter) + 1) * sizeof(char));
 		strcpy(data->data[index], letter); /* Copy the letter */
 	}
 	else /* Negative index -> extra_data */
 	{
-		/*
+		/**
 		 * Here we deal with -index-1, not with index, because we want -4 to become 3 and so on
 		 * (negative data index to positive extra_data index, see Data struct declaration)
+		 **
+		 * If there already was a Letter here, adjust size to the size of the new one
+		 * Otherwise allocate memory
 		 */
-		/* If there already was a Letter here, adjust size to the size of the new one */
-		if (data->extra_data[-index-1])
-		{
-			data->extra_data[-index-1] = (Letter) realloc(
-				data->extra_data[-index-1], (strlen(letter) + 1) * sizeof(char));
-		}
-		else /* Allocate memory if it's the first letter here */
-			data->extra_data[-index-1] = (Letter) malloc((strlen(letter) + 1) * sizeof(char));
+		data->extra_data[-index-1] = (Letter) realloc(data->extra_data[-index-1], (strlen(letter) + 1) * sizeof(char));
 		strcpy(data->extra_data[-index-1], letter); /* Copy the letter */
 	}
 }

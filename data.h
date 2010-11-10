@@ -1,5 +1,5 @@
 /* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 4; tab-width: 4 -*- */
-/*
+/**
  * Turing-simulator
  * Copyright (C) Marc-Antoine Perennou 2010 <Marc-Antoine@Perennou.com>
  */
@@ -17,7 +17,7 @@ struct _Data {
 	/* Array which contains left-side extra data (ex: extra_data[3] stands for data[-4]) */
 	LettersCollection extra_data;
 
-	/*
+	/**
 	 * Store arrays length too
 	 */
 

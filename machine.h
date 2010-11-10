@@ -1,5 +1,5 @@
 /* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 4; tab-width: 4 -*- */
-/*
+/**
  * Turing-simulator
  * Copyright (C) Marc-Antoine Perennou 2010 <Marc-Antoine@Perennou.com>
  */
@@ -40,7 +40,7 @@ struct _Machine {
 	/* Index we're up to in the data */
 	int data_index;
 
-	/*
+	/**
 	 * Store arrays length too
 	 */
 
