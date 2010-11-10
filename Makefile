@@ -2,7 +2,7 @@ sources = data.c exceptions.c machine.c main.c utils.c validator.c
 objects = $(sources:.c=.o)
 bin = turing-simulator
 
-D_CFLAGS = -g -ggdb -Wall -Wextra -Werror -pedantic -std=gnu99 -O2 -march=native
+D_CFLAGS = -g -ggdb3 -Wall -Wextra -Werror -pedantic -std=gnu99 -O3 -march=native
 D_LDFLAGS = -Wl,-O2 -Wl,--as-needed
 
 CC = gcc
