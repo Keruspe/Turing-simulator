@@ -58,8 +58,8 @@ readElement(FILE * file, Element * element, int * line_number)
 			(*element)[element_size] = '\0';
 			return true;
 		case '#':
-			/* We reached the end of this data section, close string and return false */
-			(*element)[element_size] = '\0';
+			/* We reached the end of this data section, close string or set to # and return false */
+			(*element)[element_size] = (element_size == 0) ? '#' : '\0';
 			return false;
 		default:
 			/* We read a basic character, nothing special to do here, juste append it to the end of the element */
@@ -70,7 +70,7 @@ readElement(FILE * file, Element * element, int * line_number)
 		}
 	}
 	/* We only get here if there was no '#', fallback considerating that the end of file is a '#' */
-	(*element)[element_size] = '\0';
+	(*element)[element_size] = (element_size == 0) ? '#' : '\0';
 	return false;
 }
 
@@ -89,7 +89,7 @@ extractData(FILE * file, ElementsCollection * storage, int * storage_length, int
 				(*storage_length + BASE_STORAGE_LENGTH) * sizeof(Element));
 		}
 	}
-	if (element[0] != '\0') /* If a last element was stuck to the '#' */
+	if (element[0] != '#' && element[0] != '\0') /* If a last element was stuck to the '#' or to the end of file */
 		/* Store it and increase number of elements into the storage area */
 		(*storage)[(*storage_length)++] = element;
 	else

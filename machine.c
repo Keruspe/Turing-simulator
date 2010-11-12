@@ -73,7 +73,7 @@ bool
 _readTransitionElement(Machine * machine, FILE * machine_file, Transition * transition, Element * element, int * line_number)
 {
 	bool notYetTheEnd = readElement(machine_file, element, line_number); /* Read an Element */
-	if ((*element)[0] == '\0') /* If the element is dummy */
+	if ((*element)[0] == '\0' || (*element)[0] == '#') /* If the element is dummy */
 	{
 		if (transition->start_state != *element)
 		{ /* We're not reading the first Element of the Transition, it's malformed */
@@ -96,7 +96,7 @@ _readTransition(Machine * machine, FILE * machine_file, Transition * transition,
 	_initTransition(transition); /* Initialize the Transition */
 	/* The first element we just read is the start state */
 	_readTransitionElement(machine, machine_file, transition, &(transition->start_state), line_number);
-	if (transition->start_state[0] == '\0') /* No more transitions to read */
+	if (transition->start_state[0] == '\0' || transition->start_state[0] == '#') /* No more transitions to read */
 		return false;
 	/* Then read the conditionnal value */
 	_readTransitionElement(machine, machine_file, transition, &(transition->cond), line_number);
@@ -144,11 +144,17 @@ void
 _readStartAndEndPoints(Machine * machine, FILE * machine_file, int * line_number)
 {
 	/* Read the initial state of the Machine */
-	readElement(machine_file, &(machine->initial_state), line_number);
+	do
+	{
+		readElement(machine_file, &(machine->initial_state), line_number);
+	} while(machine->initial_state[0] == '#'); /* Ignore all # at this point */
 	if(machine->initial_state[0] == '\0')
 		MalformedFileException(machine, machine_file, "no initial state", *line_number);
 	/* Read the final state of the Machine */
-	readElement(machine_file, &(machine->final_state), line_number);
+	do
+	{
+		readElement(machine_file, &(machine->final_state), line_number);
+	} while(machine->final_state[0] == '#'); /* Ignore all # at this point */
 	if(machine->final_state[0] == '\0')
 		MalformedFileException(machine, machine_file, "no final state", *line_number);
 }
