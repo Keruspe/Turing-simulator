@@ -47,6 +47,7 @@ readElement(FILE * file, Element * element, int * line_number)
 		{
 		case '$': /* We're facing a comment, ignore the end of line */
 			skipLine(file, line_number);
+		case '\0': /* Ignore \0 if by chance we meet it */
 			break;
 		case '\n':
 			++(*line_number);
@@ -89,7 +90,7 @@ extractData(FILE * file, ElementsCollection * storage, int * storage_length, int
 				(*storage_length + BASE_STORAGE_LENGTH) * sizeof(Element));
 		}
 	}
-	if (element[0] != '#' && element[0] != '\0') /* If a last element was stuck to the '#' or to the end of file */
+	if (element[0] != '#') /* If a last element was stuck to the '#' or to the end of file */
 		/* Store it and increase number of elements into the storage area */
 		(*storage)[(*storage_length)++] = element;
 	else
