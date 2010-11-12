@@ -70,8 +70,11 @@ readElement(FILE * file, Element * element, int * line_number)
 				*element = (Element) realloc(*element, (element_size + 1 + BASE_ELEMENT_SIZE) * sizeof(char));
 		}
 	}
-	/* We only get here if there was no '#', fallback considerating that the end of file is a '#' */
-	(*element)[element_size] = (element_size == 0) ? '#' : '\0';
+	/**
+	 * We only get here if there was no '#'
+	 * Fallback considerating that the end of file is a '#' but don't return '#'
+	 */
+	(*element)[element_size] = '\0';
 	return false;
 }
 
@@ -90,7 +93,7 @@ extractData(FILE * file, ElementsCollection * storage, int * storage_length, int
 				(*storage_length + BASE_STORAGE_LENGTH) * sizeof(Element));
 		}
 	}
-	if (element[0] != '#') /* If a last element was stuck to the '#' or to the end of file */
+	if (element[0] != '#' && element[0] != '\0') /* If a last element was stuck to the '#' or to the end of file */
 		/* Store it and increase number of elements into the storage area */
 		(*storage)[(*storage_length)++] = element;
 	else
