@@ -265,6 +265,6 @@ execute(Machine * machine)
 	}
 
 	printf("\n=================== Done ==================\nResult after %d steps:\n", steps);
-	printData(machine->data, machine->data->extra_data_length-1);
+	printData(machine->data, -machine->data->extra_data_length-1);
 	printf("\n===========================================\n\n");
 }
