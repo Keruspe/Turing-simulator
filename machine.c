@@ -231,7 +231,7 @@ go(Machine * machine, Move move)
 		--(machine->data_index);
 		break;
 	default: /* Really weird */
-		RuntimeException(machine, "bad move found, this is weird, should have been caught by parser.");
+		UnexpectedRuntimeException(machine, "bad move found, this is weird, should have been caught by parser.");
 	}
 	return getLetter(machine);
 }
@@ -274,7 +274,7 @@ execute(Machine * machine)
 		current_letter = go(machine, move); /* Move and get the new Letter */
 		/* Get the good Transition to apply */
 		if ((current_transition = _getTransition(machine, current_state, current_letter)) == NULL)
-			RuntimeException(machine, "no matching transition found.");
+			NoSuchTransitionException(machine, current_state, current_letter);
 		/* Apply Transition */
 		current_state = current_transition->next_state;
 		move = current_transition->move;
@@ -283,9 +283,7 @@ execute(Machine * machine)
 		printData(machine->data);
 
 		if (++steps >= MAX_STEPS) /* Avoid infinite loop */
-		{
 			TooMuchStepsException(machine);
-		}
 	}
 
 	printf("\n=================== Done ==================\nResult after %d steps:\n", steps);

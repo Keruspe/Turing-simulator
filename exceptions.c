@@ -60,13 +60,34 @@ BadTransitionException(Machine * machine, FILE * file, const String reason, int 
 }
 
 void
-RuntimeException(Machine * machine, const String reason)
+_RuntimeException(Machine * machine, String reason, bool needs_free)
 {
 	freeMachine(machine);
 	String full_reason = (String) malloc((18 + strlen(reason)) * sizeof(char));
 	sprintf(full_reason, "machine failure: %s", reason);
-	free(reason);
+	if (needs_free)
+		free(reason);
 	_Exception("Runtime exception", full_reason);
+}
+
+void
+RuntimeException(Machine * machine, String reason)
+{
+	_RuntimeException(machine, reason, true);
+}
+
+void
+UnexpectedRuntimeException(Machine * machine, const String reason)
+{
+	_RuntimeException(machine, reason, false);
+}
+
+void
+NoSuchTransitionException(Machine * machine, const State state, const Letter letter)
+{
+	String reason = (String) malloc((62 + strlen(letter) + strlen(state)) * sizeof(char));
+	sprintf(reason, "no matching transition found, was in state: \"%s\", found letter: \"%s\"", state, letter);
+	RuntimeException(machine, reason);
 }
 
 void
