@@ -1,0 +1,15 @@
+x _#
+q0 q1 q2 q3 q4 q5#
+q0 _ _ q5 R
+q0 x _ q1 R
+q1 x x q1 R
+q1 _ _ q2 R
+q2 x x q2 R
+q2 _ x q3 L
+q3 x x q3 L
+q3 _ _ q4 L
+q4 x x q4 L
+q4 _ x q0 R
+#
+q0
+q5
