@@ -28,30 +28,6 @@ _newMachine()
 }
 
 void
-_initTransition(Transition * transition)
-{
-	/* Basic initialisation of a Transition */
-	transition->start_state = NULL;
-	transition->cond = NULL;
-	transition->subst = NULL;
-	transition->next_state = NULL;
-	transition->move = '\0';
-}
-
-void
-freeTransition(Transition transition)
-{
-	/* Free the memory used by a Transition */
-	free(transition.start_state);
-	if (transition.cond)
-		free(transition.cond);
-	if (transition.subst)
-		free(transition.subst);
-	if (transition.next_state)
-		free(transition.next_state);
-}
-
-void
 _readAlphabet(Machine * machine, FILE * machine_file, int * line_number)
 {
 	/* Read the alphabet recognized by the Machine from machine_file */
@@ -77,7 +53,7 @@ _readTransitionElement(Machine * machine, FILE * machine_file, Transition * tran
 	{
 		if (transition->start_state != *element)
 		{ /* We're not reading the first Element of the Transition, it's malformed */
-			freeTransition(*transition);
+			freeTransition(transition);
 			BadTransitionException(machine, machine_file, NULL, *line_number);
 		}
 		else if (machine->transitions_length == 0)
@@ -93,7 +69,7 @@ _readTransitionElement(Machine * machine, FILE * machine_file, Transition * tran
 bool
 _readTransition(Machine * machine, FILE * machine_file, Transition * transition, int * line_number)
 {
-	_initTransition(transition); /* Initialize the Transition */
+	initTransition(transition); /* Initialize the Transition */
 	/* The first element we just read is the start state */
 	_readTransitionElement(machine, machine_file, transition, &(transition->start_state), line_number);
 	if (transition->start_state[0] == '\0' || transition->start_state[0] == '#') /* No more transitions to read */
@@ -194,7 +170,7 @@ freeMachine(Machine * machine)
 	for (i = 0 ; i < machine->states_length ; ++i)
 		free(machine->states[i]); /* Free each possible State */
 	for (i = 0 ; i < machine->transitions_length ; ++i)
-		freeTransition(machine->transitions[i]); /* Free each available Transition */
+		freeTransition(&(machine->transitions[i])); /* Free each available Transition */
 	/* Free remaining stuff */
 	free(machine->alphabet);
 	free(machine->states);

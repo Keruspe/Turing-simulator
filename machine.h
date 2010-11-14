@@ -7,21 +7,7 @@
 #ifndef __MACHINE_H__
 #define __MACHINE_H__
 
-#include "types.h"
-
-/* Structure to store a Transition */
-struct _Transition {
-	/* The State in which the Machine is before the Transition */
-	State start_state;
-	/* The Letter that must be in the box at the right of the head to apply the Transition */
-	Letter cond;
-	/* The Letter which will replace the previous one in the box at the right of the head after the Transition */
-	Letter subst;
-	/* The State in which the Machine is after the Transition */
-	State next_state;
-	/* Where will we go after the Transition ? R(ight) or L(eft) ? */
-	Move move;
-};
+#include "transition.h"
 
 /* Structure to store a Machine */
 struct _Machine {
