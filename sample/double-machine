@@ -1,0 +1,16 @@
+0 1 _#
+q0 q1 q2 q3 q4 q5#
+q0 0 0 q0 R
+q0 1 1 q1 L
+q1 0 1 q2 R
+q1 _ 1 q2 R
+q2 1 1 q2 R
+q2 0 0 q3 L
+q2 _ _ q4 L
+q3 0 1 q2 R
+q3 1 0 q2 R
+q4 1 0 q5 R
+q4 0 0 q5 R
+q0 _ _ q5 R#
+q0
+q5
