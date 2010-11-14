@@ -40,6 +40,6 @@ Letter getLetter(Machine *);
 void setLetter(Data *, int index, Letter);
 
 /* Print the Data */
-void printData(Data*);
+void printData(Data *, int index);
 
 #endif /* __DATA_H__ */

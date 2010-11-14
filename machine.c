@@ -265,10 +265,11 @@ execute(Machine * machine)
 
 	/* Print the start state (Data) */
 	printf("\n===========================================\nInitial Data:\n");
-	printData(machine->data);
+	printData(machine->data, machine->data_index);
 	printf("\n================== Start ==================\nExecuting your Machine:\n");
 
-	printData(machine->data);
+	printf("%s:", current_state);
+	printData(machine->data, machine->data_index);
 	while (strcmp(current_state, machine->final_state) != 0) /* Loop until we reach the final state */
 	{
 		current_letter = go(machine, move); /* Move and get the new Letter */
@@ -280,13 +281,14 @@ execute(Machine * machine)
 		move = current_transition->move;
 		setLetter(machine->data, machine->data_index, current_transition->subst);
 		printf("\n");
-		printData(machine->data);
+		printf("%s:", current_state);
+		printData(machine->data, machine->data_index);
 
 		if (++steps >= MAX_STEPS) /* Avoid infinite loop */
 			TooMuchStepsException(machine);
 	}
 
 	printf("\n=================== Done ==================\nResult after %d steps:\n", steps);
-	printData(machine->data);
+	printData(machine->data, machine->data_index);
 	printf("\n===========================================\n\n");
 }

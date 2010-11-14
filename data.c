@@ -137,11 +137,21 @@ setLetter(Data * data, int index, Letter letter)
 }
 
 void
-printData(Data * data)
+printData(Data * data, int index)
 {
 	int count;
 	for (count = data->extra_data_length ; count > 0 ; --count)
-		printf("%s ", data->extra_data[count-1]);
+	{
+		if (count == index+2)
+			printf(" \033[0;31m%s\033[0m", data->extra_data[count-1]);
+		else
+			printf(" %s", data->extra_data[count-1]);
+	}
 	for (count = 0 ; count < data->data_length ; ++count)
-		printf("%s ", data->data[count]);
+	{
+		if (count == index)
+			printf(" \033[0;31m%s\033[0m", data->data[count]);
+		else
+			printf(" %s", data->data[count]);
+	}
 }
