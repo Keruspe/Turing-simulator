@@ -103,14 +103,7 @@ extractData(FILE * file, ElementsCollection * storage, int * storage_length, int
 int
 getIntegerLength(int integer)
 {
-	int div = 10;
-	int size = 1;
-	while (true)
-	{
-		integer -= integer%div;
-		if (integer == 0)
-			return size;
-		div *= 10;
-		++size;
-	}
+	int size;
+	for (size = 1 ; (integer/=10) != 0 ; ++size);
+	return size;
 }
