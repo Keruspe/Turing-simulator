@@ -32,19 +32,22 @@ void clearBuffer();
 /* Used to get user choice in main */
 bool getChoice();
 
-/*
+/**
  * parsing stuff
  */
 
 /* Read the next element in the file */
 bool readElement(FILE *, Element *, int * line_number);
 
-/*
+/**
  * Extract data section (until we meet '#') and put all elements into the storage area we pass a pointer to,
  * keeping by the way its length up to date.
  * The storage is a pointer to an Array of Element (State/Letter).
  * We need this and not only the Array because we want to be able to resize it.
  */
 void extractData(FILE * file, ElementsCollection * storage, int * storage_length, int * line_number);
+
+/* Get the size of an integer */
+int getIntegerLength(int);
 
 #endif /* __UTILS_H__ */

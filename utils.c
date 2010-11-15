@@ -99,3 +99,18 @@ extractData(FILE * file, ElementsCollection * storage, int * storage_length, int
 	else
 		free(element); /* Else free the dummy element to avoid memory leaks */
 }
+
+int
+getIntegerLength(int integer)
+{
+	int div = 10;
+	int size = 1;
+	while (true)
+	{
+		integer -= integer%div;
+		if (integer == 0)
+			return size;
+		div *= 10;
+		++size;
+	}
+}

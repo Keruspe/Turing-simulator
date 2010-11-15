@@ -35,7 +35,7 @@ MalformedFileException(Machine * machine, FILE * file, const String reason, int 
 	if (file) /* If we've a file to close, close it */
 		fclose(file);
 	/* Gives a precise reason to _Exception */
-	String full_reason = (String) malloc ((25 + strlen(reason)) * sizeof(char));
+	String full_reason = (String) malloc ((25 + getIntegerLength(line_number) + strlen(reason)) * sizeof(char));
 	sprintf(full_reason, "malformed file, line %d: %s", line_number, reason);
 	_Exception("Exception", full_reason);
 }
