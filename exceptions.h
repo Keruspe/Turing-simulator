@@ -17,14 +17,14 @@ void NoSuchFileException(const String filename);
  * There was a syntax error in the file (machine and file are optional)
  * machine and file are optional and can be NULL
  */
-void MalformedFileException(Machine *, FILE *, const String reason, int line_number);
+void MalformedFileException(Machine *, FILE *, const String reason, unsigned int line_number);
 
 /**
  * There was a malformed transition in the file
  * machine and file are optional and can be NULL
  * reason can be NULL for a generic one
  */
-void BadTransitionException(Machine *, FILE *, const String reason, int line_number);
+void BadTransitionException(Machine *, FILE *, const String reason, unsigned int line_number);
 
 /* Exception encountered during runtime */
 void RuntimeException(Machine *, const String reason);

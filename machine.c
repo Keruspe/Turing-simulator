@@ -28,7 +28,7 @@ _newMachine()
 }
 
 void
-_readAlphabet(Machine * machine, FILE * machine_file, int * line_number)
+_readAlphabet(Machine * machine, FILE * machine_file, unsigned int * line_number)
 {
 	/* Read the alphabet recognized by the Machine from machine_file */
 	extractData(machine_file, &(machine->alphabet), &(machine->alphabet_length), line_number);
@@ -37,7 +37,7 @@ _readAlphabet(Machine * machine, FILE * machine_file, int * line_number)
 }
 
 void
-_readStates(Machine * machine, FILE * machine_file, int * line_number)
+_readStates(Machine * machine, FILE * machine_file, unsigned int * line_number)
 {
 	/* Read the states in which the Machine can be from machine_file */
 	extractData(machine_file, &(machine->states), &(machine->states_length), line_number);
@@ -46,7 +46,7 @@ _readStates(Machine * machine, FILE * machine_file, int * line_number)
 }
 
 bool
-_readTransitionElement(Machine * machine, FILE * machine_file, Transition * transition, Element * element, int * line_number)
+_readTransitionElement(Machine * machine, FILE * machine_file, Transition * transition, Element * element, unsigned int * line_number)
 {
 	bool notYetTheEnd = readElement(machine_file, element, line_number); /* Read an Element */
 	if ((*element)[0] == '\0' || (*element)[0] == '#') /* If the element is dummy */
@@ -67,7 +67,7 @@ _readTransitionElement(Machine * machine, FILE * machine_file, Transition * tran
 }
 
 bool
-_readTransition(Machine * machine, FILE * machine_file, Transition * transition, int * line_number)
+_readTransition(Machine * machine, FILE * machine_file, Transition * transition, unsigned int * line_number)
 {
 	initTransition(transition); /* Initialize the Transition */
 	/* The first element we just read is the start state */
@@ -93,7 +93,7 @@ _readTransition(Machine * machine, FILE * machine_file, Transition * transition,
 }
 
 void
-_readTransitions(Machine * machine, FILE * machine_file, int * line_number)
+_readTransitions(Machine * machine, FILE * machine_file, unsigned int * line_number)
 {
 	/* Read the available transitions */
 	Transition transition; /* Will be used to store each transition */
@@ -117,7 +117,7 @@ _readTransitions(Machine * machine, FILE * machine_file, int * line_number)
 }
 
 void
-_readStartAndEndPoints(Machine * machine, FILE * machine_file, int * line_number)
+_readStartAndEndPoints(Machine * machine, FILE * machine_file, unsigned int * line_number)
 {
 	/* Read the initial state of the Machine */
 	do
@@ -140,7 +140,7 @@ newMachine()
 {
 	FILE * machine_file = NULL;
 	char machine_filename[MAX_FILENAME_LENGTH] = "";
-	int line_number = 0;
+	unsigned int line_number = 0;
 
 	printf("Where is the file describing your turing machine ?\n");
 	/* Read the name of the file in which the Machine is described, fail and exit if we cannot load it */

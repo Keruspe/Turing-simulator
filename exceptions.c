@@ -28,20 +28,20 @@ NoSuchFileException(const String filename)
 }
 
 void
-MalformedFileException(Machine * machine, FILE * file, const String reason, int line_number)
+MalformedFileException(Machine * machine, FILE * file, const String reason, unsigned int line_number)
 {
 	if (machine) /* If we've a machine to free, free it */
 		freeMachine(machine);
 	if (file) /* If we've a file to close, close it */
 		fclose(file);
 	/* Gives a precise reason to _Exception */
-	String full_reason = (String) malloc ((25 + getIntegerLength(line_number) + strlen(reason)) * sizeof(char));
+	String full_reason = (String) malloc ((25 + getUnsignedIntegerLength(line_number) + strlen(reason)) * sizeof(char));
 	sprintf(full_reason, "malformed file, line %d: %s", line_number, reason);
 	_Exception("Exception", full_reason);
 }
 
 void
-_BadTransitionException(Machine * machine, FILE * file, int line_number)
+_BadTransitionException(Machine * machine, FILE * file, unsigned int line_number)
 {
 	/* Gives a precise generic reason to MalformedFileException */
 	MalformedFileException(machine, file,
@@ -50,7 +50,7 @@ _BadTransitionException(Machine * machine, FILE * file, int line_number)
 }
 
 void
-BadTransitionException(Machine * machine, FILE * file, const String reason, int line_number)
+BadTransitionException(Machine * machine, FILE * file, const String reason, unsigned int line_number)
 {
 	/* Gives a generic or a custom reason to MalformedFileException */
 	if (reason)

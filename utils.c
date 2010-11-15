@@ -8,7 +8,7 @@
 #include "utils.h"
 
 void
-skipLine(FILE * file, int * line_number)
+skipLine(FILE * file, unsigned int * line_number)
 {
 	/* Read every char until next line in file */
 	while (fgetc(file) != '\n');
@@ -36,7 +36,7 @@ getChoice()
 }
 
 bool
-readElement(FILE * file, Element * element, int * line_number)
+readElement(FILE * file, Element * element, unsigned int * line_number)
 {
 	char c; /* Will store each character we read */
 	*element = (Element) malloc((1 + BASE_ELEMENT_SIZE) * sizeof(char)); /* Initialization/allocation */
@@ -79,7 +79,7 @@ readElement(FILE * file, Element * element, int * line_number)
 }
 
 void
-extractData(FILE * file, ElementsCollection * storage, int * storage_length, int * line_number)
+extractData(FILE * file, ElementsCollection * storage, int * storage_length, unsigned int * line_number)
 {
 	Element element; /* Will store each element we read */
 	/* While there are still data to be read, read them (until next '#') */
@@ -101,7 +101,7 @@ extractData(FILE * file, ElementsCollection * storage, int * storage_length, int
 }
 
 int
-getIntegerLength(int integer)
+getUnsignedIntegerLength(unsigned int integer)
 {
 	int size;
 	for (size = 1 ; (integer/=10) != 0 ; ++size);
