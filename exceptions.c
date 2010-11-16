@@ -19,6 +19,15 @@ _Exception(const String prefix, String reason)
 }
 
 void
+ValidationException(Machine * machine, const String what, const String reason, Element malformed, unsigned int line_number)
+{
+	freeMachine(machine);
+	String full_reason = (String) malloc((strlen(reason) + strlen(malformed) + getUnsignedIntegerLength(line_number) + 66) * sizeof(char));
+	sprintf(full_reason, "your %s failed the validation line %d: %s\n%s %s", what, line_number, reason, "Did not understand:", malformed);
+	_Exception("Validation exception", full_reason);
+}
+
+void
 NoSuchFileException(const String filename)
 {
 	/* Gives a precise reason to _Exception */
@@ -105,13 +114,4 @@ DefaultLetterException(Machine * machine)
 		"the alphabet of your Machine didn't contain the default Letter (%s) and it was needed to get out of the data range.",
 		DEFAULT_LETTER);
 	RuntimeException(machine, reason);
-}
-
-void
-ValidationException(Machine * machine, const String what, const String reason, Element malformed)
-{
-	freeMachine(machine);
-	String full_reason = (String) malloc((strlen(reason) + strlen(malformed) + 58) * sizeof(char));
-	sprintf(full_reason, "your %s failed the validation: %s\n%s %s", what, reason, "Did not understand:", malformed);
-	_Exception("Validation exception", full_reason);
 }

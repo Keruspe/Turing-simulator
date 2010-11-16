@@ -10,6 +10,12 @@
 #include "types.h"
 #include <stdio.h>
 
+/**
+ * Validation of "what" failed
+ * "what" should be either "machine" or "data"
+ */
+void ValidationException(Machine *, const String what, const String reason, Element malformed, unsigned int line_number);
+
 /* We couldn't read a file */
 void NoSuchFileException(const String filename);
 
@@ -39,11 +45,5 @@ void TooMuchStepsException(Machine *);
 
 /* We needed to use the default Letter but it was not in the Machine's alphabet */
 void DefaultLetterException(Machine *);
-
-/**
- * Validation of "what" failed
- * "what" should be either "machine" or "data"
- */
-void ValidationException(Machine *, const String what, const String reason, Element malformed);
 
 #endif /* __EXCEPTIONS_H__ */
