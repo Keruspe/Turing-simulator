@@ -1,15 +1,15 @@
 x _#
 q0 q1 q2 q3 q4 q5#
-q0 _ _ q5 R
-q0 x _ q1 R
-q1 x x q1 R
-q1 _ _ q2 R
-q2 x x q2 R
-q2 _ x q3 L
-q3 x x q3 L
-q3 _ _ q4 L
-q4 x x q4 L
-q4 _ x q0 R
+q0 _ _ q5 R $ When we meet a _ in initial state, we have finished
+q0 x _ q1 R $ Mark the letter we are copying -> q1
+q1 x x q1 R $ Keep going right to the next _
+q1 _ _ q2 R $ We reached the _ separator between the copy -> q2
+q2 x x q2 R $ Go right to the first place available
+q2 _ x q3 L $ Paste the letter we copied -> q3 and go back
+q3 x x q3 L $ Go back to the separator
+q3 _ _ q4 L $ We reached the separator -> q4, keep going back
+q4 x x q4 L $ Keep going back
+q4 _ x q0 R $ We reached the letter we was coping, put it back and initial state again from the next one
 #
 q0
 q5
