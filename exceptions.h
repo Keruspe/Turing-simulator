@@ -29,9 +29,6 @@ void BadTransitionException(Machine *, FILE *, const String reason, unsigned int
 /* Exception encountered during runtime */
 void RuntimeException(Machine *, const String reason);
 
-/* Exception encountered during runtime, really should never have been hit */
-void UnexpectedRuntimeException(Machine *, const String reason);
-
 /* No transition matching our current State was found */
 void NoSuchTransitionException(Machine *, const State, const Letter);
 

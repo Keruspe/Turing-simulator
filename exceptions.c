@@ -60,26 +60,13 @@ BadTransitionException(Machine * machine, FILE * file, const String reason, unsi
 }
 
 void
-_RuntimeException(Machine * machine, String reason, bool needs_free)
+RuntimeException(Machine * machine, String reason)
 {
 	freeMachine(machine);
 	String full_reason = (String) malloc((18 + strlen(reason)) * sizeof(char));
 	sprintf(full_reason, "machine failure: %s", reason);
-	if (needs_free)
-		free(reason);
+	free(reason);
 	_Exception("Runtime exception", full_reason);
-}
-
-void
-RuntimeException(Machine * machine, String reason)
-{
-	_RuntimeException(machine, reason, true);
-}
-
-void
-UnexpectedRuntimeException(Machine * machine, const String reason)
-{
-	_RuntimeException(machine, reason, false);
 }
 
 void

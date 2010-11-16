@@ -198,17 +198,10 @@ reloadData(Machine * machine)
 Letter
 go(Machine * machine, Move move)
 {
-	switch (move)
-	{
-	case 'R': /* Go right */
+	if (move == 'R') /* Go right */
 		++(machine->data_index);
-		break;
-	case 'L': /* Go left */
+	else /* Go left */
 		--(machine->data_index);
-		break;
-	default: /* Really weird */
-		UnexpectedRuntimeException(machine, "bad move found, this is weird, should have been caught by parser.");
-	}
 	return getLetter(machine);
 }
 
