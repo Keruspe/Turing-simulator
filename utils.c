@@ -4,8 +4,11 @@
  * Copyright (C) Marc-Antoine Perennou 2010 <Marc-Antoine@Perennou.com>
  */
 
+#include "exceptions.h"
+#include "machine.h"
 #include "types.h"
 #include "utils.h"
+#include "validator.h"
 
 void
 skipLine(FILE * file, unsigned int * line_number)
@@ -79,7 +82,7 @@ readElement(FILE * file, Element * element, unsigned int * line_number)
 }
 
 void
-extractData(FILE * file, ElementsCollection * storage, int * storage_length, unsigned int * line_number)
+extractData(FILE * file, ElementsCollection * storage, int * storage_length, unsigned int * line_number, bool validate, Machine * machine)
 {
 	Element element; /* Will store each element we read */
 	/* While there are still data to be read, read them (until next '#') */
@@ -92,6 +95,8 @@ extractData(FILE * file, ElementsCollection * storage, int * storage_length, uns
 			*storage = (ElementsCollection) realloc(*storage,
 				(*storage_length + BASE_STORAGE_LENGTH) * sizeof(Element));
 		}
+		if (validate && !validateLetter(element, machine)) /* Validate after storing so that it's automatically free'd */
+			ValidationException(machine, "data", "bad element found", element);
 	}
 	if (element[0] != '#' && element[0] != '\0') /* If a last element was stuck to the '#' or to the end of file */
 		/* Store it and increase number of elements into the storage area */

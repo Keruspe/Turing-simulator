@@ -44,6 +44,6 @@ void DefaultLetterException(Machine *);
  * Validation of "what" failed
  * "what" should be either "machine" or "data"
  */
-void ValidationException(Machine *, const String what, const String reason);
+void ValidationException(Machine *, const String what, const String reason, Element malformed);
 
 #endif /* __EXCEPTIONS_H__ */

@@ -45,7 +45,7 @@ bool readElement(FILE *, Element *, unsigned int * line_number);
  * The storage is a pointer to an Array of Element (State/Letter).
  * We need this and not only the Array because we want to be able to resize it.
  */
-void extractData(FILE * file, ElementsCollection * storage, int * storage_length, unsigned int * line_number);
+void extractData(FILE * file, ElementsCollection * storage, int * storage_length, unsigned int * line_number, bool validate, Machine *);
 
 /* Get the size of an integer */
 int getUnsignedIntegerLength(unsigned int);

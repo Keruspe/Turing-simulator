@@ -31,7 +31,7 @@ void
 _readAlphabet(Machine * machine, FILE * machine_file, unsigned int * line_number)
 {
 	/* Read the alphabet recognized by the Machine from machine_file */
-	extractData(machine_file, &(machine->alphabet), &(machine->alphabet_length), line_number);
+	extractData(machine_file, &(machine->alphabet), &(machine->alphabet_length), line_number, false, machine);
 	if (machine->alphabet_length == 0) /* Fail if no alphabet in the machine file */
 		MalformedFileException(machine, machine_file, "your Machine has no alphabet.", *line_number);
 }
@@ -40,7 +40,7 @@ void
 _readStates(Machine * machine, FILE * machine_file, unsigned int * line_number)
 {
 	/* Read the states in which the Machine can be from machine_file */
-	extractData(machine_file, &(machine->states), &(machine->states_length), line_number);
+	extractData(machine_file, &(machine->states), &(machine->states_length), line_number, false, machine);
 	if (machine->states_length == 0) /* Fail if no states in the machine file */
 		MalformedFileException(machine, machine_file, "your Machine has no states.", *line_number);
 }
@@ -191,8 +191,7 @@ reloadData(Machine * machine)
 	if (machine->data != NULL) /* If the machine had Data, free it */
 		freeData(machine->data);
 	machine->data_index = -1; /* The Machine starts at the left of the first cell */
-	machine->data = newData(); /* Then read Data */
-	validateData(machine); /* Validate the new Data set */
+	machine->data = newData(machine); /* Then read Data */
 	clearBuffer(); /* Clear buffer */
 }
 

@@ -108,10 +108,10 @@ DefaultLetterException(Machine * machine)
 }
 
 void
-ValidationException(Machine * machine, const String what, const String reason)
+ValidationException(Machine * machine, const String what, const String reason, Element malformed)
 {
 	freeMachine(machine);
-	String full_reason = (String) malloc((strlen(reason) + 37) * sizeof(char));
-	sprintf(full_reason, "your %s failed the validation: %s", what, reason);
+	String full_reason = (String) malloc((strlen(reason) + strlen(malformed) + 58) * sizeof(char));
+	sprintf(full_reason, "your %s failed the validation: %s\n%s %s", what, reason, "Did not understand:", malformed);
 	_Exception("Validation exception", full_reason);
 }

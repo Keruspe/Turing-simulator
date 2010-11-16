@@ -7,6 +7,12 @@
 #ifndef __VALIDATOR_H__
 #define __VALIDATOR_H__
 
+/* Macros to improve readability */
+#define validateLetter(x,y) validateElement(x,y->alphabet,y->alphabet_length)
+#define validateState(x,y) validateElement(x,y->states,y->states_length)
+
+bool validateElement(Element, ElementsCollection valid_elements, int collection_length);
+
 /* Check if the Machine allows the use of the default Letter */
 bool hasDefaultLetter(Machine *);
 
@@ -15,8 +21,5 @@ bool validateTransition(Transition, Machine *, Element * malformed);
 
 /* Validate a Machine */
 void validate(Machine *);
-
-/* Validate a Data set for a Machine */
-void validateData(Machine *);
 
 #endif /* __VALIDATOR_H__ */

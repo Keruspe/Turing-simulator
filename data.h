@@ -28,7 +28,7 @@ struct _Data {
 };
 
 /* Instantiate a new Data set */
-Data * newData();
+Data * newData(Machine *);
 
 /* Free memory, leaks are evil */
 void freeData(Data *);

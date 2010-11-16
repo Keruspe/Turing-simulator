@@ -23,7 +23,7 @@ _newData()
 }
 
 Data *
-newData()
+newData(Machine * machine)
 {
 	FILE * data_file = NULL;
 	char data_filename[MAX_FILENAME_LENGTH];
@@ -36,7 +36,7 @@ newData()
 
 	Data * data = _newData(); /* Allocate memory */
 	/* Extract Data from data_file */
-	extractData(data_file, &(data->data), &(data->data_length), &line_number);
+	extractData(data_file, &(data->data), &(data->data_length), &line_number, true, machine);
 
 	/* Close the data_file */
 	fclose(data_file);
