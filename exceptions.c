@@ -19,11 +19,21 @@ _Exception(const String prefix, String reason)
 }
 
 void
+_ValidationException(const String what, const String reason, Element malformed, unsigned int line_number)
+{
+	String full_reason = (String) malloc((strlen(reason) + strlen(malformed) + getUnsignedIntegerLength(line_number) + 66) * sizeof(char));
+	sprintf(full_reason, "your %s failed the validation line %d: %s\n%s %s", what, line_number, reason, "Did not understand:", malformed);
+	_Exception("Validation exception", full_reason);
+}
+
+void
 ValidationException(Machine * machine, const String what, const String reason, Element malformed, unsigned int line_number)
 {
 	freeMachine(machine);
-	String full_reason = (String) malloc((strlen(reason) + strlen(malformed) + getUnsignedIntegerLength(line_number) + 66) * sizeof(char));
-	sprintf(full_reason, "your %s failed the validation line %d: %s\n%s %s", what, line_number, reason, "Did not understand:", malformed);
+	if (malformed != NULL)
+		_ValidationException(what, reason, malformed, line_number);
+	String full_reason = (String) malloc((strlen(reason) + 32) * sizeof(char));
+	sprintf(full_reason, "your %s failed the validation: %s", what, reason);
 	_Exception("Validation exception", full_reason);
 }
 
