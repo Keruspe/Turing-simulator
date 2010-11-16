@@ -175,11 +175,11 @@ freeMachine(Machine * machine)
 	free(machine->alphabet);
 	free(machine->states);
 	free(machine->transitions);
-	if (machine->initial_state)
+	if (machine->initial_state != NULL)
 		free(machine->initial_state);
-	if (machine->final_state)
+	if (machine->final_state != NULL)
 		free(machine->final_state);
-	if (machine->data) /* If the machine had Data, free it */
+	if (machine->data != NULL) /* If the machine had Data, free it */
 		freeData(machine->data);
 	free(machine);
 }
@@ -187,7 +187,7 @@ freeMachine(Machine * machine)
 void
 reloadData(Machine * machine)
 {
-	if (machine->data) /* If the machine had Data, free it */
+	if (machine->data != NULL) /* If the machine had Data, free it */
 		freeData(machine->data);
 	machine->data_index = -1; /* The Machine starts at the left of the first cell */
 	machine->data = newData(); /* Then read Data */

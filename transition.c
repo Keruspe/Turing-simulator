@@ -22,10 +22,10 @@ freeTransition(Transition * transition)
 {
 	/* Free the memory used by a Transition */
 	free(transition->start_state);
-	if (transition->cond)
+	if (transition->cond != NULL)
 		free(transition->cond);
-	if (transition->subst)
+	if (transition->subst != NULL)
 		free(transition->subst);
-	if (transition->next_state)
+	if (transition->next_state != NULL)
 		free(transition->next_state);
 }

@@ -52,7 +52,7 @@ freeData(Data * data)
 		free(data->data[count]); /* Free each Letter from data */
 	/* Free remaining stuff */
 	free(data->data);
-	if (data->extra_data)
+	if (data->extra_data != NULL)
 	{
 		for (count = 0 ; count < data->extra_data_length ; ++count)
 			free(data->extra_data[count]); /* Free each Letter from extra_data */
