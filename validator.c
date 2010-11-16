@@ -36,13 +36,30 @@ hasDefaultLetter(Machine * machine)
 }
 
 bool
-validateTransition(Transition transition, Machine * machine)
+validateTransition(Transition transition, Machine * machine, Element * malformed)
 {
 	/* Check if all states and letters used by a Transition are known by the Machine */
-	return (_validateLetter(transition.cond, machine)
-		&& _validateLetter(transition.subst, machine)
-		&& _validateState(transition.start_state, machine)
-		&& _validateState(transition.next_state, machine));
+	if (!_validateLetter(transition.cond, machine))
+	{
+		*malformed = transition.cond;
+		return false;
+	}
+	if (!_validateLetter(transition.subst, machine))
+	{
+		*malformed = transition.subst;
+		return false;
+	}
+	if (!_validateState(transition.start_state, machine))
+	{
+		*malformed = transition.start_state;
+		return false;
+	}
+	if (!_validateState(transition.next_state, machine))
+	{
+		*malformed = transition.next_state;
+		return false;
+	}
+	return true;
 }
 
 bool

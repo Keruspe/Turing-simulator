@@ -54,12 +54,12 @@ _readTransitionElement(Machine * machine, FILE * machine_file, Transition * tran
 		if (transition->start_state != *element)
 		{ /* We're not reading the first Element of the Transition, it's malformed */
 			freeTransition(transition);
-			BadTransitionException(machine, machine_file, NULL, *line_number);
+			BadTransitionException(machine, machine_file, "incomplete Transition", NULL, *line_number);
 		}
 		else if (machine->transitions_length == 0)
 		{ /* We're reading the first Element of the first Transition, there is no Transition */
 			free (*element);
-			BadTransitionException(machine, machine_file, "your Machine has no Transition.", *line_number);
+			BadTransitionException(machine, machine_file, "your Machine has no Transition.", NULL, *line_number);
 		}
 		/* Else let the dummy Transition being treated later */
 	}
@@ -88,7 +88,7 @@ _readTransition(Machine * machine, FILE * machine_file, Transition * transition,
 	/* Move was not 'R' or 'L', we don't know any other, abort */
 	if (transition->move != 'R' && transition->move != 'L')
 		BadTransitionException(machine, machine_file,
-			"bad move in Transition, only 'R' or 'L' are allowed", *line_number);
+			"bad move in Transition, only 'R' or 'L' are allowed", NULL, *line_number);
 	return notYetTheEnd;
 }
 
@@ -97,14 +97,15 @@ _readTransitions(Machine * machine, FILE * machine_file, unsigned int * line_num
 {
 	/* Read the available transitions */
 	Transition transition; /* Will be used to store each transition */
+	Element malformed; /* Will be use to store the malformed Element if a transition fails validation */
 	/* Keep reading while there are things to read (we did not meet '#') */
 	while (_readTransition(machine, machine_file, &transition, line_number))
 	{ /* While there are still transitions to read */
 		/* Store the transition and increase the number of transitions available */
 		machine->transitions[machine->transitions_length++] = transition;
 		/* Validate the transition */
-		if (!validateTransition(transition, machine))
-			BadTransitionException(machine, machine_file, NULL, *line_number);
+		if (!validateTransition(transition, machine, &malformed))
+			BadTransitionException(machine, machine_file, NULL, &malformed, *line_number);
 		/* When the Array is full, increase its size */
 		if ((machine->transitions_length % BASE_TRANSITIONS_LENGTH) == 0)
 			machine->transitions = (TransitionsCollection) realloc(machine->transitions,

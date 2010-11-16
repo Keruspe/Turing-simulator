@@ -28,7 +28,7 @@ NoSuchFileException(const String filename)
 }
 
 void
-MalformedFileException(Machine * machine, FILE * file, const String reason, unsigned int line_number)
+_MalformedFileException(Machine * machine, FILE * file, const String reason, unsigned int line_number, bool to_free)
 {
 	if (machine != NULL) /* If we've a machine to free, free it */
 		freeMachine(machine);
@@ -37,26 +37,36 @@ MalformedFileException(Machine * machine, FILE * file, const String reason, unsi
 	/* Gives a precise reason to _Exception */
 	String full_reason = (String) malloc ((25 + getUnsignedIntegerLength(line_number) + strlen(reason)) * sizeof(char));
 	sprintf(full_reason, "malformed file, line %d: %s", line_number, reason);
+	if (to_free)
+		free(reason);
 	_Exception("Exception", full_reason);
 }
 
 void
-_BadTransitionException(Machine * machine, FILE * file, unsigned int line_number)
+MalformedFileException(Machine * machine, FILE * file, const String reason, unsigned int line_number)
 {
-	/* Gives a precise generic reason to MalformedFileException */
-	MalformedFileException(machine, file,
-		"a malformed transition has been found.\nExpected: State Letter Letter State Move (Must be values recognized by the Machine)",
-		line_number);
+	_MalformedFileException(machine, file, reason, line_number, false);
 }
 
 void
-BadTransitionException(Machine * machine, FILE * file, const String reason, unsigned int line_number)
+_BadTransitionException(Machine * machine, FILE * file, const Element * malformed, unsigned int line_number)
+{
+	/* Gives a precise generic reason to MalformedFileException */
+	String reason = (String) malloc((145 + strlen(*malformed)) * sizeof(char));
+	sprintf(reason, "a malformed transition has been found.\n%s\n%s %s",
+		"Expected: State Letter Letter State Move (Must be values recognized by the Machine)",
+		"Did not understand:", *malformed);
+	_MalformedFileException(machine, file, reason, line_number, true);
+}
+
+void
+BadTransitionException(Machine * machine, FILE * file, const String reason, const Element * malformed, unsigned int line_number)
 {
 	/* Gives a generic or a custom reason to MalformedFileException */
 	if (reason != NULL)
 		MalformedFileException(machine, file, reason, line_number);
 	else
-		_BadTransitionException(machine, file, line_number);
+		_BadTransitionException(machine, file, malformed, line_number);
 }
 
 void

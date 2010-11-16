@@ -10,8 +10,8 @@
 /* Check if the Machine allows the use of the default Letter */
 bool hasDefaultLetter(Machine *);
 
-/* Validate a transition */
-bool validateTransition(Transition, Machine *);
+/* Validate a transition, store the bad Element if malformed */
+bool validateTransition(Transition, Machine *, Element * malformed);
 
 /* Validate a Machine */
 void validate(Machine *);

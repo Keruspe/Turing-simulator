@@ -23,8 +23,10 @@ void MalformedFileException(Machine *, FILE *, const String reason, unsigned int
  * There was a malformed transition in the file
  * machine and file are optional and can be NULL
  * reason can be NULL for a generic one
+ * If reason is NULL, you can still specify which Element was wrong
+ * If reason is specified, element is ignored (just put it to NULL)
  */
-void BadTransitionException(Machine *, FILE *, const String reason, unsigned int line_number);
+void BadTransitionException(Machine *, FILE *, const String reason, const Element * malformed, unsigned int line_number);
 
 /* Exception encountered during runtime */
 void RuntimeException(Machine *, const String reason);
@@ -38,7 +40,7 @@ void TooMuchStepsException(Machine *);
 /* We needed to use the default Letter but it was not in the Machine's alphabet */
 void DefaultLetterException(Machine *);
 
-/*
+/**
  * Validation of "what" failed
  * "what" should be either "machine" or "data"
  */
