@@ -14,7 +14,7 @@
  * Validation of "what" failed
  * "what" should be either "machine" or "data"
  */
-void ValidationException(Machine *, const String what, const String reason, Element malformed, unsigned int line_number);
+void ValidationException(Machine *, FILE *, const String what, const String reason, Element malformed, unsigned int line_number);
 
 /* We couldn't read a file */
 void NoSuchFileException(const String filename);

@@ -27,9 +27,11 @@ _ValidationException(const String what, const String reason, Element malformed, 
 }
 
 void
-ValidationException(Machine * machine, const String what, const String reason, Element malformed, unsigned int line_number)
+ValidationException(Machine * machine, FILE * file, const String what, const String reason, Element malformed, unsigned int line_number)
 {
 	freeMachine(machine);
+	if (file != NULL)
+		fclose(file);
 	if (malformed != NULL)
 		_ValidationException(what, reason, malformed, line_number);
 	String full_reason = (String) malloc((strlen(reason) + 32) * sizeof(char));

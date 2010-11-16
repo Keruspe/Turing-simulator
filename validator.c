@@ -79,7 +79,7 @@ _checkInitialState(Machine * machine)
 	if (!validateState(machine->initial_state, machine))
 		return false;
 	if (!_checkInitialStateDeparture(machine)) /* Check if we can leave it */
-		ValidationException(machine, "machine", "cannot leave the initial state.", NULL, 0);
+		ValidationException(machine, NULL, "machine", "cannot leave the initial state.", NULL, 0);
 	return true;
 }
 
@@ -102,7 +102,7 @@ _checkFinalState(Machine * machine)
 	if (!validateState(machine->final_state, machine)) /* Check if the final state is recognized by the Machine */
 		return false;
 	if (!_checkFinalStateReachability(machine)) /* Check if we can reach it */
-		ValidationException(machine, "machine", "the final state is unreachable.", NULL, 0);
+		ValidationException(machine, NULL, "machine", "the final state is unreachable.", NULL, 0);
 	return true;
 }
 
@@ -152,12 +152,12 @@ void
 validate(Machine * machine)
 {
 	if (!_checkInitialState(machine)) /* Check if the initial state is alright */
-		ValidationException(machine, "machine", "the initial state is not part of the alphabet.", NULL, 0);
+		ValidationException(machine, NULL, "machine", "the initial state is not part of the alphabet.", NULL, 0);
 	if (!_checkFinalState(machine)) /* Check if the final state is alright */
-		ValidationException(machine, "machine", "the final state is not part of the alphabet.", NULL, 0);
+		ValidationException(machine, NULL, "machine", "the final state is not part of the alphabet.", NULL, 0);
 	if (!_checkAtLeastOnePathExists(machine)) /* Check if the final state has any chance to be reached */
 	{
-		ValidationException(machine, "machine",
+		ValidationException(machine, NULL, "machine",
 			"no matter the Data, there is no path available from the initial State of your Machine to its final State.", NULL, 0);
 	}
 }
