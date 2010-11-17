@@ -7,7 +7,6 @@ D_LDFLAGS = -Wl,-O2 -Wl,--as-needed
 
 CC = gcc
 RM = rm -f
-ECHO = echo
 
 CFLAGS := $(D_CFLAGS) $(CFLAGS)
 LDFLAGS := $(D_LDFLAGS) $(LDFLAGS)
