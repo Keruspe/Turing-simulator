@@ -20,6 +20,6 @@ bool hasDefaultLetter(Machine *);
 bool validateTransition(Transition, Machine *, Element * malformed);
 
 /* Validate a Machine */
-void validate(Machine *);
+void validate(Machine *, FILE *, const unsigned int line_number);
 
 #endif /* __VALIDATOR_H__ */

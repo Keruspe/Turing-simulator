@@ -33,7 +33,7 @@ _readAlphabet(Machine * machine, FILE * machine_file, unsigned int * line_number
 	/* Read the alphabet recognized by the Machine from machine_file */
 	extractData(machine_file, &(machine->alphabet), &(machine->alphabet_length), line_number, false, machine);
 	if (machine->alphabet_length == 0) /* Fail if no alphabet in the machine file */
-		MalformedFileException(machine, machine_file, "your Machine has no alphabet.", *line_number);
+		ValidationException(machine, machine_file, "machine", "no alphabet found", NULL, *line_number);
 }
 
 void
@@ -42,7 +42,7 @@ _readStates(Machine * machine, FILE * machine_file, unsigned int * line_number)
 	/* Read the states in which the Machine can be from machine_file */
 	extractData(machine_file, &(machine->states), &(machine->states_length), line_number, false, machine);
 	if (machine->states_length == 0) /* Fail if no states in the machine file */
-		MalformedFileException(machine, machine_file, "your Machine has no states.", *line_number);
+		ValidationException(machine, machine_file, "Machine", "no State found", NULL, *line_number);
 }
 
 bool
@@ -59,7 +59,7 @@ _readTransitionElement(Machine * machine, FILE * machine_file, Transition * tran
 		else if (machine->transitions_length == 0)
 		{ /* We're reading the first Element of the first Transition, there is no Transition */
 			free (*element);
-			BadTransitionException(machine, machine_file, "your Machine has no Transition.", NULL, *line_number);
+			BadTransitionException(machine, machine_file, "your Machine has no Transition", NULL, *line_number);
 		}
 		/* Else let the dummy Transition being treated later */
 	}
@@ -105,7 +105,7 @@ _readTransitions(Machine * machine, FILE * machine_file, unsigned int * line_num
 		machine->transitions[machine->transitions_length++] = transition;
 		/* Validate the transition */
 		if (!validateTransition(transition, machine, &malformed))
-			BadTransitionException(machine, machine_file, NULL, &malformed, *line_number);
+			BadTransitionException(machine, machine_file, NULL, malformed, *line_number);
 		/* When the Array is full, increase its size */
 		if ((machine->transitions_length % BASE_TRANSITIONS_LENGTH) == 0)
 			machine->transitions = (TransitionsCollection) realloc(machine->transitions,
@@ -126,14 +126,14 @@ _readStartAndEndPoints(Machine * machine, FILE * machine_file, unsigned int * li
 		readElement(machine_file, &(machine->initial_state), line_number);
 	} while(machine->initial_state[0] == '#'); /* Ignore all # at this point */
 	if(machine->initial_state[0] == '\0')
-		MalformedFileException(machine, machine_file, "no initial state", *line_number);
+		ValidationException(machine, machine_file, "machine", "no initial state", NULL, *line_number);
 	/* Read the final state of the Machine */
 	do
 	{
 		readElement(machine_file, &(machine->final_state), line_number);
 	} while(machine->final_state[0] == '#'); /* Ignore all # at this point */
 	if(machine->final_state[0] == '\0')
-		MalformedFileException(machine, machine_file, "no final state", *line_number);
+		ValidationException(machine, machine_file, "machine", "no final state", NULL, *line_number);
 }
 
 Machine *
@@ -155,8 +155,8 @@ newMachine()
 	_readTransitions(machine, machine_file, &line_number);
 	_readStartAndEndPoints(machine, machine_file, &line_number);
 
+	validate(machine, machine_file, line_number); /* Validate the Machine */
 	fclose(machine_file); /* Close the machine_file */
-	validate(machine); /* Validate the Machine */
 
 	return machine;
 }
@@ -230,7 +230,7 @@ execute(Machine * machine)
 	Transition * current_transition;
 	State current_state = machine->initial_state;
 	Letter current_letter = NULL;
-	int steps=0;
+	unsigned int steps=0;
 
 	/* Print the start state (Data) */
 	printf("\n===========================================\nInitial Data:\n");

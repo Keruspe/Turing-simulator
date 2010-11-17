@@ -73,13 +73,13 @@ _checkInitialStateDeparture(Machine * machine)
 }
 
 bool
-_checkInitialState(Machine * machine)
+_checkInitialState(Machine * machine, FILE * file, const unsigned int line_number)
 {
 	/* Check if the initial state is recognized by the Machine */
 	if (!validateState(machine->initial_state, machine))
 		return false;
 	if (!_checkInitialStateDeparture(machine)) /* Check if we can leave it */
-		ValidationException(machine, NULL, "machine", "cannot leave the initial state.", NULL, 0);
+		ValidationException(machine, file, "machine", "cannot leave the initial state.", NULL, line_number);
 	return true;
 }
 
@@ -97,12 +97,12 @@ _checkFinalStateReachability(Machine * machine)
 }
 
 bool
-_checkFinalState(Machine * machine)
+_checkFinalState(Machine * machine, FILE * file, const unsigned int line_number)
 {
 	if (!validateState(machine->final_state, machine)) /* Check if the final state is recognized by the Machine */
 		return false;
 	if (!_checkFinalStateReachability(machine)) /* Check if we can reach it */
-		ValidationException(machine, NULL, "machine", "the final state is unreachable.", NULL, 0);
+		ValidationException(machine, file, "machine", "the final state is unreachable.", NULL, line_number);
 	return true;
 }
 
@@ -149,15 +149,15 @@ _checkAtLeastOnePathExists(Machine * machine)
 }
 
 void
-validate(Machine * machine)
+validate(Machine * machine, FILE * file, const unsigned int line_number)
 {
-	if (!_checkInitialState(machine)) /* Check if the initial state is alright */
-		ValidationException(machine, NULL, "machine", "the initial state is not part of the alphabet.", NULL, 0);
-	if (!_checkFinalState(machine)) /* Check if the final state is alright */
-		ValidationException(machine, NULL, "machine", "the final state is not part of the alphabet.", NULL, 0);
+	if (!_checkInitialState(machine, file, line_number)) /* Check if the initial state is alright */
+		ValidationException(machine, file, "machine", "the initial state is not part of the alphabet.", NULL, line_number);
+	if (!_checkFinalState(machine, file, line_number)) /* Check if the final state is alright */
+		ValidationException(machine, file, "machine", "the final state is not part of the alphabet.", NULL, line_number);
 	if (!_checkAtLeastOnePathExists(machine)) /* Check if the final state has any chance to be reached */
 	{
-		ValidationException(machine, NULL, "machine",
-			"no matter the Data, there is no path available from the initial State of your Machine to its final State.", NULL, 0);
+		ValidationException(machine, file, "machine",
+			"no matter the Data, there is no path available from the initial State of your Machine to its final State.", NULL, line_number);
 	}
 }

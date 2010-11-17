@@ -19,7 +19,7 @@
 #define BASE_DATA_LENGTH 5*BASE_STORAGE_LENGTH
 
 /* Avoid infinite loop */
-#define MAX_STEPS 999
+#define MAX_STEPS (unsigned int)999
 
 #define DEFAULT_LETTER "_"
 
