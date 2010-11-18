@@ -4,7 +4,7 @@
  * Copyright (C) Marc-Antoine Perennou 2010 <Marc-Antoine@Perennou.com>
  */
 
- #include "transition.h"
+#include "transition.h"
 
 void
 initTransition(Transition * transition)

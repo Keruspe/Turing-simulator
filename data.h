@@ -22,9 +22,9 @@ struct _Data {
 	 */
 
 	/* Number of Letter in the data we read */
-	int data_length;
+	unsigned int data_length;
 	/* Number of extra left-side data */
-	int extra_data_length;
+	unsigned int extra_data_length;
 };
 
 /* Instantiate a new Data set */
@@ -37,7 +37,7 @@ void freeData(Data *);
 Letter getLetter(Machine *);
 
 /* Set Letter at index */
-void setLetter(Data *, int index, Letter);
+void setLetter(Data *, const int index, const Letter);
 
 /* Print the Data */
 void printData(Data *, int index);

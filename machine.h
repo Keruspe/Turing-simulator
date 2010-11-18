@@ -31,11 +31,11 @@ struct _Machine {
 	 */
 
 	/* Number of Letter in the alphabet */
-	int alphabet_length;
+	unsigned int alphabet_length;
 	/* Number of states recognized */
-	int states_length;
+	unsigned int states_length;
 	/* Number of available transitions */
-	int transitions_length;
+	unsigned int transitions_length;
 };
 
 /* Instantiate a new Machine */
@@ -48,7 +48,7 @@ void freeMachine(Machine *);
 void reloadData(Machine *);
 
 /* Move the Mahcine and return the next value */
-Letter go(Machine *, Move);
+Letter go(Machine *, const Move);
 
 /* Execute a Machine */
 void execute(Machine *);

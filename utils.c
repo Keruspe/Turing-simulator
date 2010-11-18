@@ -82,7 +82,7 @@ readElement(FILE * file, Element * element, unsigned int * line_number)
 }
 
 void
-extractData(FILE * file, ElementsCollection * storage, int * storage_length, unsigned int * line_number, bool validate, Machine * machine)
+extractData(Machine * machine, FILE * file, ElementsCollection * storage, unsigned int * storage_length, unsigned int * line_number, bool validate)
 {
 	Element element; /* Will store each element we read */
 	/* While there are still data to be read, read them (until next '#') */
@@ -105,10 +105,10 @@ extractData(FILE * file, ElementsCollection * storage, int * storage_length, uns
 		free(element); /* Else free the dummy element to avoid memory leaks */
 }
 
-int
+unsigned int
 getUnsignedIntegerLength(unsigned int integer)
 {
-	int size;
+	unsigned int size;
 	for (size = 1 ; (integer/=10) != 0 ; ++size);
 	return size;
 }

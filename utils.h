@@ -19,7 +19,7 @@
 #define BASE_DATA_LENGTH 5*BASE_STORAGE_LENGTH
 
 /* Avoid infinite loop */
-#define MAX_STEPS (unsigned int)999
+#define MAX_STEPS (unsigned int)(999)
 
 #define DEFAULT_LETTER "_"
 
@@ -45,9 +45,9 @@ bool readElement(FILE *, Element *, unsigned int * line_number);
  * The storage is a pointer to an Array of Element (State/Letter).
  * We need this and not only the Array because we want to be able to resize it.
  */
-void extractData(FILE * file, ElementsCollection * storage, int * storage_length, unsigned int * line_number, bool validate, Machine *);
+void extractData(Machine *, FILE * file, ElementsCollection * storage, unsigned int * storage_length, unsigned int * line_number, const bool validate);
 
 /* Get the size of an integer */
-int getUnsignedIntegerLength(unsigned int);
+unsigned int getUnsignedIntegerLength(const unsigned int);
 
 #endif /* __UTILS_H__ */

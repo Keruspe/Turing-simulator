@@ -31,7 +31,7 @@ void
 _readAlphabet(Machine * machine, FILE * machine_file, unsigned int * line_number)
 {
 	/* Read the alphabet recognized by the Machine from machine_file */
-	extractData(machine_file, &(machine->alphabet), &(machine->alphabet_length), line_number, false, machine);
+	extractData(machine, machine_file, &(machine->alphabet), &(machine->alphabet_length), line_number, false);
 	if (machine->alphabet_length == 0) /* Fail if no alphabet in the machine file */
 		ValidationException(machine, machine_file, "machine", "no alphabet found", NULL, *line_number);
 }
@@ -40,7 +40,7 @@ void
 _readStates(Machine * machine, FILE * machine_file, unsigned int * line_number)
 {
 	/* Read the states in which the Machine can be from machine_file */
-	extractData(machine_file, &(machine->states), &(machine->states_length), line_number, false, machine);
+	extractData(machine, machine_file, &(machine->states), &(machine->states_length), line_number, false);
 	if (machine->states_length == 0) /* Fail if no states in the machine file */
 		ValidationException(machine, machine_file, "Machine", "no State found", NULL, *line_number);
 }
@@ -48,7 +48,7 @@ _readStates(Machine * machine, FILE * machine_file, unsigned int * line_number)
 bool
 _readTransitionElement(Machine * machine, FILE * machine_file, Transition * transition, Element * element, unsigned int * line_number)
 {
-	bool notYetTheEnd = readElement(machine_file, element, line_number); /* Read an Element */
+	bool still_things_to_read = readElement(machine_file, element, line_number); /* Read an Element */
 	if ((*element)[0] == '\0' || (*element)[0] == '#') /* If the element is dummy */
 	{
 		if (transition->start_state != *element)
@@ -63,7 +63,7 @@ _readTransitionElement(Machine * machine, FILE * machine_file, Transition * tran
 		}
 		/* Else let the dummy Transition being treated later */
 	}
-	return notYetTheEnd;
+	return still_things_to_read;
 }
 
 bool
@@ -82,34 +82,33 @@ _readTransition(Machine * machine, FILE * machine_file, Transition * transition,
 	_readTransitionElement(machine, machine_file, transition, &(transition->next_state), line_number);
 	/* Temporary element to avoid a memory leak */
 	Element element = NULL;
-	bool notYetTheEnd = _readTransitionElement(machine, machine_file, transition, &element, line_number);
+	bool still_things_to_read = _readTransitionElement(machine, machine_file, transition, &element, line_number);
 	transition->move = element[0]; /* We only want the first char of it */
 	free(element); /* So free this array not to have any leak */
-	/* Move was not 'R' or 'L', we don't know any other, abort */
-	if (transition->move != 'R' && transition->move != 'L')
-		BadTransitionException(machine, machine_file,
-			"bad move in Transition, only 'R' or 'L' are allowed", NULL, *line_number);
-	return notYetTheEnd;
+	return still_things_to_read;
 }
 
 void
 _readTransitions(Machine * machine, FILE * machine_file, unsigned int * line_number)
 {
 	/* Read the available transitions */
-	Transition transition; /* Will be used to store each transition */
-	Element malformed; /* Will be use to store the malformed Element if a transition fails validation */
+	Transition transition; /* Will be used to store each Transition */
+	Element malformed = NULL; /* Will be used to store the malformed Element if a Transition fails validation */
+	String reason = NULL; /* Will be used to store the reason if a Transition fails validation */
 	/* Keep reading while there are things to read (we did not meet '#') */
 	while (_readTransition(machine, machine_file, &transition, line_number))
 	{ /* While there are still transitions to read */
 		/* Store the transition and increase the number of transitions available */
 		machine->transitions[machine->transitions_length++] = transition;
 		/* Validate the transition */
-		if (!validateTransition(transition, machine, &malformed))
-			BadTransitionException(machine, machine_file, NULL, malformed, *line_number);
+		if (!validateTransition(transition, machine, reason, &malformed))
+			BadTransitionException(machine, machine_file, reason, malformed, *line_number);
 		/* When the Array is full, increase its size */
 		if ((machine->transitions_length % BASE_TRANSITIONS_LENGTH) == 0)
+		{
 			machine->transitions = (TransitionsCollection) realloc(machine->transitions,
 				(machine->transitions_length + BASE_TRANSITIONS_LENGTH) * sizeof(Transition));
+		}
 	}
 	if (transition.start_state[0] != '\0') /* We're not facing a dummy transition */
 		machine->transitions[machine->transitions_length++] = transition; /* Store the last transition */
@@ -124,14 +123,14 @@ _readStartAndEndPoints(Machine * machine, FILE * machine_file, unsigned int * li
 	do
 	{
 		readElement(machine_file, &(machine->initial_state), line_number);
-	} while(machine->initial_state[0] == '#'); /* Ignore all # at this point */
+	} while(machine->initial_state[0] == '#'); /* Ignore all # at this point, consider them as spaces */
 	if(machine->initial_state[0] == '\0')
 		ValidationException(machine, machine_file, "machine", "no initial state", NULL, *line_number);
 	/* Read the final state of the Machine */
 	do
 	{
 		readElement(machine_file, &(machine->final_state), line_number);
-	} while(machine->final_state[0] == '#'); /* Ignore all # at this point */
+	} while(machine->final_state[0] == '#'); /* Ignore all # at this point, consider them as spaces */
 	if(machine->final_state[0] == '\0')
 		ValidationException(machine, machine_file, "machine", "no final state", NULL, *line_number);
 }
@@ -140,7 +139,7 @@ Machine *
 newMachine()
 {
 	FILE * machine_file = NULL;
-	char machine_filename[MAX_FILENAME_LENGTH] = "";
+	char machine_filename[MAX_FILENAME_LENGTH];
 	unsigned int line_number = 0;
 
 	printf("Where is the file describing your turing machine ?\n");
@@ -165,7 +164,7 @@ void
 freeMachine(Machine * machine)
 {
 	/* Free the memory used by a Machine */
-	int i; /* Will be a basic counter */
+	unsigned int i; /* Will be a basic counter */
 	for (i = 0 ; i < machine->alphabet_length ; ++i)
 		free(machine->alphabet[i]); /* Free each Letter in the alphabet */
 	for (i = 0 ; i < machine->states_length ; ++i)
@@ -196,7 +195,7 @@ reloadData(Machine * machine)
 }
 
 Letter
-go(Machine * machine, Move move)
+go(Machine * machine, const Move move)
 {
 	if (move == 'R') /* Go right */
 		++(machine->data_index);
@@ -210,10 +209,10 @@ _getTransition(Machine * machine, State current_state, Letter current_letter)
 {
 	/* Get the transition we must now apply */
 	Transition * current_transition;
-	int count;
-	for (count = 0 ; count < machine->transitions_length ; ++count)
+	unsigned int i;
+	for (i = 0 ; i < machine->transitions_length ; ++i)
 	{
-		current_transition = &(machine->transitions[count]);
+		current_transition = &(machine->transitions[i]);
 		/* If the conditions of the Transition are satisfied by the current state, return it, it's the one '*/
 		if ((strcmp(current_transition->start_state, current_state) == 0) &&
 			(strcmp(current_transition->cond, current_letter) == 0))

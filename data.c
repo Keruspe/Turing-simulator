@@ -36,7 +36,7 @@ newData(Machine * machine)
 
 	Data * data = _newData(); /* Allocate memory */
 	/* Extract Data from data_file */
-	extractData(data_file, &(data->data), &(data->data_length), &line_number, true, machine);
+	extractData(machine, data_file, &(data->data), &(data->data_length), &line_number, true);
 
 	/* Close the data_file */
 	fclose(data_file);
@@ -47,15 +47,15 @@ void
 freeData(Data * data)
 {
 	/* Free the memory used by a Data set */
-	int count;
-	for (count = 0 ; count < data->data_length ; ++count)
-		free(data->data[count]); /* Free each Letter from data */
+	unsigned int i;
+	for (i = 0 ; i < data->data_length ; ++i)
+		free(data->data[i]); /* Free each Letter from data */
 	/* Free remaining stuff */
 	free(data->data);
 	if (data->extra_data != NULL)
 	{
-		for (count = 0 ; count < data->extra_data_length ; ++count)
-			free(data->extra_data[count]); /* Free each Letter from extra_data */
+		for (i = 0 ; i < data->extra_data_length ; ++i)
+			free(data->extra_data[i]); /* Free each Letter from extra_data */
 		free(data->extra_data);
 	}
 	free(data);
@@ -65,13 +65,17 @@ Letter
 getLetter(Machine * machine)
 {
 	/* Local variables for readability */
-	int index = machine->data_index;
+	unsigned int index;
 	Data * data = machine->data;
 
-	if (index >= 0) /* Positive index -> data */
+	if (machine->data_index >= 0) /* Positive index -> data */
 	{
+		index = (unsigned int)(machine->data_index);
 		if (index >= data->data_length) /* If we didn't reach that point yet */
 		{
+			if (!hasDefaultLetter(machine))
+				DefaultLetterException(machine);
+
 			/* If full, increase size, then increment the length */
 			if (((data->data_length)++ % BASE_STORAGE_LENGTH) == 0)
 			{
@@ -79,17 +83,18 @@ getLetter(Machine * machine)
 					(data->data_length + BASE_STORAGE_LENGTH) * sizeof(Letter));
 			}
 			data->data[index] = NULL; /* Initialize to NULL so that memory will get allocated */
-			if (hasDefaultLetter(machine))
-				setLetter(data, index, DEFAULT_LETTER); /* Set to default Letter */
-			else
-				DefaultLetterException(machine);
+			setLetter(data, index, DEFAULT_LETTER); /* Set to default Letter */
 		}
 		return data->data[index];
 	}
 	else /* Negative index -> extra_data */
 	{
-		if (index < data->extra_data_length) /* If we didn't reach that point yet */
+		index = (unsigned int)(-machine->data_index);
+		if ((unsigned int)(-index) >= data->extra_data_length) /* If we didn't reach that point yet */
 		{
+			if (hasDefaultLetter(machine))
+				DefaultLetterException(machine);
+
 			if (data->extra_data_length == 0) /* If we don't have extra data yet, allocate memory */
 				data->extra_data = (LettersCollection) malloc(BASE_DATA_LENGTH * sizeof(Letter));
 			/* If full, increase size, then increment the length */
@@ -101,17 +106,14 @@ getLetter(Machine * machine)
 			++(data->extra_data_length);
 			/* See in setLetter (right behind) for an explanation of the "-index-1" */
 			data->extra_data[-index-1] = NULL; /* Initialize to NULL so that memory will get allocated */
-			if (hasDefaultLetter(machine))
-				setLetter(data, index, DEFAULT_LETTER); /* Set to default Letter */
-			else
-				DefaultLetterException(machine);
+			setLetter(data, index, DEFAULT_LETTER); /* Set to default Letter */
 		}
 		return data->extra_data[-index-1]; /* Return the Letter we reached */
 	}
 }
 
 void
-setLetter(Data * data, int index, Letter letter)
+setLetter(Data * data, const int index, const Letter letter)
 {
 	if (index >= 0) /* Positive index -> data */
 	{
@@ -139,19 +141,19 @@ setLetter(Data * data, int index, Letter letter)
 void
 printData(Data * data, int index)
 {
-	int count;
-	for (count = data->extra_data_length ; count > 0 ; --count)
+	unsigned int i;
+	for (i = data->extra_data_length ; i > 0 ; --i)
 	{
-		if (count == index+2)
-			printf(" \033[0;31m%s\033[0m", data->extra_data[count-1]);
+		if (i == (unsigned int)(-index))
+			printf(" \033[0;31m%s\033[0m", data->extra_data[i-1]);
 		else
-			printf(" %s", data->extra_data[count-1]);
+			printf(" %s", data->extra_data[i-1]);
 	}
-	for (count = 0 ; count < data->data_length ; ++count)
+	for (i = 0 ; i < data->data_length ; ++i)
 	{
-		if (count == index)
-			printf(" \033[0;31m%s\033[0m", data->data[count]);
+		if (i == (unsigned int)index)
+			printf(" \033[0;31m%s\033[0m", data->data[i]);
 		else
-			printf(" %s", data->data[count]);
+			printf(" %s", data->data[i]);
 	}
 }

@@ -8,7 +8,7 @@
 #define __TRANSITION_H__
 
 #include "types.h"
- #include <stdlib.h>
+#include <stdlib.h>
 
 /* Structure to store a Transition */
 struct _Transition {

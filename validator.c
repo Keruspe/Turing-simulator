@@ -13,27 +13,27 @@
 #include <string.h>
 
 bool
-validateElement(Element element, ElementsCollection valid_elements, int collection_length)
+validateElement(const Element element, const ElementsCollection valid_elements, const unsigned int collection_length)
 {
 	/* Check if element is in valid_elements */
-	int count;
-	for (count = 0 ; count < collection_length ; ++count)
+	unsigned int i;
+	for (i = 0 ; i < collection_length ; ++i)
 	{
-		if (strcmp(element, valid_elements[count]) == 0)
+		if (strcmp(element, valid_elements[i]) == 0)
 			return true;
 	}
 	return false;
 }
 
 bool
-hasDefaultLetter(Machine * machine)
+hasDefaultLetter(const Machine * machine)
 {
 	/* Check if we find the default Letter in the alphabet */
 	return validateLetter(DEFAULT_LETTER, machine);
 }
 
 bool
-validateTransition(Transition transition, Machine * machine, Element * malformed)
+validateTransition(const Transition transition, const Machine * machine, String reason, Element * malformed)
 {
 	/* Check if all states and letters used by a Transition are known by the Machine */
 	if (!validateLetter(transition.cond, machine))
@@ -56,17 +56,23 @@ validateTransition(Transition transition, Machine * machine, Element * malformed
 		*malformed = transition.next_state;
 		return false;
 	}
+	/* Move was not 'R' or 'L', we don't know any other, abort */
+	if (transition.move != 'R' && transition.move != 'L')
+	{
+		reason = "bad move in Transition, only 'R' or 'L' are allowed";
+		return false;
+	}
 	return true;
 }
 
 bool
-_checkInitialStateDeparture(Machine * machine)
+_checkInitialStateDeparture(const Machine * machine)
 {
 	/* Check if there is at least one Transition available to leave the initial state */
-	int count;
-	for (count = 0 ; count < machine->transitions_length ; ++count)
+	unsigned int i;
+	for (i = 0 ; i < machine->transitions_length ; ++i)
 	{
-		if (strcmp(machine->transitions[count].start_state, machine->initial_state) == 0)
+		if (strcmp(machine->transitions[i].start_state, machine->initial_state) == 0)
 			return true;
 	}
 	return false;
@@ -84,13 +90,13 @@ _checkInitialState(Machine * machine, FILE * file, const unsigned int line_numbe
 }
 
 bool
-_checkFinalStateReachability(Machine * machine)
+_checkFinalStateReachability(const Machine * machine)
 {
 	/* Check if there is at least one Transition available to reach the final state */
-	int count;
-	for (count = 0 ; count < machine->transitions_length ; ++count)
+	unsigned int i;
+	for (i = 0 ; i < machine->transitions_length ; ++i)
 	{
-		if (strcmp(machine->transitions[count].next_state, machine->final_state) == 0)
+		if (strcmp(machine->transitions[i].next_state, machine->final_state) == 0)
 			return true;
 	}
 	return false;
@@ -110,8 +116,8 @@ bool
 _checkAtLeastOnePathExists(Machine * machine)
 {
 	/* Check if at least one path exists from initial state to final state, not taking care of data */
-	int states_checked = 0; /* The number of states we have checked ATM */
-	int count; /* A counter */
+	unsigned int states_checked = 0; /* The number of states we have checked ATM */
+	unsigned int i; /* A counter */
 
 	/* The states we found */
 	StatesCollection states_found = (StatesCollection) malloc(machine->states_length * sizeof(State));
@@ -119,7 +125,7 @@ _checkAtLeastOnePathExists(Machine * machine)
 	Transition current_transition; /* The Transition we're dealing with */
 
 	bool valid = false; /* The value we'll return */
-	int states_found_number = 1; /* The number of states we found ATM (first one is the initial state) */
+	unsigned int states_found_number = 1; /* The number of states we found ATM (first one is the initial state) */
 	states_found[0] = machine->initial_state;
 
 	/* Loop while no transition allowed to reach the final state */
@@ -127,9 +133,9 @@ _checkAtLeastOnePathExists(Machine * machine)
 	{
 		current_state = states_found[states_checked++]; /* Get a new current state and mark it as checked */
 		/* Go through the Machine transitions */
-		for (count = 0 ; count < machine->transitions_length ; ++count)
+		for (i = 0 ; i < machine->transitions_length ; ++i)
 		{
-			current_transition = machine->transitions[count]; /* Get a new Transition */
+			current_transition = machine->transitions[i]; /* Get a new Transition */
 			/**
 			 * If the start State of the Transition is our current State and we didn't already meet its final State,
 			 * register this final State.
