@@ -95,20 +95,17 @@ getLetter(Machine * machine)
 			if (!hasDefaultLetter(machine))
 				DefaultLetterException(machine);
 
-			if (data->extra_data_length == 0) /* If we don't have extra data yet, allocate memory */
-				data->extra_data = (LettersCollection) malloc(BASE_DATA_LENGTH * sizeof(Letter));
-			/* If full, increase size, then increment the length */
-			else if ((data->extra_data_length % BASE_STORAGE_LENGTH) == 0)
-			{
+			if ((data->extra_data_length % BASE_STORAGE_LENGTH) == 0)
+			{ /* If full, increase size, then increment the length */
 				data->extra_data = (LettersCollection) realloc(data->extra_data,
 					(data->extra_data_length + BASE_STORAGE_LENGTH) * sizeof(Letter));
 			}
 			++(data->extra_data_length);
 			/* See in setLetter (right behind) for an explanation of the "-index-1" */
-			data->extra_data[-index-1] = NULL; /* Initialize to NULL so that memory will get allocated */
-			setLetter(data, index, DEFAULT_LETTER); /* Set to default Letter */
+			data->extra_data[index-1] = NULL; /* Initialize to NULL so that memory will get allocated */
+			setLetter(data, machine->data_index, DEFAULT_LETTER); /* Set to default Letter */
 		}
-		return data->extra_data[-index-1]; /* Return the Letter we reached */
+		return data->extra_data[index-1]; /* Return the Letter we reached */
 	}
 }
 
