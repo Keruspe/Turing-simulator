@@ -92,7 +92,7 @@ getLetter(Machine * machine)
 		index = (unsigned int)(-machine->data_index);
 		if ((unsigned int)(-index) >= data->extra_data_length) /* If we didn't reach that point yet */
 		{
-			if (hasDefaultLetter(machine))
+			if (!hasDefaultLetter(machine))
 				DefaultLetterException(machine);
 
 			if (data->extra_data_length == 0) /* If we don't have extra data yet, allocate memory */
