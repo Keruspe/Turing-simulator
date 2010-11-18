@@ -1,16 +1,13 @@
+$ This Machine doubles the value passed in the Date file
+$ To double a binary number, just multiply it by 10 (2 in binary)
+$ It just adds a 0 at the end of the number
 0 1 _#
-q0 q1 q2 q3 q4#
-q0 _ _ q4 R $ With q0, ensure there's at least 1 digit, else exit
+q0 q1 q2#
+q0 _ _ q2 R $ With q0, ensure there's at least 1 digit, else exit
 q0 0 0 q1 R
 q0 1 1 q1 R
 q1 0 0 q1 R $ We met a digit, we're now at q1, go through the number til its end
 q1 1 1 q1 R
-q1 _ _ q2 L
-q2 0 0 q2 L $ q2 means there is no "retenue"
-q2 1 0 q3 L $ When we meet a "1", 1+1 gives us a "retenue", go q3
-q2 _ 0 q4 R $ We reached the end
-q3 0 1 q2 L $ q3 means we have a "retenue", we consume it when we meet a 0
-q3 1 1 q3 L $ And we keep it when we meet a 1
-q3 _ 1 q4 R# $ We reached the end
+q1 _ 0 q2 L# $ Put a 0 at the end and exit
 q0
-q4
+q2
