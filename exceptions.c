@@ -5,7 +5,7 @@
  */
 
 #include "machine.h"
-#include "utils.h"
+
 #include <string.h>
 
 /**

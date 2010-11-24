@@ -4,12 +4,9 @@
  * Copyright (C) Marc-Antoine Perennou 2010 <Marc-Antoine@Perennou.com>
  */
 
-#include "data.h"
-#include "exceptions.h"
-#include "machine.h"
+#include "transition.h"
 #include "validator.h"
-#include <stdbool.h>
-#include <stdlib.h>
+
 #include <string.h>
 
 bool

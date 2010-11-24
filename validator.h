@@ -7,6 +7,9 @@
 #ifndef __VALIDATOR_H__
 #define __VALIDATOR_H__
 
+#include "exceptions.h"
+#include "machine.h"
+
 /**
  * Macros to improve readability
  * Check if a Letter or State is understood by the machine

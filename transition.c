@@ -6,6 +6,8 @@
 
 #include "transition.h"
 
+#include <stdlib.h>
+
 void
 initTransition(Transition * transition)
 {

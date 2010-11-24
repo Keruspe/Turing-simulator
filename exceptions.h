@@ -8,6 +8,7 @@
 #define __EXCEPTIONS_H__
 
 #include "types.h"
+
 #include <stdio.h>
 
 /* We couldn't read a file */

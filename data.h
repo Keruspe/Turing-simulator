@@ -7,8 +7,7 @@
 #ifndef __DATA_H__
 #define __DATA_H__
 
-#include "types.h"
-#include "utils.h"
+#include "validator.h"
 
 /* Structure to store a set of Data for the Machine */
 struct _Data {
