@@ -70,7 +70,6 @@ getLetter(Machine * machine)
 	{
 		/* Get the positive value of the index */
 		index = (unsigned int)(machine->data_index);
-		/* TODO: WTF >= ??? */
 		if (index >= data->data_length) /* If we didn't reach that point yet */
 		{
 			if (!hasDefaultLetter(machine)) /* Machine does'nt support the default Letter and we need it */
@@ -90,8 +89,8 @@ getLetter(Machine * machine)
 	}
 	else /* Negative index -> extra_data */
 	{
-		/* Get the positive value of the index */
-		index = (unsigned int)(-machine->data_index);
+		/* Get the positive value of the index, and substract 1 to it (-4 becomes 3...) */
+		index = (unsigned int)(-machine->data_index - 1);
 		if (index >= data->extra_data_length) /* If we didn't reach that point yet */
 		{
 			if (!hasDefaultLetter(machine)) /* Machine does'nt support the default Letter and we need it */
@@ -105,10 +104,10 @@ getLetter(Machine * machine)
 			}
 			/* Increment the length */
 			++(data->extra_data_length);
-			data->extra_data[index-1] = NULL; /* Initialize to NULL so that memory will get allocated */
+			data->extra_data[index] = NULL; /* Initialize to NULL so that memory will get allocated */
 			setLetter(data, machine->data_index, DEFAULT_LETTER); /* Set to default Letter */
 		}
-		return data->extra_data[index-1]; /* Return the Letter we reached */
+		return data->extra_data[index]; /* Return the Letter we reached */
 	}
 }
 
