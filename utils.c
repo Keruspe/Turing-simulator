@@ -13,8 +13,10 @@
 void
 skipLine(FILE * file, unsigned int * line_number)
 {
+	char c;
 	/* Read every char until next line in file */
-	while (fgetc(file) != '\n');
+	while (((c = fgetc(file)) != EOF) && (c != '\n'));
+	/* We reached the next line */
 	++(*line_number);
 }
 
@@ -33,7 +35,8 @@ getChoice()
 	char c;
 	if ((c = getchar()) == 'n')
 		answer = false; /* User answered no */
-	if (c != '\n') /* Default doesn't need any value */
+	/* Default doesn't need any value, don't clear buffer if only enter has been typed */
+	if (c != '\n')
 		clearBuffer();
 	return answer;
 }
@@ -53,7 +56,9 @@ readElement(FILE * file, Element * element, unsigned int * line_number)
 		case '\0': /* Ignore \0 if by chance we meet it */
 			break;
 		case '\n':
+			/* Next line */
 			++(*line_number);
+			/* ' ', '\t' and '\n' are our separators */
 		case ' ':
 		case '\t':
 			if (element_size == 0)
@@ -75,7 +80,7 @@ readElement(FILE * file, Element * element, unsigned int * line_number)
 	}
 	/**
 	 * We only get here if there was no '#'
-	 * Fallback considerating that the end of file is a '#' but don't return '#'
+	 * Fallback considerating that the end of file is a '#' but don't return '#' even for a dummy Element
 	 */
 	(*element)[element_size] = '\0';
 	return false;
@@ -109,6 +114,7 @@ unsigned int
 getUnsignedIntegerLength(unsigned int integer)
 {
 	unsigned int size;
+	/* Each time we divide by 10, the number lose a digit */
 	for (size = 1 ; (integer/=10) != 0 ; ++size);
 	return size;
 }

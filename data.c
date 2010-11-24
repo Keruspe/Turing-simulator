@@ -70,10 +70,12 @@ getLetter(Machine * machine)
 
 	if (machine->data_index >= 0) /* Positive index -> data */
 	{
+		/* Get the positive value of the index */
 		index = (unsigned int)(machine->data_index);
+		/* TODO: WTF >= ??? */
 		if (index >= data->data_length) /* If we didn't reach that point yet */
 		{
-			if (!hasDefaultLetter(machine))
+			if (!hasDefaultLetter(machine)) /* Machine does'nt support the default Letter and we need it */
 				DefaultLetterException(machine);
 
 			/* If full, increase size, then increment the length */
@@ -85,23 +87,26 @@ getLetter(Machine * machine)
 			data->data[index] = NULL; /* Initialize to NULL so that memory will get allocated */
 			setLetter(data, index, DEFAULT_LETTER); /* Set to default Letter */
 		}
+		/* Return the Letter we're up to */
 		return data->data[index];
 	}
 	else /* Negative index -> extra_data */
 	{
+		/* Get the positive value of the index */
 		index = (unsigned int)(-machine->data_index);
-		if ((unsigned int)(-index) >= data->extra_data_length) /* If we didn't reach that point yet */
+		if (index >= data->extra_data_length) /* If we didn't reach that point yet */
 		{
-			if (!hasDefaultLetter(machine))
+			if (!hasDefaultLetter(machine)) /* Machine does'nt support the default Letter and we need it */
 				DefaultLetterException(machine);
 
+			/* If full, increase size */
 			if ((data->extra_data_length % BASE_STORAGE_LENGTH) == 0)
-			{ /* If full, increase size, then increment the length */
+			{
 				data->extra_data = (LettersCollection) realloc(data->extra_data,
 					(data->extra_data_length + BASE_STORAGE_LENGTH) * sizeof(Letter));
 			}
+			/* Increment the length */
 			++(data->extra_data_length);
-			/* See in setLetter (right behind) for an explanation of the "-index-1" */
 			data->extra_data[index-1] = NULL; /* Initialize to NULL so that memory will get allocated */
 			setLetter(data, machine->data_index, DEFAULT_LETTER); /* Set to default Letter */
 		}
@@ -138,7 +143,11 @@ setLetter(Data * data, const int index, const Letter letter)
 void
 printData(Data * data, int index)
 {
+	/**
+	 * The if/else blocks here are to put the Letter to which the Machine is up to in red
+	 */
 	unsigned int i;
+	/* Go through negative index */
 	for (i = data->extra_data_length ; i > 0 ; --i)
 	{
 		if (i == (unsigned int)(-index))
@@ -146,6 +155,7 @@ printData(Data * data, int index)
 		else
 			printf(" %s", data->extra_data[i-1]);
 	}
+	/* Go through positive index */
 	for (i = 0 ; i < data->data_length ; ++i)
 	{
 		if (i == (unsigned int)index)
@@ -153,4 +163,5 @@ printData(Data * data, int index)
 		else
 			printf(" %s", data->data[i]);
 	}
+	printf("\n");
 }

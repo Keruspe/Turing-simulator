@@ -15,13 +15,15 @@
 bool
 validateElement(const Element element, const ElementsCollection valid_elements, const unsigned int collection_length)
 {
-	/* Check if element is in valid_elements */
 	unsigned int i;
+	/* Go through the ElementsCollection */
 	for (i = 0 ; i < collection_length ; ++i)
 	{
+		/* If we find the Element, return true */
 		if (strcmp(element, valid_elements[i]) == 0)
 			return true;
 	}
+	/* We didn't find it, return false */
 	return false;
 }
 
@@ -35,7 +37,10 @@ hasDefaultLetter(const Machine * machine)
 bool
 validateTransition(const Transition transition, const Machine * machine, String reason, Element * malformed)
 {
-	/* Check if all states and letters used by a Transition are known by the Machine */
+	/**
+	 * Check if all states and letters used by a Transition are known by the Machine
+	 * If a wrong Element is found, put it in malformed and return false
+	 */
 	if (!validateLetter(transition.cond, machine))
 	{
 		*malformed = transition.cond;
@@ -56,12 +61,13 @@ validateTransition(const Transition transition, const Machine * machine, String 
 		*malformed = transition.next_state;
 		return false;
 	}
-	/* Move was not 'R' or 'L', we don't know any other, abort */
+	/* Particular case, give a reason instead of a malformed Element */
 	if (transition.move != 'R' && transition.move != 'L')
 	{
 		reason = "bad move in Transition, only 'R' or 'L' are allowed";
 		return false;
 	}
+	/* Everything is fine, return true */
 	return true;
 }
 
@@ -72,9 +78,11 @@ _checkInitialStateDeparture(const Machine * machine)
 	unsigned int i;
 	for (i = 0 ; i < machine->transitions_length ; ++i)
 	{
+		/* Compare the start_state of each Transition with the initial_state of the Machine */
 		if (strcmp(machine->transitions[i].start_state, machine->initial_state) == 0)
 			return true;
 	}
+	/* No Transition allows us to leave the initial State */
 	return false;
 }
 
@@ -86,6 +94,7 @@ _checkInitialState(Machine * machine, FILE * file, const unsigned int line_numbe
 		return false;
 	if (!_checkInitialStateDeparture(machine)) /* Check if we can leave it */
 		ValidationException(machine, file, "machine", "cannot leave the initial state.", NULL, line_number);
+	/* Everything's fine */
 	return true;
 }
 
@@ -96,19 +105,23 @@ _checkFinalStateReachability(const Machine * machine)
 	unsigned int i;
 	for (i = 0 ; i < machine->transitions_length ; ++i)
 	{
+		/* Compare the next_state of each Transition with the final_state of the Machine */
 		if (strcmp(machine->transitions[i].next_state, machine->final_state) == 0)
 			return true;
 	}
+	/* We cannot reach it */
 	return false;
 }
 
 bool
 _checkFinalState(Machine * machine, FILE * file, const unsigned int line_number)
 {
-	if (!validateState(machine->final_state, machine)) /* Check if the final state is recognized by the Machine */
+	/* Check if the final state is recognized by the Machine */
+	if (!validateState(machine->final_state, machine))
 		return false;
 	if (!_checkFinalStateReachability(machine)) /* Check if we can reach it */
 		ValidationException(machine, file, "machine", "the final state is unreachable.", NULL, line_number);
+	/* Everything's fine */
 	return true;
 }
 
@@ -117,7 +130,7 @@ _checkAtLeastOnePathExists(Machine * machine)
 {
 	/* Check if at least one path exists from initial state to final state, not taking care of data */
 	unsigned int states_checked = 0; /* The number of states we have checked ATM */
-	unsigned int i; /* A counter */
+	unsigned int i;
 
 	/* The states we found */
 	StatesCollection states_found = (StatesCollection) malloc(machine->states_length * sizeof(State));
@@ -131,14 +144,15 @@ _checkAtLeastOnePathExists(Machine * machine)
 	/* Loop while no transition allowed to reach the final state */
 	while (!valid)
 	{
-		current_state = states_found[states_checked++]; /* Get a new current state and mark it as checked */
+		/* Get a new current state and mark it as checked */
+		current_state = states_found[states_checked++];
 		/* Go through the Machine transitions */
 		for (i = 0 ; i < machine->transitions_length ; ++i)
 		{
 			current_transition = machine->transitions[i]; /* Get a new Transition */
 			/**
-			 * If the start State of the Transition is our current State and we didn't already meet its final State,
-			 * register this final State.
+			 * If the start_state of the Transition is our current State and we didn't already meet
+			 * its final State, register this final State.
 			 */
 			if ((strcmp(current_transition.start_state, current_state) == 0)
 				&& (!validateElement(current_transition.next_state, states_found, states_found_number)))
@@ -164,6 +178,7 @@ validate(Machine * machine, FILE * file, const unsigned int line_number)
 	if (!_checkAtLeastOnePathExists(machine)) /* Check if the final state has any chance to be reached */
 	{
 		ValidationException(machine, file, "machine",
-			"no matter the Data, there is no path available from the initial State of your Machine to its final State.", NULL, line_number);
+			"no matter the Data, there is no path available from the initial State of your Machine to its final State.",
+			NULL, line_number);
 	}
 }

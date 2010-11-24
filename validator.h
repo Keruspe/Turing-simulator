@@ -7,10 +7,14 @@
 #ifndef __VALIDATOR_H__
 #define __VALIDATOR_H__
 
-/* Macros to improve readability */
+/**
+ * Macros to improve readability
+ * Check if a Letter or State is understood by the machine
+ */
 #define validateLetter(x,y) validateElement(x,y->alphabet,y->alphabet_length)
 #define validateState(x,y) validateElement(x,y->states,y->states_length)
 
+/* Check if an Element is part of an ElementsCollection */
 bool validateElement(const Element, const ElementsCollection valid_elements, const unsigned int collection_length);
 
 /* Check if the Machine allows the use of the default Letter */

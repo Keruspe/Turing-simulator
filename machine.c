@@ -164,7 +164,7 @@ void
 freeMachine(Machine * machine)
 {
 	/* Free the memory used by a Machine */
-	unsigned int i; /* Will be a basic counter */
+	unsigned int i;
 	for (i = 0 ; i < machine->alphabet_length ; ++i)
 		free(machine->alphabet[i]); /* Free each Letter in the alphabet */
 	for (i = 0 ; i < machine->states_length ; ++i)
@@ -201,6 +201,7 @@ go(Machine * machine, const Move move)
 		++(machine->data_index);
 	else /* Go left */
 		--(machine->data_index);
+	/* Return the Letter we're up to */
 	return getLetter(machine);
 }
 
@@ -210,10 +211,11 @@ _getTransition(Machine * machine, State current_state, Letter current_letter)
 	/* Get the transition we must now apply */
 	Transition * current_transition;
 	unsigned int i;
+	/* Go through all available transitions */
 	for (i = 0 ; i < machine->transitions_length ; ++i)
 	{
-		current_transition = &(machine->transitions[i]);
-		/* If the conditions of the Transition are satisfied by the current state, return it, it's the one '*/
+		current_transition = &(machine->transitions[i]); /* Get a new Transition */
+		/* If the conditions of the Transition are satisfied by the current State and Letter, return it */
 		if ((strcmp(current_transition->start_state, current_state) == 0) &&
 			(strcmp(current_transition->cond, current_letter) == 0))
 				return current_transition;
@@ -234,21 +236,22 @@ execute(Machine * machine)
 	/* Print the start state (Data) */
 	printf("\n===========================================\nInitial Data:\n");
 	printData(machine->data, machine->data_index);
-	printf("\n================== Start ==================\nExecuting your Machine:\n");
+	printf("================== Start ==================\nExecuting your Machine:\n");
 
 	printf("%s:", current_state);
 	printData(machine->data, machine->data_index);
 	while (strcmp(current_state, machine->final_state) != 0) /* Loop until we reach the final state */
 	{
 		current_letter = go(machine, move); /* Move and get the new Letter */
-		/* Get the good Transition to apply */
+		/* Get the good Transition to apply, if it's NULL, abort */
 		if ((current_transition = _getTransition(machine, current_state, current_letter)) == NULL)
 			NoSuchTransitionException(machine, current_state, current_letter);
 		/* Apply Transition */
 		current_state = current_transition->next_state;
 		move = current_transition->move;
 		setLetter(machine->data, machine->data_index, current_transition->subst);
-		printf("\n");
+
+		/* Print the current Sate */
 		printf("%s:", current_state);
 		printData(machine->data, machine->data_index);
 
@@ -256,7 +259,8 @@ execute(Machine * machine)
 			TooMuchStepsException(machine);
 	}
 
-	printf("\n=================== Done ==================\nResult after %d steps:\n", steps);
+	/* Print the result */
+	printf("=================== Done ==================\nResult after %d steps:\n", steps);
 	printData(machine->data, -machine->data->extra_data_length-1);
-	printf("\n===========================================\n\n");
+	printf("===========================================\n\n");
 }

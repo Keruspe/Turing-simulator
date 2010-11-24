@@ -28,6 +28,10 @@ void ValidationException(Machine *, FILE *, const String what, String reason, co
  */
 void BadTransitionException(Machine *, FILE *, const String reason, const Element malformed, const unsigned int line_number);
 
+/**
+ * Runtime Exceptions
+ */
+
 /* No transition matching our current State was found */
 void NoSuchTransitionException(Machine *, const State, const Letter);
 

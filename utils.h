@@ -17,11 +17,10 @@
 #define BASE_STORAGE_LENGTH 10
 #define BASE_TRANSITIONS_LENGTH 25
 #define BASE_DATA_LENGTH 5*BASE_STORAGE_LENGTH
+#define DEFAULT_LETTER "_"
 
 /* Avoid infinite loop */
 #define MAX_STEPS (unsigned int)(999)
-
-#define DEFAULT_LETTER "_"
 
 /* Skip the rest of the line we're reading (for comments) */
 void skipLine(FILE *, unsigned int * line_number);
@@ -47,7 +46,7 @@ bool readElement(FILE *, Element *, unsigned int * line_number);
  */
 void extractData(Machine *, FILE * file, ElementsCollection * storage, unsigned int * storage_length, unsigned int * line_number, const bool validate);
 
-/* Get the size of an integer */
+/* Get the size of an unsigned integer */
 unsigned int getUnsignedIntegerLength(const unsigned int);
 
 #endif /* __UTILS_H__ */

@@ -25,7 +25,7 @@ _Exception(const String prefix, String reason)
 void
 NoSuchFileException(const String filename)
 {
-	/* Gives a precise reason to _Exception */
+	/* Tell which file we were not able to read to _Exception */
 	String full_reason = (String) malloc((22 + strlen(filename)) * sizeof(char));
 	sprintf(full_reason, "failed to read file: %s", filename);
 	_Exception("Exception", full_reason);
@@ -38,6 +38,7 @@ NoSuchFileException(const String filename)
 void
 _PreciseValidationException(const String what, const String reason, const Element malformed, const unsigned int line_number)
 {
+	/* Tell which precise Element at which line failed the validation */
 	String full_reason = (String) malloc((57 + strlen(what) + strlen(reason) + strlen(malformed) +
 										getUnsignedIntegerLength(line_number)) * sizeof(char));
 	sprintf(full_reason, "your %s failed the validation line %d: %s\n%s %s",
@@ -50,8 +51,9 @@ _ValidationException(Machine * machine, FILE * file, const String what, String r
 {
 	freeMachine(machine);
 	fclose(file);
-	if (malformed != NULL)
+	if (malformed != NULL) /* If we're given a malformed Element, throw a precise Exception */
 		_PreciseValidationException(what, reason, malformed, line_number);
+	/* Else tell the reason why validation failed, and at which line */
 	String full_reason = (String) malloc((36 + strlen(what) + getUnsignedIntegerLength(line_number) +
 										strlen(reason)) * sizeof(char));
 	sprintf(full_reason, "your %s failed the validation line %d: %s", what, line_number, reason);
@@ -63,25 +65,29 @@ _ValidationException(Machine * machine, FILE * file, const String what, String r
 void
 ValidationException(Machine * machine, FILE * file, const String what, String reason, const Element malformed, const unsigned int line_number)
 {
+	/* This is just a wrapper, a basic ValidationException doesn't need its reason to be free'd */
 	_ValidationException(machine, file, what, reason, malformed, line_number, false);
 }
 
 void
 _BadTransitionException(Machine * machine, FILE * file, const Element malformed, const unsigned int line_number)
 {
+	/* Build a precise reason */
 	String reason = (String) malloc((144 + strlen(malformed)) * sizeof(char));
 	sprintf(reason, "a malformed transition has been found.\n%s\n%s %s",
 		"Expected: State Letter Letter State Move (Must be values recognized by the Machine)",
 		"Did not understand:", malformed);
+	/* Let _ValidationException forward it to the precise one, and tell it reason needs to be free'd */
 	_ValidationException(machine, file, "machine", reason, NULL, line_number, true);
 }
 
 void
 BadTransitionException(Machine * machine, FILE * file, const String reason, const Element malformed, const unsigned int line_number)
 {
+	/* If we're not given any reason, it's just a basic ValidationException, won't be a precise one */
 	if (reason != NULL)
 		ValidationException(machine, file, "machine", reason, NULL, line_number);
-	else
+	else /* Build a precise Exception that will be redirected to _PreciseValidationException */
 		_BadTransitionException(machine, file, malformed, line_number);
 }
 
@@ -92,6 +98,7 @@ BadTransitionException(Machine * machine, FILE * file, const String reason, cons
 void
 _RuntimeException(Machine * machine, String reason)
 {
+	/* Mother of all runtime exceptions, tells _Exception that the one we're dealing with occured during runtime */
 	freeMachine(machine);
 	String full_reason = (String) malloc((18 + strlen(reason)) * sizeof(char));
 	sprintf(full_reason, "machine failure: %s", reason);
@@ -102,6 +109,7 @@ _RuntimeException(Machine * machine, String reason)
 void
 NoSuchTransitionException(Machine * machine, const State state, const Letter letter)
 {
+	/* We were stuck in a State with no Transition to leave it */
 	String reason = (String) malloc((65 + strlen(state) + strlen(letter)) * sizeof(char));
 	sprintf(reason, "no matching transition found, was in state: \"%s\", found letter: \"%s\"", state, letter);
 	_RuntimeException(machine, reason);
@@ -119,7 +127,7 @@ TooMuchStepsException(Machine * machine)
 void
 DefaultLetterException(Machine * machine)
 {
-	/* Give an exception sepcifying the default Letter */
+	/* Give an exception specifying the default Letter since we needed it and it was not supported by the Machine */
 	String reason = (String) malloc((113 + strlen(DEFAULT_LETTER)) * sizeof(char));
 	sprintf(reason, "the alphabet of your Machine didn't contain the default Letter (%s) %s",
 			DEFAULT_LETTER, "and it was needed to get out of the data range");
