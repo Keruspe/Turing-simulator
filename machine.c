@@ -196,11 +196,11 @@ reloadData(Machine * machine)
 Letter
 go(Machine * machine, const Move move)
 {
-	if (move == 'R') /* Go right */
+	if (move == RIGHT) /* Go right */
 		++(machine->data_index);
-	else if (move == 'L') /* Go left */
+	else if (move == LEFT) /* Go left */
 		--(machine->data_index);
-	/* We don't move with 'N' */
+	/* We don't move with NONE */
 	/* Return the Letter we're up to */
 	return getLetter(machine);
 }
@@ -226,7 +226,7 @@ _getTransition(Machine * machine, State current_state, Letter current_letter)
 void
 execute(Machine * machine, bool step_by_step)
 {
-	Move move = 'R'; /* First move */
+	Move move = RIGHT; /* First move */
 	/* Initializations */
 	Transition * current_transition;
 	State current_state = machine->initial_state;

@@ -12,10 +12,15 @@
  */
 
 /* Base types, Elements, names are obvious */
-typedef char Move;
 typedef char* State;
 typedef char* Letter;
 typedef char* Element; /* Can either be a State or a Letter */
+typedef enum {
+	LEFT = 'L',
+	RIGHT = 'R',
+	NONE = 'N'
+} Move;
+
 
 /* More handy name for structs */
 typedef struct _Transition Transition;
