@@ -1,6 +1,6 @@
 x _#
-q0 q1 q2 q3 q4 q5#
-q0 _ _ q5 R $ When we meet a _ in initial state, we have finished
+q0 q1 q2 q3 q4 qf#
+q0 _ _ qf N $ When we meet a _ in initial state, we have finished
 q0 x _ q1 R $ Mark the letter we are copying -> q1
 q1 x x q1 R $ Keep going right to the next _
 q1 _ _ q2 R $ We reached the _ separator between the copy -> q2
@@ -12,4 +12,4 @@ q4 x x q4 L $ Keep going back
 q4 _ x q0 R $ We reached the letter we was coping, put it back and initial state again from the next one
 #
 q0
-q5
+qf

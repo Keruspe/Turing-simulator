@@ -2,12 +2,12 @@ $ This Machine doubles the value passed in the Date file
 $ To double a binary number, just multiply it by 10 (2 in binary)
 $ It just adds a 0 at the end of the number
 0 1 _#
-q0 q1 q2#
-q0 _ _ q2 R $ With q0, ensure there's at least 1 digit, else exit
-q0 0 0 q1 R
+q0 q1 qf#
+q0 _ _ qf N $ With q0, ensure there's at least 1 digit, else exit
+q0 0 0 q0 R $ Don't do anything while there are only 0
 q0 1 1 q1 R
 q1 0 0 q1 R $ We met a digit, we're now at q1, go through the number til its end
 q1 1 1 q1 R
-q1 _ 0 q2 L# $ Put a 0 at the end and exit
+q1 _ 0 qf N# $ Put a 0 at the end and exit
 q0
-q2
+qf
