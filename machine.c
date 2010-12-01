@@ -9,7 +9,7 @@
 
 #include <string.h>
 
-Machine *
+static Machine *
 _newMachine()
 {
 	/* Basic allocation and initialisation stuff to get a ready base Machine */
@@ -26,7 +26,7 @@ _newMachine()
 	return machine;
 }
 
-void
+static void
 _readAlphabet(Machine * machine, FILE * machine_file, unsigned int * line_number)
 {
 	/* Read the alphabet recognized by the Machine from machine_file */
@@ -35,7 +35,7 @@ _readAlphabet(Machine * machine, FILE * machine_file, unsigned int * line_number
 		ValidationException(machine, machine_file, "machine", "no alphabet found", NULL, *line_number);
 }
 
-void
+static void
 _readStates(Machine * machine, FILE * machine_file, unsigned int * line_number)
 {
 	/* Read the states in which the Machine can be from machine_file */
@@ -44,7 +44,7 @@ _readStates(Machine * machine, FILE * machine_file, unsigned int * line_number)
 		ValidationException(machine, machine_file, "Machine", "no State found", NULL, *line_number);
 }
 
-bool
+static bool
 _readTransitionElement(Machine * machine, FILE * machine_file, Transition * transition, Element * element, unsigned int * line_number)
 {
 	bool still_things_to_read = readElement(machine_file, element, line_number); /* Read an Element */
@@ -65,7 +65,7 @@ _readTransitionElement(Machine * machine, FILE * machine_file, Transition * tran
 	return still_things_to_read;
 }
 
-bool
+static bool
 _readTransition(Machine * machine, FILE * machine_file, Transition * transition, unsigned int * line_number)
 {
 	initTransition(transition); /* Initialize the Transition */
@@ -87,7 +87,7 @@ _readTransition(Machine * machine, FILE * machine_file, Transition * transition,
 	return still_things_to_read;
 }
 
-void
+static void
 _readTransitions(Machine * machine, FILE * machine_file, unsigned int * line_number)
 {
 	/* Read the available transitions */
@@ -115,7 +115,7 @@ _readTransitions(Machine * machine, FILE * machine_file, unsigned int * line_num
 		free (transition.start_state);
 }
 
-void
+static void
 _readStartAndEndPoints(Machine * machine, FILE * machine_file, unsigned int * line_number)
 {
 	/* Read the initial state of the Machine */
@@ -204,7 +204,7 @@ go(Machine * machine, const Move move)
 	return getLetter(machine);
 }
 
-Transition *
+static Transition *
 _getTransition(Machine * machine, State current_state, Letter current_letter)
 {
 	/* Get the transition we must now apply */

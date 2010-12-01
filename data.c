@@ -8,7 +8,7 @@
 
 #include <string.h>
 
-Data *
+static Data *
 _newData()
 {
 	/* Basic allocation and initialisation stuff to get a ready base Data */

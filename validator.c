@@ -68,7 +68,7 @@ validateTransition(const Transition transition, const Machine * machine, String 
 	return true;
 }
 
-bool
+static bool
 _checkInitialStateDeparture(const Machine * machine)
 {
 	/* Check if there is at least one Transition available to leave the initial state */
@@ -83,7 +83,7 @@ _checkInitialStateDeparture(const Machine * machine)
 	return false;
 }
 
-bool
+static bool
 _checkInitialState(Machine * machine, FILE * file, const unsigned int line_number)
 {
 	/* Check if the initial state is recognized by the Machine */
@@ -95,7 +95,7 @@ _checkInitialState(Machine * machine, FILE * file, const unsigned int line_numbe
 	return true;
 }
 
-bool
+static bool
 _checkFinalStateReachability(const Machine * machine)
 {
 	/* Check if there is at least one Transition available to reach the final state */
@@ -110,7 +110,7 @@ _checkFinalStateReachability(const Machine * machine)
 	return false;
 }
 
-bool
+static bool
 _checkFinalState(Machine * machine, FILE * file, const unsigned int line_number)
 {
 	/* Check if the final state is recognized by the Machine */
@@ -122,7 +122,7 @@ _checkFinalState(Machine * machine, FILE * file, const unsigned int line_number)
 	return true;
 }
 
-bool
+static bool
 _checkAtLeastOnePathExists(Machine * machine)
 {
 	/* Check if at least one path exists from initial state to final state, not taking care of data */
@@ -179,3 +179,4 @@ validate(Machine * machine, FILE * file, const unsigned int line_number)
 			NULL, line_number);
 	}
 }
+

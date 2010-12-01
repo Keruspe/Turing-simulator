@@ -12,7 +12,7 @@
  * Generic Exceptions
  */
 
-void
+static void
 _Exception(const String prefix, String reason)
 {
 	/* The mother of each exception, prints the error, free the memory and exit */
@@ -35,7 +35,7 @@ NoSuchFileException(const String filename)
  * Validation Exceptions
  */
 
-void
+static void
 _PreciseValidationException(const String what, const String reason, const Element malformed, const unsigned int line_number)
 {
 	/* Tell which precise Element at which line failed the validation */
@@ -46,7 +46,7 @@ _PreciseValidationException(const String what, const String reason, const Elemen
 	_Exception("Validation exception", full_reason);
 }
 
-void
+static void
 _ValidationException(Machine * machine, FILE * file, const String what, String reason, const Element malformed, const unsigned int line_number, bool to_free)
 {
 	freeMachine(machine);
@@ -69,7 +69,7 @@ ValidationException(Machine * machine, FILE * file, const String what, String re
 	_ValidationException(machine, file, what, reason, malformed, line_number, false);
 }
 
-void
+static void
 _BadTransitionException(Machine * machine, FILE * file, const Element malformed, const unsigned int line_number)
 {
 	/* Build a precise reason */
@@ -95,7 +95,7 @@ BadTransitionException(Machine * machine, FILE * file, const String reason, cons
  * Runtime Exceptions
  */
 
-void
+static void
 _RuntimeException(Machine * machine, String reason)
 {
 	/* Mother of all runtime exceptions, tells _Exception that the one we're dealing with occured during runtime */
