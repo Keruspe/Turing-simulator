@@ -32,7 +32,7 @@ hasDefaultLetter(const Machine * machine)
 }
 
 bool
-validateTransition(const Transition transition, const Machine * machine, String reason, Element * malformed)
+validateTransition(const Transition transition, const Machine * machine, String * reason, Element * malformed)
 {
 	/**
 	 * Check if all states and letters used by a Transition are known by the Machine
@@ -61,7 +61,7 @@ validateTransition(const Transition transition, const Machine * machine, String 
 	/* Particular case, give a reason instead of a malformed Element */
 	if (transition.move != RIGHT && transition.move != LEFT && transition.move != NONE)
 	{
-		reason = "bad move in Transition, only 'R', 'L' or 'N' are allowed";
+		*reason = "bad move in Transition, only 'R', 'L' or 'N' are allowed";
 		return false;
 	}
 	/* Everything is fine, return true */

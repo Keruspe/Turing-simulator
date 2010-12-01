@@ -24,7 +24,7 @@ bool validateElement(const Element, const ElementsCollection valid_elements, con
 bool hasDefaultLetter(const Machine *);
 
 /* Validate a transition, store the bad Element if malformed */
-bool validateTransition(const Transition, const Machine *, String reason, Element * malformed);
+bool validateTransition(const Transition, const Machine *, String * reason, Element * malformed);
 
 /* Validate a Machine */
 void validate(Machine *, FILE *, const unsigned int line_number);

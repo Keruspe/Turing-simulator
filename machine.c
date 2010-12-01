@@ -100,7 +100,7 @@ _readTransitions(Machine * machine, FILE * machine_file, unsigned int * line_num
 		/* Store the transition and increase the number of transitions available */
 		machine->transitions[machine->transitions_length++] = transition;
 		/* Validate the transition */
-		if (!validateTransition(transition, machine, reason, &malformed))
+		if (!validateTransition(transition, machine, &reason, &malformed))
 			BadTransitionException(machine, machine_file, reason, malformed, *line_number);
 		/* When the Array is full, increase its size */
 		if ((machine->transitions_length % BASE_TRANSITIONS_LENGTH) == 0)
