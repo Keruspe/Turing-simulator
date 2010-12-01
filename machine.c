@@ -198,8 +198,9 @@ go(Machine * machine, const Move move)
 {
 	if (move == 'R') /* Go right */
 		++(machine->data_index);
-	else /* Go left */
+	else if (move == 'L') /* Go left */
 		--(machine->data_index);
+	/* We don't move with 'N' */
 	/* Return the Letter we're up to */
 	return getLetter(machine);
 }

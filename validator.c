@@ -59,9 +59,9 @@ validateTransition(const Transition transition, const Machine * machine, String 
 		return false;
 	}
 	/* Particular case, give a reason instead of a malformed Element */
-	if (transition.move != 'R' && transition.move != 'L')
+	if (transition.move != 'R' && transition.move != 'L' && transition.move != 'N')
 	{
-		reason = "bad move in Transition, only 'R' or 'L' are allowed";
+		reason = "bad move in Transition, only 'R', 'L' or 'N' are allowed";
 		return false;
 	}
 	/* Everything is fine, return true */
