@@ -10,6 +10,7 @@ int
 main()
 {
 	Machine * machine = NULL;
+	bool step_by_step;
 
 	do /* Main loop */
 	{
@@ -18,14 +19,16 @@ main()
 		do /* Loop for using the same Machine with various Data sets */
 		{
 			reloadData(machine); /* Get new Data for our Machine */
-			execute(machine); /* Execute the Machine */
+			printf("Do you want to execute the machine step by step ? [y/N]\n");
+			step_by_step = !getChoice('y');
+			execute(machine, step_by_step); /* Execute the Machine */
 			printf("Do you want to continue with this machine ? [Y/n]\n");
-		} while (getChoice());
+		} while (getChoice('n'));
 
 		freeMachine(machine); /* No memory leak */
 		machine = NULL;
 		printf("Do you want to continue with another machine ? [Y/n]\n");
-	} while (getChoice()); /* Only exit on user demand */
+	} while (getChoice('n')); /* Only exit on user demand */
 
 	return EXIT_SUCCESS;
 }

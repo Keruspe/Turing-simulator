@@ -52,6 +52,6 @@ void reloadData(Machine *);
 Letter go(Machine *, const Move);
 
 /* Execute a Machine */
-void execute(Machine *);
+void execute(Machine *, bool step_by_step);
 
 #endif /* __MACHINE_H__ */

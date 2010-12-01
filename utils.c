@@ -24,12 +24,12 @@ clearBuffer()
 }
 
 bool
-getChoice()
+getChoice(char non_default_choice)
 {
 	/* Get user choice (Y/n) */
 	bool answer = true; /* Default to yes */
 	char c;
-	if ((c = getchar()) == 'n')
+	if ((c = getchar()) == non_default_choice)
 		answer = false; /* User answered no */
 	/* Default doesn't need any value, don't clear buffer if only enter has been typed */
 	if (c != '\n')

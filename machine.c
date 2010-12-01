@@ -223,7 +223,7 @@ _getTransition(Machine * machine, State current_state, Letter current_letter)
 }
 
 void
-execute(Machine * machine)
+execute(Machine * machine, bool step_by_step)
 {
 	Move move = 'R'; /* First move */
 	/* Initializations */
@@ -235,10 +235,12 @@ execute(Machine * machine)
 	/* Print the start state (Data) */
 	printf("\n===========================================\nInitial Data:\n");
 	printData(machine->data, machine->data_index);
-	printf("================== Start ==================\nExecuting your Machine:\n");
+	printf("\n================== Start ==================\nExecuting your Machine:\n");
 
 	printf("%s:", current_state);
 	printData(machine->data, machine->data_index);
+	if (step_by_step)
+		clearBuffer();
 	while (strcmp(current_state, machine->final_state) != 0) /* Loop until we reach the final state */
 	{
 		current_letter = go(machine, move); /* Move and get the new Letter */
@@ -251,15 +253,19 @@ execute(Machine * machine)
 		setLetter(machine->data, machine->data_index, current_transition->subst);
 
 		/* Print the current Sate */
+		if (! step_by_step) /* Rewrite over previous state */
+			printf("\r");
 		printf("%s:", current_state);
 		printData(machine->data, machine->data_index);
 
 		if (++steps >= MAX_STEPS) /* Avoid infinite loop */
 			TooMuchStepsException(machine);
+		if (step_by_step) /* Wait until user type enter */
+			clearBuffer();
 	}
 
 	/* Print the result */
-	printf("=================== Done ==================\nResult after %d steps:\n", steps);
+	printf("\n=================== Done ==================\nResult after %d steps:\n", steps);
 	printData(machine->data, -machine->data->extra_data_length-1);
-	printf("===========================================\n\n");
+	printf("\n===========================================\n\n");
 }

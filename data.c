@@ -160,5 +160,4 @@ printData(Data * data, int index)
 		else
 			printf(" %s", data->data[i]);
 	}
-	printf("\n");
 }

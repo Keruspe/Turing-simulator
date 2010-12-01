@@ -28,8 +28,8 @@ void skipLine(FILE *, unsigned int * line_number);
 /* Clear the buffer after reading an entry */
 void clearBuffer();
 
-/* Used to get user choice in main */
-bool getChoice();
+/* Used to get user choice in main, return true for default choice, false for non_default */
+bool getChoice(char non_default_choice);
 
 /**
  * parsing stuff
